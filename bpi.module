@@ -1,0 +1,172 @@
+<?php
+/**
+ * @file
+ * 
+ * Main BPI module file
+ * 
+ */
+
+/**
+ * Implements hook_init
+ */
+function bpi_init() {
+
+}
+
+/**
+ * Implements hook_menu
+ *
+ * @return array
+ *   An array with query responders
+ */
+function bpi_menu() {
+  $items = array();
+
+  // Main admin page
+  $items['admin/bpi'] = array(
+    'title' => 'BPI Administration',
+    'description' => 'BPI administration page',
+    'page callback' => 'bpi_my_nodes',
+    'access arguments' => array('access administration pages'),
+    'type' => MENU_NORMAL_ITEM,
+  );
+
+  // My nodes page, same as admin
+  $items['admin/bpi/my'] = array(
+    'title' => 'My nodes',
+    'description' => 'Nodes created by me',
+    'page callback' => 'bpi_my_nodes',
+    'access arguments' => array('access administration pages'),
+    'type' => MENU_DEFAULT_LOCAL_TASK,
+    'weight' => '0',
+  );
+
+  // Syndicated nodes page
+  $items['admin/bpi/syndicated'] = array(
+    'title' => 'Syndicated',
+    'description' => 'Nodes which you syndicated',
+    'page callback' => 'bpi_syndicated_nodes',
+    'access arguments' => array('access administration pages'),
+    'type' => MENU_LOCAL_TASK,
+    'weight' => '1',
+  );
+
+  // Channels page
+  $items['admin/bpi/channels'] = array(
+    'title' => 'Channels',
+    'description' => 'Current available channels',
+    'page callback' => 'bpi_channels',
+    'access arguments' => array('access administration pages'),
+    'type' => MENU_LOCAL_TASK,
+    'weight' => '2',
+  );
+
+  // Favourites page
+  $items['admin/bpi/favorites'] = array(
+    'title' => 'Favorites',
+    'description' => 'My favourites (authors, channels, etc.)',
+    'page callback' => 'bpi_favorites',
+    'access arguments' => array('access administration pages'),
+    'type' => MENU_LOCAL_TASK,
+    'weight' => '3',
+  );
+
+  // Updates page
+  $items['admin/bpi/updates'] = array(
+    'title' => 'Updates',
+    'description' => 'Syndicated nodes which have been updated',
+    'page callback' => 'bpi_updates',
+    'access arguments' => array('access administration pages'),
+    'type' => MENU_LOCAL_TASK,
+    'weight' => '4',
+  );
+
+  return $items;
+}
+
+/**
+ * Implements hook_theme
+ *
+ * @return array
+ *   Array of available themes
+ */
+function bpi_theme() {
+  $hooks = array();
+
+  $hooks['my_nodes'] = array(
+    'variables' => array(),
+    'template' => 'templates/bpi_my_nodes',
+  );
+
+  $hooks['syndicated_nodes'] = array(
+    'variables' => array(),
+    'template' => 'templates/bpi_syndicated_nodes',
+  );
+
+  $hooks['channels'] = array(
+    'variables' => array(),
+    'template' => 'templates/bpi_channels',
+  );
+
+  $hooks['favorites'] = array(
+    'variables' => array(),
+    'template' => 'templates/bpi_favorites',
+  );
+
+  $hooks['updates'] = array(
+    'variables' => array(),
+    'template' => 'templates/bpi_updates',
+  );
+
+  return $hooks;
+}
+
+/**
+ * 'My Nodes' page callback
+ *
+ * @return array
+ *   Page structure
+ */
+function bpi_my_nodes() {
+  return theme('my_nodes');
+}
+
+/**
+ * 'Syndicated nodes' page callback
+ *
+ * @return array
+ *   Page structure
+ */
+function bpi_syndicated_nodes() {
+  return theme('syndicated_nodes');
+}
+
+/**
+ * 'Channels' page callback
+ *
+ * @return array
+ *   Page structure
+ */
+function bpi_channels() {
+  return theme('channels');
+}
+
+/**
+ * 'Favorites' page callback
+ *
+ * @return array
+ *   Page structure
+ */
+function bpi_favorites() {
+  return theme('favorites');
+}
+
+/**
+ * 'Updates' page callback
+ *
+ * @return array
+ *   Page structure
+ */
+function bpi_updates() {
+  return theme('updates');
+}
