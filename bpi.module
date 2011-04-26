@@ -31,6 +31,14 @@ function bpi_menu() {
     'type' => MENU_NORMAL_ITEM,
   );
 
+  $items['admin/bpi/add_content'] = array(
+    'title' => 'Add content',
+    'description' => 'Add content',
+    'page callback' => 'bpi_add_content',
+    'access arguments' => array('access administration pages'),
+    'type' => MENU_LOCAL_ACTION,
+  );
+
   // My nodes page, same as admin
   $items['admin/bpi/my'] = array(
     'title' => 'My nodes',
@@ -93,6 +101,11 @@ function bpi_menu() {
 function bpi_theme() {
   $hooks = array();
 
+  $hooks['add_content'] = array(
+    'variables' => array(),
+    'template' => 'templates/bpi_add_content',
+  );
+
   $hooks['my_nodes'] = array(
     'variables' => array(),
     'template' => 'templates/bpi_my_nodes',
@@ -121,6 +134,10 @@ function bpi_theme() {
   return $hooks;
 }
 
+function bpi_add_content() {
+  return theme('add_content');
+}
+
 /**
  * 'My Nodes' page callback
  *
@@ -129,6 +146,101 @@ function bpi_theme() {
  */
 function bpi_my_nodes() {
   return theme('my_nodes');
+}
+
+/**
+ * 'My Nodes' page form
+ *
+ * @return array
+ *    Form structure
+ */
+function bpi_my_nodes_form() {
+  $form = array();
+
+  // The sorting filter
+  $form['sort_filter'] = array(
+    '#type' => 'fieldset',
+    '#title' => 'SHOW ONLY ITEMS WHERE',
+  );
+
+  $form['sort_filter']['status'] = array(
+    '#type' => 'select',
+    '#title' => 'status',
+    '#options' => array(
+        'any',
+      ),
+  );
+
+  $form['sort_filter']['type'] = array(
+    '#type' => 'select',
+    '#title' => 'type',
+    '#options' => array(
+        'any',
+      ),
+  );
+
+  $form['sort_filter']['submit'] = array(
+    '#type' => 'submit',
+    '#value' => 'Filter'
+  );
+  // END sort filter
+
+  // Update filter
+  $form['update_filter'] = array(
+    '#type' => 'fieldset',
+    '#title' => 'UPDATE OPTIONS',
+  );
+
+  $form['update_filter']['action'] = array(
+    '#type' => 'select',
+    '#options' => array(
+        'Publish selected content',
+      ),
+  );
+  // END update filter
+
+  $form['update_filter']['submit'] = array(
+    '#type' => 'submit',
+    '#value' => 'Update'
+  );
+
+  return $form;
+}
+
+/**
+ * The table/grid which contains a list of user's nodes
+ *
+ * @return array
+ *   Form structure
+ */
+function bpi_my_nodes_grid() {
+  $form = array();
+  
+  $header = array(
+    array('data' => t('TITLE'), 'field' => 'node_title'),
+    t('TYPE'),
+    t('AUTHOR'),
+    t('STATUS'),
+    array('data' => t('UPDATED'), 'field' => 'node_updated', 'sort' => 'desc'),
+    t('OPERATIONS'),
+  );
+
+  // @todo
+  // Test purpose data for grid/table
+  // Remove this after live retrieval
+  $rows = array(
+    array('Pa gensyn i Helsingor 2011', 'Article', l('inlead', '#'), 'published', '03/08/2011 - 15:50', l('edit', '#') . '&nbsp;&nbsp;' . l('delete', '#')),
+    array('Easy Magazine 2010', 'Article', l('inlead', '#'), 'published', '03/08/2011 - 15:50', l('edit', '#') . '&nbsp;&nbsp;' . l('delete', '#')),
+    array('Easy Screen pa Svendborg Bibliotek', 'Article', l('inlead', '#'), 'published', '03/08/2011 - 15:50', l('edit', '#') . '&nbsp;&nbsp;' . l('delete', '#')),
+  );
+
+  $form['grid'] = array(
+    '#type' => 'tableselect',
+    '#header' => $header,
+    '#options' => $rows,
+  );
+
+  return $form;
 }
 
 /**
