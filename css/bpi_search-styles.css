@@ -1,0 +1,52 @@
+#bpi_search_filter {
+  background-color: #EEE;
+  float: left;
+  width: 30%;
+}
+
+#bpi_search_filter fieldset {
+  border: none;
+}
+
+#bpi_search_filter, #bpi_nodes {
+  outline: 1px solid #CCC;
+}
+
+.clear {
+  clear: both;
+}
+
+#bpi_nodes, .node_col, .node_controls div {
+  float: left;
+}
+
+#bpi_nodes {
+  width: 69%;
+  margin-left: 1px;
+}
+
+.well_node {
+  width: 100%;
+}
+
+.well_node hr {
+  border-top: 1px solid black;
+  margin: 20px 0 10px 20px;
+  width: 95%;
+}
+
+.well_node>* {
+  margin-left: 20px;
+}
+
+.node_col {
+  width: 30%;
+}
+
+.node_controls div {
+  background-color: #CCC;
+  border: 1px solid black;
+  cursor: pointer;
+  margin-left: 10px;
+  padding: 2px;
+}

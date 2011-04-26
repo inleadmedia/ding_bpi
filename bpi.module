@@ -6,11 +6,13 @@
  * 
  */
 
+define('BPI_PATH', drupal_get_path('module', 'bpi'));
+
 /**
  * Implements hook_init
  */
 function bpi_init() {
-
+  drupal_add_css(BPI_PATH . '/css/bpi_search-styles.css');
 }
 
 /**
@@ -89,6 +91,16 @@ function bpi_menu() {
     'weight' => '4',
   );
 
+  // Search page
+  $items['admin/bpi/search'] = array(
+    'title' => 'Search',
+    'description' => 'Search nodes from the well',
+    'page callback' => 'bpi_search',
+    'access arguments' => array('access administration pages'),
+    'type' => MENU_LOCAL_TASK,
+    'weight' => '5',
+  );
+
   return $items;
 }
 
@@ -131,9 +143,38 @@ function bpi_theme() {
     'template' => 'templates/bpi_updates',
   );
 
+  $hooks['search'] = array(
+    'variables' => array(),
+    'template' => 'templates/bpi_search'
+  );
+
+  $hooks['well_node'] = array(
+    'variables' => array(
+      'title' => NULL,
+      'description' => NULL,
+      'read' => NULL,
+      'rating' => NULL,
+      'rated' => NULL,
+      'date' => NULL,
+      'author' => NULL,
+      'category' => NULL,
+      'syndicated' => NULL,
+      'lix' => NULL, // @todo - how's that beeing translated ?!
+      'library' => NULL,
+      'channel' => NULL,
+    ),
+    'template' => 'templates/bpi_well_node'
+  );
+
   return $hooks;
 }
 
+/**
+ * 'Add content' page
+ *
+ * @return array
+ *   Form structure
+ */
 function bpi_add_content() {
   return theme('add_content');
 }
@@ -281,4 +322,100 @@ function bpi_favorites() {
  */
 function bpi_updates() {
   return theme('updates');
+}
+
+function bpi_search() {
+  return theme('search');
+}
+
+function bpi_search_filters() {
+  $form = array();
+
+  $form['type'] = array(
+    '#type' => 'fieldset',
+    '#title' => 'TYPE',
+    '#prefix' => '<div id="bpi_search_filter">',
+  );
+
+  $form['type']['article'] = array(
+    '#type' => 'checkbox',
+    '#title' => 'Article'
+  );
+
+  $form['type']['event'] = array(
+    '#type' => 'checkbox',
+    '#title' => 'Event'
+  );
+
+  $form['type']['review'] = array(
+    '#type' => 'checkbox',
+    '#title' => 'Review'
+  );
+
+  $form['group'] = array(
+    '#type' => 'fieldset',
+    '#title' => 'TARGET GROUP',
+    '#suffix' => '</div>',
+  );
+
+  $form['group']['voksne'] = array(
+    '#type' => 'checkbox',
+    '#title' => 'Voksne'
+  );
+
+  $form['group']['born'] = array(
+    '#type' => 'checkbox',
+    '#title' => 'Born'
+  );
+
+  $form['group']['unge'] = array(
+    '#type' => 'checkbox',
+    '#title' => 'Unge'
+  );
+
+  return $form;
+}
+
+function bpi_well_nodes() {
+  $nodes = array();
+
+  // @todo
+  // Test purpose data
+  // Remove that after live retrieval
+  $nodes[] = array(
+    'title' => 'Sommerlukket',
+    'description' => 'Tekstuddrag fra artikel Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem',
+    'read' => FALSE, // @todo - needs translation (dk: laest)
+    'rating' => 3,
+    'rated' => 17,
+    'date' => '13 marts 2011',
+    'author' => 'Lisbeth Hollesen',
+    'category' => 'Andet',
+    'syndicated' => 4,
+    'lix' => 56, // @todo - needs translation
+    'library' => 'Albertslund',
+    'channel' => 'Nu er det sommerferie'
+  );
+
+  $nodes[] = array(
+    'title' => 'Tirsdagsgodter',
+    'description' => 'Tekstuddrag fra artikel Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem',
+    'read' => TRUE, // @todo - needs translation (dk: laest)
+    'rating' => 3,
+    'rated' => 12,
+    'date' => '13 marts 2011',
+    'author' => 'M. Christensen',
+    'category' => 'Andet',
+    'syndicated' => 2,
+    'lix' => 21, // @todo - needs translation
+    'library' => 'Hovedbiblioteket',
+    'channel' => 'Slik'
+  );
+
+  $output = '';
+  foreach($nodes as $v) {
+    $output .= theme('well_node', $v);
+  }
+
+  return $output;
 }
