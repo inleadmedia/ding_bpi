@@ -12,7 +12,7 @@ define('BPI_PATH', drupal_get_path('module', 'bpi'));
  * Implements hook_init
  */
 function bpi_init() {
-  drupal_add_css(BPI_PATH . '/css/bpi_search-styles.css');
+  drupal_add_css(BPI_PATH . '/css/bpi-styles.css');
 }
 
 /**
@@ -236,6 +236,7 @@ function bpi_my_nodes_form() {
     '#type' => 'select',
     '#options' => array(
         'Publish selected content',
+        'Delete selected content',
       ),
   );
   // END update filter
@@ -294,6 +295,54 @@ function bpi_syndicated_nodes() {
   return theme('syndicated_nodes');
 }
 
+function bpi_syndicated_nodes_grid() {
+  $form = array();
+
+  $header = array(
+    array('data' => t('TITLE'), 'field' => 'node_title'),
+    t('AUTHOR'),
+    t('LIBRARY'),
+    array('data' => t('CREATED'), 'field' => 'node_created', 'sort' => 'desc'),
+    array('data' => t('SYNDICATED'), 'field' => 'node_syndicated'),
+    t('CHANGES'),
+  );
+
+  // @todo
+  // Test purpose data for grid/table
+  // Remove this after live retrieval
+  $rows = array(
+    array(
+      'Pa gensyn i Helsingor 2011',
+      'Birgitte Hansen',
+      'Gladsaxe Bibliotek',
+      '01/04/2011 - 17:51',
+      '04/05/2011 - 16:56',
+      'NO'),
+    array(
+      'Easy Magazine 2010',
+      'Ulla Terkelsen',
+      'Frederiksebrg Bibliotekerne',
+      '02/15/2011 - 04:12',
+      '04/05/2011 - 16:58',
+      'NO'),
+    array(
+      'Easy Screen pa Svendborg Bibliotek',
+      'Barack Obama',
+      'Washington Centralbibliotek',
+      '03/08/2011 - 14:34',
+      '04/05/2011 - 14:34',
+      '<strong>YES</strong>'),
+  );
+
+  $form['grid'] = array(
+    '#type' => 'tableselect',
+    '#header' => $header,
+    '#options' => $rows,
+  );
+
+  return $form;
+}
+
 /**
  * 'Channels' page callback
  *
@@ -324,6 +373,12 @@ function bpi_updates() {
   return theme('updates');
 }
 
+/**
+ * 'Search' page callback
+ *
+ * @return array
+ *   Page structure
+ */
 function bpi_search() {
   return theme('search');
 }
@@ -358,19 +413,19 @@ function bpi_search_filters() {
     '#suffix' => '</div>',
   );
 
-  $form['group']['voksne'] = array(
+  $form['group']['adults'] = array(
     '#type' => 'checkbox',
-    '#title' => 'Voksne'
+    '#title' => 'Adults'
   );
 
   $form['group']['born'] = array(
     '#type' => 'checkbox',
-    '#title' => 'Born'
+    '#title' => 'Born' // @todo - translate 'Born'
   );
 
-  $form['group']['unge'] = array(
+  $form['group']['young'] = array(
     '#type' => 'checkbox',
-    '#title' => 'Unge'
+    '#title' => 'Young'
   );
 
   return $form;

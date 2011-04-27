@@ -1,7 +1,7 @@
 #bpi_search_filter {
   background-color: #EEE;
   float: left;
-  width: 30%;
+  width: 20%;
 }
 
 #bpi_search_filter fieldset {
@@ -21,7 +21,7 @@
 }
 
 #bpi_nodes {
-  width: 69%;
+  width: 79%;
   margin-left: 1px;
 }
 
