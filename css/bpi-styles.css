@@ -50,3 +50,7 @@
   margin-left: 10px;
   padding: 2px;
 }
+
+.page_result {
+  display: none;
+}

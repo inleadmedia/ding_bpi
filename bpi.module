@@ -383,6 +383,39 @@ function bpi_search() {
   return theme('search');
 }
 
+function bpi_search_form() {
+
+  $form = array();
+
+  $form['search'] = array(
+    '#type' => 'textfield',
+    '#title' => 'Search for: ',
+    '#required' => TRUE,
+  );
+
+  $form['submit'] = array(
+    '#type' => 'submit',
+    '#value' => 'Search',
+    '#ajax' => array(
+      'callback' => 'bpi_search_result'
+    ),
+  );
+
+  return $form;
+}
+
+function bpi_search_result() {
+  $commands = array();
+
+  $commands[] = ajax_command_invoke('.page_form', 'hide');
+  $commands[] = ajax_command_invoke('.page_result', 'show');
+
+  return array(
+    '#type' => 'ajax',
+    '#commands' => $commands
+  );
+}
+
 function bpi_search_filters() {
   $form = array();
 
