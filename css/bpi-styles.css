@@ -16,8 +16,33 @@
   clear: both;
 }
 
-#bpi_nodes, .node_col, .node_controls div {
+#bpi_nodes, .node_col, .node_controls div, #bpi_edit_node .l_col, #bpi_edit_node .r_col {
   float: left;
+}
+
+#bpi_edit_node .l_col_node_body {
+  width: 68%;
+}
+
+#bpi_edit_node .r_col_node_teaser {
+  margin-left: 5px;
+  width: 30%;
+}
+
+#bpi_edit_node .node_images img {
+  border: 1px solid #CCC;
+  float: left;
+  height: 128px;
+  margin: 5px;
+  width: 128px;
+}
+
+#bpi_edit_node .node_info .l_col, #bpi_edit_node .node_info .r_col {
+  width: 50%;
+}
+
+#bpi_edit_node .node_images, #bpi_edit_node .node_info {
+  border: 1px solid #CCC;
 }
 
 #bpi_nodes {

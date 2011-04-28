@@ -33,6 +33,7 @@ function bpi_menu() {
     'type' => MENU_NORMAL_ITEM,
   );
 
+  // Add content page
   $items['admin/bpi/add_content'] = array(
     'title' => 'Add content',
     'description' => 'Add content',
@@ -101,6 +102,16 @@ function bpi_menu() {
     'weight' => '5',
   );
 
+  // Edit node page
+  $items['admin/bpi/node/edit/%'] = array(
+    'title' => 'Edit node',
+    'description' => 'Edit page for your own node',
+    'page callback' => 'bpi_node_edit',
+    'access arguments' => array('access administration pages'),
+    'page arguments' => array(4),
+    'type' => MENU_CALLBACK,
+  );
+
   return $items;
 }
 
@@ -164,6 +175,11 @@ function bpi_theme() {
       'channel' => NULL,
     ),
     'template' => 'templates/bpi_well_node'
+  );
+
+  $hooks['edit_node'] = array(
+    'variables' => array('data' => NULL),
+    'template' => 'templates/bpi_edit_node'
   );
 
   return $hooks;
@@ -271,9 +287,9 @@ function bpi_my_nodes_grid() {
   // Test purpose data for grid/table
   // Remove this after live retrieval
   $rows = array(
-    array('Pa gensyn i Helsingor 2011', 'Article', l('inlead', '#'), 'published', '03/08/2011 - 15:50', l('edit', '#') . '&nbsp;&nbsp;' . l('delete', '#')),
-    array('Easy Magazine 2010', 'Article', l('inlead', '#'), 'published', '03/08/2011 - 15:50', l('edit', '#') . '&nbsp;&nbsp;' . l('delete', '#')),
-    array('Easy Screen pa Svendborg Bibliotek', 'Article', l('inlead', '#'), 'published', '03/08/2011 - 15:50', l('edit', '#') . '&nbsp;&nbsp;' . l('delete', '#')),
+    array('Pa gensyn i Helsingor 2011', 'Article', l('inlead', '#'), 'published', '03/08/2011 - 15:50', l('edit', 'admin/bpi/node/edit/1') . '&nbsp;&nbsp;' . l('delete', '#')),
+    array('Easy Magazine 2010', 'Article', l('inlead', '#'), 'published', '03/08/2011 - 15:50', l('edit', 'admin/bpi/node/edit/2') . '&nbsp;&nbsp;' . l('delete', '#')),
+    array('Easy Screen pa Svendborg Bibliotek', 'Article', l('inlead', '#'), 'published', '03/08/2011 - 15:50', l('edit', 'admin/bpi/node/edit/3') . '&nbsp;&nbsp;' . l('delete', '#')),
   );
 
   $form['grid'] = array(
@@ -506,4 +522,179 @@ function bpi_well_nodes() {
   }
 
   return $output;
+}
+
+
+function bpi_node_edit($node_id) {
+  // @todo
+  // Here should be placed node retrieval routine
+  // As for now it's a dummy data, remove after normal fetch
+
+  $data = array(
+    'node_data' => array(
+      'title' => 'Trololo',
+      'teaser' => 'Lorem ipsum dolor sit amet consectetuer adispcing elit',
+      'body' => 'As for 2039, a number of professional astronomers predicted that,
+        Apophis asteroid, discovered in 2004, could change it\'s orbit in a way
+        that it could cross the Earth\'s orbit. Although due to huge amount of gravity
+        that Sun is creating, in such large timespan it\'s truly hard to predict how exactly
+        the orbit of Apophis will lay through space. In case of direct hit, this 900
+        meters rock, could produce an impact equalised to 2000 megatomb nuclear bomb with
+        total destruction in range of 60 miles and produce blast wind with a velocity
+        700 meters per second...',
+      'node_info' => array(
+        'pic_copy' => TRUE,
+        'references' => TRUE,
+        'author' => 'Birgitte Hansen',
+        'library' => 'Gladsaxe Bibliotekerne',
+        'created' => '04-05-2011 15:10',
+        'category' => 'Sports',
+        'target' => 'Adults',
+        'channel' => array(
+          'this_is_nice',
+          'favoriteNodes'
+        ),
+        'lix' => 1823,
+        'operations' => array(
+          'auto_update' => TRUE,
+          'copy_images' => FALSE,
+          'local_changes' => FALSE,
+          'auto_publish' => FALSE,
+          'auto_promote' => FALSE,
+          'references_ting' => FALSE,
+          'references_links' => FALSE,
+          'syndication_changes' => FALSE,
+          'view_syndication' => FALSE,
+        ),
+        'images' => array(),
+      )
+    )
+  );
+
+  return bpi_test(drupal_get_form('bpi_node_edit_form', $data));//theme('edit_node', $data);
+}
+
+function bpi_test($form) {
+  $output = '';
+
+  $output .= drupal_render($form['title']);
+
+  $output .= drupal_render($form);
+
+  return $output;
+}
+
+function bpi_node_edit_form($form, &$form_state, $node_data = array()) {
+  $form = array();
+
+  $form['title'] = array(
+    '#type' => 'textfield',
+    '#title' => 'Title',
+    '#required' => TRUE,
+    '#value' => (isset($node_data['title'])) ? $node_data['title'] : '',
+  );
+
+  $form['body'] = array(
+    '#type' => 'textarea',
+    '#title' => 'Body',
+    '#default_value' => (isset($node_data['body'])) ? $node_data['body'] : '',
+  );
+
+  $form['teaser'] = array(
+    '#type' => 'textarea',
+    '#title' => 'Teaser',
+    '#default_value' => (isset($node_data['teaser'])) ? $node_data['teaser'] : '',
+  );
+
+  $form['auto_update'] = array(
+    '#type' => 'checkbox',
+    '#title' => 'Activate auto update?',
+    '#default_value' => (
+          isset($node_data['node_info']['operations']['auto_update']) &&
+          $node_data['node_info']['operations']['auto_update'] == TRUE) ?
+            1 : 0,
+  );
+
+  $form['copy_images'] = array(
+    '#type' => 'checkbox',
+    '#title' => 'Copy images?',
+    '#default_value' => (
+          isset($node_data['node_info']['operations']['copy_images']) &&
+          $node_data['node_info']['operations']['copy_images'] == TRUE) ?
+            1 : 0,
+  );
+
+  $form['local_changes'] = array(
+    '#type' => 'checkbox',
+    '#title' => 'Make changes locally?',
+    '#default_value' => (
+          isset($node_data['node_info']['operations']['local_changes']) &&
+          $node_data['node_info']['operations']['local_changes'] == TRUE) ?
+            1 : 0,
+  );
+
+  $form['auto_publish'] = array(
+    '#type' => 'checkbox',
+    '#title' => 'Auto publish locally?',
+    '#default_value' => (
+          isset($node_data['node_info']['operations']['auto_publish']) &&
+          $node_data['node_info']['operations']['auto_publish'] == TRUE) ?
+            1 : 0,
+  );
+
+  $form['auto_promote'] = array(
+    '#type' => 'checkbox',
+    '#title' => 'Auto promote to frontpage?',
+    '#default_value' => (
+          isset($node_data['node_info']['operations']['auto_promote']) &&
+          $node_data['node_info']['operations']['auto_promote'] == TRUE) ?
+            1 : 0,
+  );
+
+  $form['references_ting'] = array(
+    '#type' => 'checkbox',
+    '#title' => 'Remove references (TING)?',
+    '#default_value' => (
+          isset($node_data['node_info']['operations']['references_ting']) &&
+          $node_data['node_info']['operations']['references_ting'] == TRUE) ?
+            1 : 0,
+  );
+
+  $form['references_links'] = array(
+    '#type' => 'checkbox',
+    '#title' => 'Remove references (links)?',
+    '#default_value' => (
+          isset($node_data['node_info']['operations']['references_links']) &&
+          $node_data['node_info']['operations']['references_links'] == TRUE) ?
+            1 : 0,
+  );
+
+  $form['syndication_changes'] = array(
+    '#type' => 'checkbox',
+    '#title' => 'Make changes after syndication?',
+    '#default_value' => (
+          isset($node_data['node_info']['operations']['syndication_changes']) &&
+          $node_data['node_info']['operations']['syndication_changes'] == TRUE) ?
+            1 : 0,
+  );
+
+  $form['view_syndication'] = array(
+    '#type' => 'checkbox',
+    '#title' => 'View node after syndication?',
+    '#default_value' => (
+          isset($node_data['node_info']['operations']['syndication_changes']) &&
+          $node_data['node_info']['operations']['view_syndication'] == TRUE) ?
+            1 : 0,
+  );
+
+  $form['submit'] = array(
+    '#type' => 'submit',
+    '#value' => 'Submit'
+  );
+
+  return $form;
+}
+
+function bpi_node_edit_form_submit($form, &$form_state) {
+  var_dump($_POST);die();
 }
