@@ -13,6 +13,8 @@ define('BPI_PATH', drupal_get_path('module', 'bpi'));
  */
 function bpi_init() {
   drupal_add_css(BPI_PATH . '/css/bpi-styles.css');
+  drupal_add_library('system', 'drupal.ajax');
+  drupal_add_library('system', 'jquery.form');
 }
 
 /**
@@ -72,10 +74,10 @@ function bpi_menu() {
     'weight' => '2',
   );
 
-  // Favourites page
+  // Favorites page
   $items['admin/bpi/favorites'] = array(
     'title' => 'Favorites',
-    'description' => 'My favourites (authors, channels, etc.)',
+    'description' => 'Favorites (channels, authors, etc.)',
     'page callback' => 'bpi_favorites',
     'access arguments' => array('access administration pages'),
     'type' => MENU_LOCAL_TASK,
@@ -110,6 +112,16 @@ function bpi_menu() {
     'access arguments' => array('access administration pages'),
     'page arguments' => array(4),
     'type' => MENU_CALLBACK,
+  );
+
+  //
+  $items['admin/bpi/ajax/node/%/invite'] = array(
+    'title' => 'Channel invite',
+    'description' => 'Invite other user to your channel',
+    'page arguments' => array(2, 4),
+    'access arguments' => array('access administration pages'),
+    'type' => MENU_CALLBACK,
+    'page callback' => 'bpi_ajax_channel_invite',
   );
 
   return $items;
@@ -182,6 +194,11 @@ function bpi_theme() {
     'template' => 'templates/bpi_edit_node'
   );
 
+  $hooks['channels_invite'] = array(
+    'variables' => array(),
+    'template' => 'templates/bpi_channels_invite'
+  );
+
   return $hooks;
 }
 
@@ -211,7 +228,7 @@ function bpi_my_nodes() {
  * @return array
  *    Form structure
  */
-function bpi_my_nodes_form() {
+function bpi_my_nodes_form($form, &$form_state, $data = array()) {
   $form = array();
 
   // The sorting filter
@@ -271,7 +288,7 @@ function bpi_my_nodes_form() {
  * @return array
  *   Form structure
  */
-function bpi_my_nodes_grid() {
+function bpi_my_nodes_grid($form, &$form_state, $data = array()) {
   $form = array();
   
   $header = array(
@@ -311,7 +328,7 @@ function bpi_syndicated_nodes() {
   return theme('syndicated_nodes');
 }
 
-function bpi_syndicated_nodes_grid() {
+function bpi_syndicated_nodes_grid($form, &$form_state, $data = array()) {
   $form = array();
 
   $header = array(
@@ -369,6 +386,96 @@ function bpi_channels() {
   return theme('channels');
 }
 
+function bpi_channels_form($form, &$form_state, $data = array()) {
+  $form = array();
+
+  $header = array(
+    t('Name'),
+    t('Nodes'),
+    t('Edit'),
+    t('Delete'),
+    t('Invite/Leave'),
+  );
+
+  $rows = array(
+    array(
+      'Channel A',
+      '10' . l('(view nodes)', '#'),
+      l('Edit', 'bpi/node/1/edit'),
+      l('Delete', '#'),
+      l('Invite', 'admin/bpi/ajax/node/1/invite', array('attributes' => array('class' => array('use-ajax')))),
+    ),
+    array(
+      'Channel B',
+      '14' . l('(view nodes)', '#'),
+      l('Edit', 'bpi/node/2/edit'),
+      l('Delete', '#'),
+      l('Invite', 'admin/bpi/ajax/node/2/invite', array('attributes' => array('class' => array('use-ajax')))),
+    ),
+  );
+
+  $form['filter'] = array(
+    '#type' => 'textfield',
+    '#title' => 'Filter',
+  );
+
+  $form['grid'] = array(
+    '#type' => 'tableselect',
+    '#header' => $header,
+    '#options' => $rows,
+  );
+
+  $form['action'] = array(
+    '#type' => 'select',
+    '#title' => 'With selected',
+    '#options' => array('Delete', 'Leave'),
+  );
+
+  $form['submit'] = array(
+    '#type' => 'submit',
+    '#value' => 'Update',
+  );
+
+  return $form;
+}
+
+function bpi_channels_invite_form($form, &$form_state, $data = array()) {
+  $form = array();
+
+  $form['name'] = array(
+    '#type' => 'textfield',
+    '#name' => 'name',
+    '#title' => 'Enter name'
+  );
+
+  $form['invite'] = array(
+    '#type' => 'button',
+    '#value' => 'Invite'
+  );
+
+  $form['close'] = array(
+    '#type' => 'button',
+    '#value' => 'Close'
+  );
+
+  return $form;
+}
+
+function bpi_ajax_channel_invite($type = 'ajax', $channel_id = 0) {
+  if ($type == 'ajax') {
+    if ($channel_id != 0) {
+      $commands = array();
+
+      $commands[] = ajax_command_ding_popup(
+        'invite_form',
+        'Invite to channel',
+        theme('channels_invite'));
+
+      ajax_deliver(array('#type' => 'ajax', '#commands' => $commands));
+    }
+  }
+}
+
 /**
  * 'Favorites' page callback
  *
@@ -399,7 +506,7 @@ function bpi_search() {
   return theme('search');
 }
 
-function bpi_search_form() {
+function bpi_search_form($form, &$form_state, $data = array()) {
 
   $form = array();
 
@@ -432,7 +539,7 @@ function bpi_search_result() {
   );
 }
 
-function bpi_search_filters() {
+function bpi_search_filters($form, &$form_state, $data = array()) {
   $form = array();
 
   $form['type'] = array(
@@ -571,17 +678,7 @@ function bpi_node_edit($node_id) {
     )
   );
 
-  return bpi_test(drupal_get_form('bpi_node_edit_form', $data));//theme('edit_node', $data);
-}
-
-function bpi_test($form) {
-  $output = '';
-
-  $output .= drupal_render($form['title']);
-
-  $output .= drupal_render($form);
-
-  return $output;
+  return theme('edit_node', $data);
 }
 
 function bpi_node_edit_form($form, &$form_state, $node_data = array()) {
@@ -696,5 +793,5 @@ function bpi_node_edit_form($form, &$form_state, $node_data = array()) {
 }
 
 function bpi_node_edit_form_submit($form, &$form_state) {
-  var_dump($_POST);die();
+  
 }
