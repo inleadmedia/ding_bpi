@@ -76,6 +76,6 @@
   padding: 2px;
 }
 
-.page_result {
-  display: none;
+.ui-dialog {
+  width: auto !important;
 }

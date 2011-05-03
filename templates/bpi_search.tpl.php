@@ -1,23 +1,5 @@
-<div class="page_form">
-  <?php
-  
-  echo drupal_render(drupal_get_form('bpi_search_form'));
-  
-  ?>
+<?=drupal_render_children($form)?>
+<div id="bpi_nodes">
+  <?=bpi_well_nodes()?>
 </div>
-<div class="page_result">
-  <?php
-
-  echo drupal_render(drupal_get_form('bpi_search_filters'));
-
-  ?>
-
-  <div id="bpi_nodes">
-  <?php
-
-  echo bpi_well_nodes();
-
-  ?>
-  </div>
-  <div class="clear"></div>
-</div>
+<div class="clear"></div>

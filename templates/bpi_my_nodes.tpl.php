@@ -1,6 +1,5 @@
 <?php
 
-echo drupal_render(drupal_get_form('bpi_my_nodes_form'));
-echo drupal_render(drupal_get_form('bpi_my_nodes_grid'));
+echo drupal_render_children($form);
 
 ?>

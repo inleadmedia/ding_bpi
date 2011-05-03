@@ -36,13 +36,13 @@ function bpi_menu() {
   );
 
   // Add content page
-  $items['admin/bpi/add_content'] = array(
+  /*$items['admin/bpi/add_content'] = array(
     'title' => 'Add content',
     'description' => 'Add content',
     'page callback' => 'bpi_add_content',
     'access arguments' => array('access administration pages'),
     'type' => MENU_LOCAL_ACTION,
-  );
+  );*/
 
   // My nodes page, same as admin
   $items['admin/bpi/my'] = array(
@@ -133,42 +133,48 @@ function bpi_menu() {
  * @return array
  *   Array of available themes
  */
-function bpi_theme() {
+function bpi_theme($existing, $type, $theme, $path) {
   $hooks = array();
 
-  $hooks['add_content'] = array(
+  /*$hooks['add_content'] = array(
     'variables' => array(),
     'template' => 'templates/bpi_add_content',
+  );*/
+
+  $hooks['bpi_my_nodes_form'] = array(
+    'render element' => 'form',
+    'path' => BPI_PATH . '/templates',
+    'template' => 'bpi_my_nodes',
   );
 
-  $hooks['my_nodes'] = array(
-    'variables' => array(),
-    'template' => 'templates/bpi_my_nodes',
+  $hooks['bpi_syndicated_nodes_form'] = array(
+    'render element' => 'form',
+    'path' => BPI_PATH . '/templates',
+    'template' => 'bpi_syndicated_nodes',
   );
 
-  $hooks['syndicated_nodes'] = array(
-    'variables' => array(),
-    'template' => 'templates/bpi_syndicated_nodes',
+  $hooks['bpi_channels_form'] = array(
+    'render element' => 'form',
+    'path' => BPI_PATH . '/templates',
+    'template' => 'bpi_channels',
   );
 
-  $hooks['channels'] = array(
-    'variables' => array(),
-    'template' => 'templates/bpi_channels',
+  $hooks['bpi_favorites_form'] = array(
+    'render element' => 'form',
+    'path' => BPI_PATH . '/templates',
+    'template' => 'bpi_favorites',
   );
 
-  $hooks['favorites'] = array(
-    'variables' => array(),
-    'template' => 'templates/bpi_favorites',
+  $hooks['bpi_updates_form'] = array(
+    'render element' => 'form',
+    'path' => BPI_PATH . '/templates',
+    'template' => 'bpi_updates',
   );
 
-  $hooks['updates'] = array(
-    'variables' => array(),
-    'template' => 'templates/bpi_updates',
-  );
-
-  $hooks['search'] = array(
-    'variables' => array(),
-    'template' => 'templates/bpi_search'
+  $hooks['bpi_search_form'] = array(
+    'render element' => 'form',
+    'path' => BPI_PATH . '/templates',
+    'template' => 'bpi_search',
   );
 
   $hooks['well_node'] = array(
@@ -186,17 +192,19 @@ function bpi_theme() {
       'library' => NULL,
       'channel' => NULL,
     ),
-    'template' => 'templates/bpi_well_node'
+    'template' => 'templates/bpi_well_node',
   );
 
-  $hooks['edit_node'] = array(
-    'variables' => array('data' => NULL),
-    'template' => 'templates/bpi_edit_node'
+  $hooks['bpi_node_edit_form'] = array(
+    'render element' => 'form',
+    'path' => BPI_PATH . '/templates',
+    'template' => 'bpi_edit_node',
   );
 
-  $hooks['channels_invite'] = array(
-    'variables' => array(),
-    'template' => 'templates/bpi_channels_invite'
+  $hooks['node_info'] = array(
+    'variables' => array('node_id' => NULL),
+    'path' => BPI_PATH . '/templates',
+    'template' => 'bpi_edit_node_info'
   );
 
   return $hooks;
@@ -219,7 +227,16 @@ function bpi_add_content() {
  *   Page structure
  */
 function bpi_my_nodes() {
-  return theme('my_nodes');
+  $data = array();
+
+  // @todo - dummy data
+  $data['grid_rows'] = array(
+    array('Pa gensyn i Helsingor 2011', 'Article', l('inlead', '#'), 'published', '03/08/2011 - 15:50', l('edit', 'admin/bpi/node/edit/1') . '&nbsp;&nbsp;' . l('delete', '#')),
+    array('Easy Magazine 2010', 'Article', l('inlead', '#'), 'published', '03/08/2011 - 15:50', l('edit', 'admin/bpi/node/edit/2') . '&nbsp;&nbsp;' . l('delete', '#')),
+    array('Easy Screen pa Svendborg Bibliotek', 'Article', l('inlead', '#'), 'published', '03/08/2011 - 15:50', l('edit', 'admin/bpi/node/edit/3') . '&nbsp;&nbsp;' . l('delete', '#')),
+  );
+
+  return drupal_get_form('bpi_my_nodes_form', $data);
 }
 
 /**
@@ -228,10 +245,7 @@ function bpi_my_nodes() {
  * @return array
  *    Form structure
  */
-function bpi_my_nodes_form($form, &$form_state, $data = array()) {
-  $form = array();
-
-  // The sorting filter
+function bpi_my_nodes_form($form = array(), &$form_state, $form_data = array()) {
   $form['sort_filter'] = array(
     '#type' => 'fieldset',
     '#title' => 'SHOW ONLY ITEMS WHERE',
@@ -257,9 +271,7 @@ function bpi_my_nodes_form($form, &$form_state, $data = array()) {
     '#type' => 'submit',
     '#value' => 'Filter'
   );
-  // END sort filter
-
-  // Update filter
+  
   $form['update_filter'] = array(
     '#type' => 'fieldset',
     '#title' => 'UPDATE OPTIONS',
@@ -269,28 +281,14 @@ function bpi_my_nodes_form($form, &$form_state, $data = array()) {
     '#type' => 'select',
     '#options' => array(
         'Publish selected content',
-        'Delete selected content',
-      ),
+    ),
   );
-  // END update filter
 
   $form['update_filter']['submit'] = array(
     '#type' => 'submit',
     '#value' => 'Update'
   );
 
-  return $form;
-}
-
-/**
- * The table/grid which contains a list of user's nodes
- *
- * @return array
- *   Form structure
- */
-function bpi_my_nodes_grid($form, &$form_state, $data = array()) {
-  $form = array();
-  
   $header = array(
     array('data' => t('TITLE'), 'field' => 'node_title'),
     t('TYPE'),
@@ -300,19 +298,10 @@ function bpi_my_nodes_grid($form, &$form_state, $data = array()) {
     t('OPERATIONS'),
   );
 
-  // @todo
-  // Test purpose data for grid/table
-  // Remove this after live retrieval
-  $rows = array(
-    array('Pa gensyn i Helsingor 2011', 'Article', l('inlead', '#'), 'published', '03/08/2011 - 15:50', l('edit', 'admin/bpi/node/edit/1') . '&nbsp;&nbsp;' . l('delete', '#')),
-    array('Easy Magazine 2010', 'Article', l('inlead', '#'), 'published', '03/08/2011 - 15:50', l('edit', 'admin/bpi/node/edit/2') . '&nbsp;&nbsp;' . l('delete', '#')),
-    array('Easy Screen pa Svendborg Bibliotek', 'Article', l('inlead', '#'), 'published', '03/08/2011 - 15:50', l('edit', 'admin/bpi/node/edit/3') . '&nbsp;&nbsp;' . l('delete', '#')),
-  );
-
   $form['grid'] = array(
     '#type' => 'tableselect',
     '#header' => $header,
-    '#options' => $rows,
+    '#options' => $form_data['grid_rows'],
   );
 
   return $form;
@@ -325,25 +314,9 @@ function bpi_my_nodes_grid($form, &$form_state, $data = array()) {
  *   Page structure
  */
 function bpi_syndicated_nodes() {
-  return theme('syndicated_nodes');
-}
+  $data = array();
 
-function bpi_syndicated_nodes_grid($form, &$form_state, $data = array()) {
-  $form = array();
-
-  $header = array(
-    array('data' => t('TITLE'), 'field' => 'node_title'),
-    t('AUTHOR'),
-    t('LIBRARY'),
-    array('data' => t('CREATED'), 'field' => 'node_created', 'sort' => 'desc'),
-    array('data' => t('SYNDICATED'), 'field' => 'node_syndicated'),
-    t('CHANGES'),
-  );
-
-  // @todo
-  // Test purpose data for grid/table
-  // Remove this after live retrieval
-  $rows = array(
+  $data['grid_rows'] = array(
     array(
       'Pa gensyn i Helsingor 2011',
       'Birgitte Hansen',
@@ -367,10 +340,66 @@ function bpi_syndicated_nodes_grid($form, &$form_state, $data = array()) {
       '<strong>YES</strong>'),
   );
 
+  return drupal_get_form('bpi_syndicated_nodes_form', $data);
+}
+
+function bpi_syndicated_nodes_form($form = array(), &$form_state, $form_data = array()) {
+  $form['sort_filter'] = array(
+    '#type' => 'fieldset',
+    '#title' => 'SHOW ONLY ITEMS WHERE',
+  );
+
+  $form['sort_filter']['status'] = array(
+    '#type' => 'select',
+    '#title' => 'status',
+    '#options' => array(
+        'any',
+    ),
+  );
+
+  $form['sort_filter']['type'] = array(
+    '#type' => 'select',
+    '#title' => 'type',
+    '#options' => array(
+        'any',
+    ),
+  );
+
+  $form['sort_filter']['submit'] = array(
+    '#type' => 'submit',
+    '#value' => 'Filter'
+  );
+
+  $form['update_filter'] = array(
+    '#type' => 'fieldset',
+    '#title' => 'UPDATE OPTIONS',
+  );
+
+  $form['update_filter']['action'] = array(
+    '#type' => 'select',
+    '#options' => array(
+        'Delete selected content',
+      ),
+  );
+
+  $form['update_filter']['submit'] = array(
+    '#type' => 'submit',
+    '#value' => 'Update'
+  );
+  
+  $header = array(
+    array('data' => t('TITLE'), 'field' => 'node_title'),
+    t('AUTHOR'),
+    t('LIBRARY'),
+    array('data' => t('CREATED'), 'field' => 'node_created', 'sort' => 'desc'),
+    array('data' => t('SYNDICATED'), 'field' => 'node_syndicated'),
+    t('CHANGES'),
+  );
+
   $form['grid'] = array(
     '#type' => 'tableselect',
     '#header' => $header,
-    '#options' => $rows,
+    '#options' => $form_data['grid_rows'],
   );
 
   return $form;
@@ -383,21 +412,9 @@ function bpi_syndicated_nodes_grid($form, &$form_state, $data = array()) {
  *   Page structure
  */
 function bpi_channels() {
-  return theme('channels');
-}
+  $data = array();
 
-function bpi_channels_form($form, &$form_state, $data = array()) {
-  $form = array();
-
-  $header = array(
-    t('Name'),
-    t('Nodes'),
-    t('Edit'),
-    t('Delete'),
-    t('Invite/Leave'),
-  );
-
-  $rows = array(
+  $data['grid_rows'] = array(
     array(
       'Channel A',
       '10' . l('(view nodes)', '#'),
@@ -414,6 +431,18 @@ function bpi_channels_form($form, &$form_state, $data = array()) {
     ),
   );
 
+  return drupal_get_form('bpi_channels_form', $data);
+}
+
+function bpi_channels_form($form = array(), &$form_state, $form_data = array()) {
+  $header = array(
+    t('Name'),
+    t('Nodes'),
+    t('Edit'),
+    t('Delete'),
+    t('Invite/Leave'),
+  );
+
   $form['filter'] = array(
     '#type' => 'textfield',
     '#title' => 'Filter',
@@ -422,7 +451,7 @@ function bpi_channels_form($form, &$form_state, $data = array()) {
   $form['grid'] = array(
     '#type' => 'tableselect',
     '#header' => $header,
-    '#options' => $rows,
+    '#options' => $form_data['grid_rows'],
   );
 
   $form['action'] = array(
@@ -439,9 +468,7 @@ function bpi_channels_form($form, &$form_state, $data = array()) {
   return $form;
 }
 
-function bpi_channels_invite_form($form, &$form_state, $data = array()) {
-  $form = array();
-
+function bpi_channels_invite_form($form = array(), &$form_state, $form_data = array()) {
   $form['name'] = array(
     '#type' => 'textfield',
     '#name' => 'name',
@@ -469,7 +496,7 @@ function bpi_ajax_channel_invite($type = 'ajax', $channel_id = 0) {
       $commands[] = ajax_command_ding_popup(
         'invite_form',
         'Invite to channel',
-        theme('channels_invite'));
+        drupal_render(drupal_get_form('bpi_channels_invite_form')));
 
       ajax_deliver(array('#type' => 'ajax', '#commands' => $commands));
     }
@@ -503,44 +530,25 @@ function bpi_updates() {
  *   Page structure
  */
 function bpi_search() {
-  return theme('search');
+  $data = array();
+
+  return drupal_get_form('bpi_search_form', $data);
 }
 
-function bpi_search_form($form, &$form_state, $data = array()) {
-
-  $form = array();
+function bpi_search_form($form = array(), &$form_state, $form_data = array()) {
 
   $form['search'] = array(
     '#type' => 'textfield',
     '#title' => 'Search for: ',
     '#required' => TRUE,
+    '#prefix' => '<div id="search_form">',
   );
 
   $form['submit'] = array(
     '#type' => 'submit',
     '#value' => 'Search',
-    '#ajax' => array(
-      'callback' => 'bpi_search_result'
-    ),
+    '#suffix' => '</div>'
   );
-
-  return $form;
-}
-
-function bpi_search_result() {
-  $commands = array();
-
-  $commands[] = ajax_command_invoke('.page_form', 'hide');
-  $commands[] = ajax_command_invoke('.page_result', 'show');
-
-  return array(
-    '#type' => 'ajax',
-    '#commands' => $commands
-  );
-}
-
-function bpi_search_filters($form, &$form_state, $data = array()) {
-  $form = array();
 
   $form['type'] = array(
     '#type' => 'fieldset',
@@ -566,7 +574,7 @@ function bpi_search_filters($form, &$form_state, $data = array()) {
   $form['group'] = array(
     '#type' => 'fieldset',
     '#title' => 'TARGET GROUP',
-    '#suffix' => '</div>',
+    '#suffix' => '</div>'
   );
 
   $form['group']['adults'] = array(
@@ -638,7 +646,7 @@ function bpi_node_edit($node_id) {
   // As for now it's a dummy data, remove after normal fetch
 
   $data = array(
-    'node_data' => array(
+      'id' => $node_id,
       'title' => 'Trololo',
       'teaser' => 'Lorem ipsum dolor sit amet consectetuer adispcing elit',
       'body' => 'As for 2039, a number of professional astronomers predicted that,
@@ -649,66 +657,59 @@ function bpi_node_edit($node_id) {
         meters rock, could produce an impact equalised to 2000 megatomb nuclear bomb with
         total destruction in range of 60 miles and produce blast wind with a velocity
         700 meters per second...',
-      'node_info' => array(
-        'pic_copy' => TRUE,
-        'references' => TRUE,
-        'author' => 'Birgitte Hansen',
-        'library' => 'Gladsaxe Bibliotekerne',
-        'created' => '04-05-2011 15:10',
-        'category' => 'Sports',
-        'target' => 'Adults',
-        'channel' => array(
-          'this_is_nice',
-          'favoriteNodes'
-        ),
-        'lix' => 1823,
-        'operations' => array(
-          'auto_update' => TRUE,
-          'copy_images' => FALSE,
-          'local_changes' => FALSE,
-          'auto_publish' => FALSE,
-          'auto_promote' => FALSE,
-          'references_ting' => FALSE,
-          'references_links' => FALSE,
-          'syndication_changes' => FALSE,
-          'view_syndication' => FALSE,
-        ),
-        'images' => array(),
-      )
-    )
+      'operations' => array(
+        'auto_update' => TRUE,
+        'copy_images' => FALSE,
+        'local_changes' => FALSE,
+        'auto_publish' => FALSE,
+        'auto_promote' => FALSE,
+        'references_ting' => FALSE,
+        'references_links' => FALSE,
+        'syndication_changes' => FALSE,
+        'view_syndication' => FALSE,
+      ),
+      'images' => array(),
   );
 
-  return theme('edit_node', $data);
+  //return drupal_get_form(bpi_node_edit_form, $data);
+  return drupal_get_form('bpi_node_edit_form', $data);
 }
 
-function bpi_node_edit_form($form, &$form_state, $node_data = array()) {
-  $form = array();
+function template_preprocess_bpi_node_edit_form(&$variables) {
+  
+}
+
+function bpi_node_edit_form($form = array(), &$form_state, $form_data = array()) {
+  $form['id'] = array(
+    '#type' => 'hidden',
+    '#value' => $form_data['id'],
+  );
 
   $form['title'] = array(
     '#type' => 'textfield',
     '#title' => 'Title',
     '#required' => TRUE,
-    '#value' => (isset($node_data['title'])) ? $node_data['title'] : '',
+    '#value' => (isset($form_data['title'])) ? $form_data['title'] : '',
   );
 
   $form['body'] = array(
     '#type' => 'textarea',
     '#title' => 'Body',
-    '#default_value' => (isset($node_data['body'])) ? $node_data['body'] : '',
+    '#default_value' => (isset($form_data['body'])) ? $form_data['body'] : '',
   );
 
   $form['teaser'] = array(
     '#type' => 'textarea',
     '#title' => 'Teaser',
-    '#default_value' => (isset($node_data['teaser'])) ? $node_data['teaser'] : '',
+    '#default_value' => (isset($form_data['teaser'])) ? $form_data['teaser'] : '',
   );
 
   $form['auto_update'] = array(
     '#type' => 'checkbox',
     '#title' => 'Activate auto update?',
     '#default_value' => (
-          isset($node_data['node_info']['operations']['auto_update']) &&
-          $node_data['node_info']['operations']['auto_update'] == TRUE) ?
+          isset($form_data['operations']['auto_update']) &&
+          $form_data['operations']['auto_update'] == TRUE) ?
             1 : 0,
   );
 
@@ -716,8 +717,8 @@ function bpi_node_edit_form($form, &$form_state, $node_data = array()) {
     '#type' => 'checkbox',
     '#title' => 'Copy images?',
     '#default_value' => (
-          isset($node_data['node_info']['operations']['copy_images']) &&
-          $node_data['node_info']['operations']['copy_images'] == TRUE) ?
+          isset($form_data['operations']['copy_images']) &&
+          $form_data['operations']['copy_images'] == TRUE) ?
             1 : 0,
   );
 
@@ -725,8 +726,8 @@ function bpi_node_edit_form($form, &$form_state, $node_data = array()) {
     '#type' => 'checkbox',
     '#title' => 'Make changes locally?',
     '#default_value' => (
-          isset($node_data['node_info']['operations']['local_changes']) &&
-          $node_data['node_info']['operations']['local_changes'] == TRUE) ?
+          isset($form_data['operations']['local_changes']) &&
+          $form_data['operations']['local_changes'] == TRUE) ?
             1 : 0,
   );
 
@@ -734,8 +735,8 @@ function bpi_node_edit_form($form, &$form_state, $node_data = array()) {
     '#type' => 'checkbox',
     '#title' => 'Auto publish locally?',
     '#default_value' => (
-          isset($node_data['node_info']['operations']['auto_publish']) &&
-          $node_data['node_info']['operations']['auto_publish'] == TRUE) ?
+          isset($form_data['operations']['auto_publish']) &&
+          $form_data['operations']['auto_publish'] == TRUE) ?
             1 : 0,
   );
 
@@ -743,8 +744,8 @@ function bpi_node_edit_form($form, &$form_state, $node_data = array()) {
     '#type' => 'checkbox',
     '#title' => 'Auto promote to frontpage?',
     '#default_value' => (
-          isset($node_data['node_info']['operations']['auto_promote']) &&
-          $node_data['node_info']['operations']['auto_promote'] == TRUE) ?
+          isset($form_data['operations']['auto_promote']) &&
+          $form_data['operations']['auto_promote'] == TRUE) ?
             1 : 0,
   );
 
@@ -752,8 +753,8 @@ function bpi_node_edit_form($form, &$form_state, $node_data = array()) {
     '#type' => 'checkbox',
     '#title' => 'Remove references (TING)?',
     '#default_value' => (
-          isset($node_data['node_info']['operations']['references_ting']) &&
-          $node_data['node_info']['operations']['references_ting'] == TRUE) ?
+          isset($form_data['operations']['references_ting']) &&
+          $form_data['operations']['references_ting'] == TRUE) ?
             1 : 0,
   );
 
@@ -761,8 +762,8 @@ function bpi_node_edit_form($form, &$form_state, $node_data = array()) {
     '#type' => 'checkbox',
     '#title' => 'Remove references (links)?',
     '#default_value' => (
-          isset($node_data['node_info']['operations']['references_links']) &&
-          $node_data['node_info']['operations']['references_links'] == TRUE) ?
+          isset($form_data['operations']['references_links']) &&
+          $form_data['operations']['references_links'] == TRUE) ?
             1 : 0,
   );
 
@@ -770,8 +771,8 @@ function bpi_node_edit_form($form, &$form_state, $node_data = array()) {
     '#type' => 'checkbox',
     '#title' => 'Make changes after syndication?',
     '#default_value' => (
-          isset($node_data['node_info']['operations']['syndication_changes']) &&
-          $node_data['node_info']['operations']['syndication_changes'] == TRUE) ?
+          isset($form_data['operations']['syndication_changes']) &&
+          $form_data['operations']['syndication_changes'] == TRUE) ?
             1 : 0,
   );
 
@@ -779,8 +780,8 @@ function bpi_node_edit_form($form, &$form_state, $node_data = array()) {
     '#type' => 'checkbox',
     '#title' => 'View node after syndication?',
     '#default_value' => (
-          isset($node_data['node_info']['operations']['syndication_changes']) &&
-          $node_data['node_info']['operations']['view_syndication'] == TRUE) ?
+          isset($form_data['operations']['syndication_changes']) &&
+          $form_data['operations']['view_syndication'] == TRUE) ?
             1 : 0,
   );
 
@@ -792,6 +793,29 @@ function bpi_node_edit_form($form, &$form_state, $node_data = array()) {
   return $form;
 }
 
-function bpi_node_edit_form_submit($form, &$form_state) {
-  
+function bpi_node_info($node_id) {
+
+  $data = array();
+
+  if ($node_id > 0) {
+    $data = array('node_info' => array(
+        'pic_copy' => TRUE,
+        'references' => TRUE,
+        'author' => 'Birgitte Hansen',
+        'library' => 'Gladsaxe Bibliotekerne',
+        'created' => '04-05-2011 15:10',
+        'category' => 'Sports',
+        'target' => 'Adults',
+        'channel' => array(
+          'this_is_nice',
+          'favoriteNodes'
+        ),
+        'lix' => 1823));
+  }
+
+  return $data;
+}
+
+function bpi_node_edit_form_submit($form = array(), &$form_state) {
+  var_dump($form);die();
 }

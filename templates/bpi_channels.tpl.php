@@ -1,5 +1,5 @@
 <?php
 
-echo drupal_render(drupal_get_form('bpi_channels_form'));
+echo drupal_render_children($form);
 
 ?>
