@@ -15,6 +15,35 @@ function bpi_init() {
   drupal_add_css(BPI_PATH . '/css/bpi-styles.css');
   drupal_add_library('system', 'drupal.ajax');
   drupal_add_library('system', 'jquery.form');
+
+  global $user;
+  $shortcut_set = shortcut_set_load('shortcut-set-2');
+  
+  if (!$shortcut_set) {
+    $shortcut_set = new stdClass();
+    $shortcut_set->title = 'BPI';
+    $shortcut_set->links = array(
+      array(
+        'link_path' => 'node/add',
+        'link_title' => 'Add content',
+        'weight' => -20,
+      ),
+      array(
+        'link_path' => 'admin/content',
+        'link_title' => 'Find content',
+        'weight' => -19,
+      ),
+      array(
+        'link_path' => 'admin/bpi',
+        'link_title' => 'BPI',
+        'weight' => -18,
+      ),
+    );
+    
+    shortcut_set_save($shortcut_set);
+  }
+  
+  shortcut_set_assign_user($shortcut_set, $user);
 }
 
 /**
@@ -32,7 +61,7 @@ function bpi_menu() {
     'description' => 'BPI administration page',
     'page callback' => 'bpi_my_nodes',
     'access arguments' => array('access administration pages'),
-    'type' => MENU_NORMAL_ITEM,
+    'type' => MENU_CALLBACK,
   );
 
   // Add content page
@@ -793,8 +822,7 @@ function bpi_node_edit_form($form = array(), &$form_state, $form_data = array())
   return $form;
 }
 
-function bpi_node_info($node_id) {
-
+function bpi_node_info($node_id = 0) {
   $data = array();
 
   if ($node_id > 0) {
