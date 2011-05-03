@@ -231,9 +231,9 @@ function bpi_my_nodes() {
 
   // @todo - dummy data
   $data['grid_rows'] = array(
-    array('Pa gensyn i Helsingor 2011', 'Article', l('inlead', '#'), 'published', '03/08/2011 - 15:50', l('edit', 'admin/bpi/node/edit/1') . '&nbsp;&nbsp;' . l('delete', '#')),
-    array('Easy Magazine 2010', 'Article', l('inlead', '#'), 'published', '03/08/2011 - 15:50', l('edit', 'admin/bpi/node/edit/2') . '&nbsp;&nbsp;' . l('delete', '#')),
-    array('Easy Screen pa Svendborg Bibliotek', 'Article', l('inlead', '#'), 'published', '03/08/2011 - 15:50', l('edit', 'admin/bpi/node/edit/3') . '&nbsp;&nbsp;' . l('delete', '#')),
+    array('Pa gensyn i Helsingor 2011', 'Article', /*l('inlead', '#')*/'inlead', 'published', '03/08/2011 - 15:50', l('edit', 'admin/bpi/node/edit/1') . '&nbsp;&nbsp;' . /*l('delete', '#'))*/'delete'),
+    array('Easy Magazine 2010', 'Article', /*l('inlead', '#')*/'inlead', 'published', '03/08/2011 - 15:50', l('edit', 'admin/bpi/node/edit/2') . '&nbsp;&nbsp;' . /*l('delete', '#'))*/'delete'),
+    array('Easy Screen pa Svendborg Bibliotek', 'Article', /*l('inlead', '#')*/'inlead', 'published', '03/08/2011 - 15:50', l('edit', 'admin/bpi/node/edit/3') . '&nbsp;&nbsp;' . /*l('delete', '#'))*/'delete'),
   );
 
   return drupal_get_form('bpi_my_nodes_form', $data);
@@ -417,16 +417,16 @@ function bpi_channels() {
   $data['grid_rows'] = array(
     array(
       'Channel A',
-      '10' . l('(view nodes)', '#'),
-      l('Edit', 'bpi/node/1/edit'),
-      l('Delete', '#'),
+      '10' . '<br />(view nodes)'/*l('(view nodes)', '#')*/,
+      /*l('Edit', '#')*/'Edit',
+      /*l('Delete', '#')*/'Delete',
       l('Invite', 'admin/bpi/ajax/node/1/invite', array('attributes' => array('class' => array('use-ajax')))),
     ),
     array(
       'Channel B',
-      '14' . l('(view nodes)', '#'),
-      l('Edit', 'bpi/node/2/edit'),
-      l('Delete', '#'),
+      '14' . '<br />(view nodes)'/*l('(view nodes)', '#')*/,
+      /*l('Edit', '#')*/'Edit',
+      /*l('Delete', '#')*/'Delete',
       l('Invite', 'admin/bpi/ajax/node/2/invite', array('attributes' => array('class' => array('use-ajax')))),
     ),
   );

@@ -20,7 +20,7 @@
     <p>Lix: <?=$lix?></p>
     <p>Bibliotek: <?=$library?></p>
     <p>Kanal: <?=$channel?></p>
-    <p class="details"><?=l('Vis alle detaljer >>', '#')?></p>
+    <p class="details"><?=/*l('Vis alle detaljer >>', '#')*/'Vis alle detaljer >>'?></p>
   </div>
   <div class="clear"></div>
   <hr />
