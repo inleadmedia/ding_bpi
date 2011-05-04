@@ -1,1 +1,5 @@
-<h1>Favorites</h1>
+<?php
+
+echo drupal_render_children($form);
+
+?>
