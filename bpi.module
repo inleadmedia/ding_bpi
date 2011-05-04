@@ -59,7 +59,7 @@ function bpi_menu() {
   $items['admin/bpi'] = array(
     'title' => 'BPI Administration',
     'description' => 'BPI administration page',
-    'page callback' => 'bpi_my_nodes',
+    'page callback' => 'bpi_updates',
     'access arguments' => array('access administration pages'),
     'type' => MENU_CALLBACK,
   );
@@ -72,16 +72,6 @@ function bpi_menu() {
     'access arguments' => array('access administration pages'),
     'type' => MENU_LOCAL_ACTION,
   );*/
-
-  // My nodes page, same as admin
-  $items['admin/bpi/my'] = array(
-    'title' => 'My nodes',
-    'description' => 'Nodes created by me',
-    'page callback' => 'bpi_my_nodes',
-    'access arguments' => array('access administration pages'),
-    'type' => MENU_DEFAULT_LOCAL_TASK,
-    'weight' => '0',
-  );
 
   // Syndicated nodes page
   $items['admin/bpi/syndicated'] = array(
@@ -119,7 +109,7 @@ function bpi_menu() {
     'description' => 'Syndicated nodes which have been updated',
     'page callback' => 'bpi_updates',
     'access arguments' => array('access administration pages'),
-    'type' => MENU_LOCAL_TASK,
+    'type' => MENU_DEFAULT_LOCAL_TASK,
     'weight' => '4',
   );
 
@@ -156,6 +146,27 @@ function bpi_menu() {
   return $items;
 }
 
+function bpi_form_alter(&$form, &$form_state, $form_id) {
+  if ($form_id == 'node_admin_content') {
+    // Cols and rows
+    $header = $form['admin']['nodes']['#header'];
+    $rows = $form['admin']['nodes']['#options'];
+
+    // Add a custom col
+    $header['custom'] = array(
+      'data' => 'Custom',
+      'field' => 'n.custom'
+    );
+
+    // Add a custom data to row
+    // Node ID required as array key
+    $rows['5']['custom'] = 'Custom data';
+
+    $form['admin']['nodes']['#header'] = $header;
+    $form['admin']['nodes']['#options'] = $rows;
+  }
+}
+
 /**
  * Implements hook_theme
  *
@@ -168,12 +179,6 @@ function bpi_theme($existing, $type, $theme, $path) {
   $hooks['add_content'] = array(
     'variables' => array(),
     'template' => 'templates/bpi_add_content',
-  );
-
-  $hooks['bpi_my_nodes_form'] = array(
-    'render element' => 'form',
-    'path' => BPI_PATH . '/templates',
-    'template' => 'bpi_my_nodes',
   );
 
   $hooks['bpi_syndicated_nodes_form'] = array(
@@ -237,103 +242,6 @@ function bpi_theme($existing, $type, $theme, $path) {
   );
 
   return $hooks;
-}
-
-/**
- * 'Add content' page
- *
- * @return array
- *   Form structure
- */
-function bpi_add_content() {
-  return theme('add_content');
-}
-
-/**
- * 'My Nodes' page callback
- *
- * @return array
- *   Page structure
- */
-function bpi_my_nodes() {
-  $data = array();
-
-  // @todo - dummy data
-  $data['grid_rows'] = array(
-    array('Pa gensyn i Helsingor 2011', 'Article', /*l('inlead', '#')*/'inlead', 'published', '03/08/2011 - 15:50', l('edit', 'admin/bpi/node/edit/1') . '&nbsp;&nbsp;' . /*l('delete', '#'))*/'delete'),
-    array('Easy Magazine 2010', 'Article', /*l('inlead', '#')*/'inlead', 'published', '03/08/2011 - 15:50', l('edit', 'admin/bpi/node/edit/2') . '&nbsp;&nbsp;' . /*l('delete', '#'))*/'delete'),
-    array('Easy Screen pa Svendborg Bibliotek', 'Article', /*l('inlead', '#')*/'inlead', 'published', '03/08/2011 - 15:50', l('edit', 'admin/bpi/node/edit/3') . '&nbsp;&nbsp;' . /*l('delete', '#'))*/'delete'),
-  );
-
-  return drupal_get_form('bpi_my_nodes_form', $data);
-}
-
-/**
- * 'My Nodes' page form
- *
- * @return array
- *    Form structure
- */
-function bpi_my_nodes_form($form = array(), &$form_state, $form_data = array()) {
-  $form['sort_filter'] = array(
-    '#type' => 'fieldset',
-    '#title' => 'SHOW ONLY ITEMS WHERE',
-  );
-
-  $form['sort_filter']['status'] = array(
-    '#type' => 'select',
-    '#title' => 'status',
-    '#options' => array(
-        'any',
-      ),
-  );
-
-  $form['sort_filter']['type'] = array(
-    '#type' => 'select',
-    '#title' => 'type',
-    '#options' => array(
-        'any',
-      ),
-  );
-
-  $form['sort_filter']['submit'] = array(
-    '#type' => 'submit',
-    '#value' => 'Filter'
-  );
-  
-  $form['update_filter'] = array(
-    '#type' => 'fieldset',
-    '#title' => 'UPDATE OPTIONS',
-  );
-
-  $form['update_filter']['action'] = array(
-    '#type' => 'select',
-    '#options' => array(
-        'Publish selected content',
-    ),
-  );
-
-  $form['update_filter']['submit'] = array(
-    '#type' => 'submit',
-    '#value' => 'Update'
-  );
-
-  $header = array(
-    array('data' => t('TITLE'), 'field' => 'node_title'),
-    t('TYPE'),
-    t('AUTHOR'),
-    t('STATUS'),
-    array('data' => t('UPDATED'), 'field' => 'node_updated', 'sort' => 'desc'),
-    t('OPERATIONS'),
-  );
-
-  $form['grid'] = array(
-    '#type' => 'tableselect',
-    '#header' => $header,
-    '#options' => $form_data['grid_rows'],
-  );
-
-  return $form;
 }
 
 /**
