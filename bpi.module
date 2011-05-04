@@ -461,7 +461,77 @@ function bpi_ajax_channel_invite($type = 'ajax', $channel_id = 0) {
  *   Page structure
  */
 function bpi_favorites() {
-  return theme('favorites');
+  $data = array();
+
+  $data['rows'] = array(
+     array(
+      '<img src="'.BPI_PATH.'/img/flag_green.jpg" width="16" height="16" alt="" />',
+      'Qwerty',
+      'Article',
+      'Admin',
+      'published',
+      '04/09/2011 - 14:07',
+      'edit&nbsp;&nbsp;&nbsp;delete',
+    ),
+    array(
+      '<img src="'.BPI_PATH.'/img/flag_yellow.jpg" width="16" height="16" alt="" />',
+      'Asdfg',
+      'Article',
+      'Admin',
+      'published',
+      '04/09/2011 - 14:23',
+      'edit&nbsp;&nbsp;&nbsp;delete',
+    ),
+  );
+
+  return drupal_get_form('bpi_favorites_form', $data);
+}
+
+function bpi_favorites_form($form = array(), &$form_state, $form_data = array()) {
+  $header = array(
+    array('data' => 'rating', 'field' => 'n.rating'),
+    array('data' => 'title', 'field' => 'n.title'),
+    'type',
+    array('data' => 'author', 'field' => 'n.author'),
+    'status',
+    array('data' => 'updated', 'field' => 'n.updated'),
+    'operations',
+  );
+
+  $form['filter'] = array(
+    '#type' => 'radios',
+    '#title' => 'Filter by rating',
+    '#options' => array(
+      'All',
+      'High<img src="'.BPI_PATH.'/img/flag_green.jpg" width="16" height="16" alt="" />',
+      'Med <img src="'.BPI_PATH.'/img/flag_yellow.jpg" width="16" height="16" alt="" />',
+      'Low <img src="'.BPI_PATH.'/img/flag_red.jpg" width="16" height="16" alt="" />',
+     )
+  );
+
+  $form['filter_submit'] = array(
+    '#type' => 'submit',
+    '#value' => 'Filter',
+  );
+
+  $form['grid'] = array(
+    '#type' => 'tableselect',
+    '#header' => $header,
+    '#options' => $form_data['rows'],
+  );
+
+  $form['operations'] = array(
+    '#type' => 'select',
+    '#options' => array('Delete'),
+    '#title' => 'With selected: ',
+  );
+
+  $form['submit'] = array(
+    '#type' => 'submit',
+    '#value' => 'Submit',
+  );
+
+  return $form;
 }
 
 /**
