@@ -142,6 +142,14 @@ function bpi_menu() {
     'type' => MENU_CALLBACK,
     'page callback' => 'bpi_ajax_channel_invite',
   );
+  
+  $items['admin/bpi/ajax/node/%/subscribed_users'] = array(
+    'description' => 'List of subscribed users to this channel',
+    'page arguments' => array(2, 4),
+    'access arguments' => array('access administration pages'),
+    'type' => MENU_CALLBACK,
+    'page callback' => 'bpi_ajax_channel_subscribed_users',
+  );
 
   return $items;
 }
@@ -179,6 +187,11 @@ function bpi_theme($existing, $type, $theme, $path) {
   $hooks['add_content'] = array(
     'variables' => array(),
     'template' => 'templates/bpi_add_content',
+  );
+  
+  $hooks['subscribed_users'] = array(
+    'variables' => array(),
+    'template' => 'templates/bpi_subscribed_users',
   );
 
   $hooks['bpi_syndicated_nodes_form'] = array(
@@ -419,17 +432,29 @@ function bpi_channels_invite_form($form = array(), &$form_state, $form_data = ar
 
   $form['invite'] = array(
     '#type' => 'button',
-    '#value' => 'Invite'
+    '#value' => 'Invite',
+    '#ajax' => array(
+      'callback' => 'bpi_ajax_channel_invite_close'
+    )
   );
 
   $form['close'] = array(
     '#type' => 'button',
-    '#value' => 'Close'
+    '#value' => 'Close',
+    '#ajax' => array(
+      'callback' => 'bpi_ajax_channel_invite_close'
+    )
   );
 
   return $form;
 }
 
+/**
+ * Ajax callback method, preparing commands for invite popup
+ * 
+ * @param string $type
+ * @param integer $channel_id
+ */
 function bpi_ajax_channel_invite($type = 'ajax', $channel_id = 0) {
   if ($type == 'ajax') {
     if ($channel_id != 0) {
@@ -443,6 +468,32 @@ function bpi_ajax_channel_invite($type = 'ajax', $channel_id = 0) {
       ajax_deliver(array('#type' => 'ajax', '#commands' => $commands));
     }
   }
+}
+
+/**
+ * Ajax callback method to close invite form
+ */
+function bpi_ajax_channel_invite_close() {
+		return array('#type' => 'ajax', '#commands' => array(ajax_command_ding_popup_close('invite_form')));
+}
+
+/**
+ * Ajax callback method, preparing commands for subscribed users popup
+ * 
+ * @param string $type
+ * @param integer $channel_id
+ */
+function bpi_ajax_channel_subscribed_users($type, $channel_id) {
+  if ($channel_id != 0) {
+      $commands = array();
+
+      $commands[] = ajax_command_ding_popup(
+        'invite_form',
+        'Subscribed users',
+        theme('subscribed_users'));
+
+      ajax_deliver(array('#type' => 'ajax', '#commands' => $commands));
+    }
 }
 
 /**
