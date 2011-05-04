@@ -367,18 +367,26 @@ function bpi_channels() {
 
   $data['grid_rows'] = array(
     array(
-      'Channel A',
-      '10' . '<br />(view nodes)'/*l('(view nodes)', '#')*/,
-      /*l('Edit', '#')*/'Edit',
-      /*l('Delete', '#')*/'Delete',
-      l('Invite', 'admin/bpi/ajax/node/1/invite', array('attributes' => array('class' => array('use-ajax')))),
+      'My Channel A<br />' . l('Invite', 'admin/bpi/ajax/node/1/invite', array('attributes' => array('class' => array('use-ajax')))),
+      '10<br /><a href="/admin/content">view nodes</a>',
+      '0',
+      '<ul class="links inline"><li class="edit first"><a href="/node/1/edit?destination=admin/content">edit</a></li>
+<li class="delete last"><a href="/node/1/delete?destination=admin/content">delete</a></li>
+</ul>'
     ),
     array(
-      'Channel B',
-      '14' . '<br />(view nodes)'/*l('(view nodes)', '#')*/,
-      /*l('Edit', '#')*/'Edit',
-      /*l('Delete', '#')*/'Delete',
-      l('Invite', 'admin/bpi/ajax/node/2/invite', array('attributes' => array('class' => array('use-ajax')))),
+      'Syndicated channel',
+      '5<br /><a href="/admin/bpi/search">view nodes</a>',
+      '7<br />'.l('see users', 'admin/bpi/ajax/node/1/subscribed_users', array('attributes' => array('class' => array('use-ajax')))),
+      '<ul class="links inline"><li class="edit first"><a href="#" onclick="confirm(\'Are you sure?\');">unsubscribe</a></li></ul>'
+    ),
+    array(
+      'My Channel B<br />' . l('Invite', 'admin/bpi/ajax/node/1/invite', array('attributes' => array('class' => array('use-ajax')))),
+      '10<br /><a href="/admin/content">view nodes</a>',
+      '4<br />' . l('see users', 'admin/bpi/ajax/node/1/subscribed_users', array('attributes' => array('class' => array('use-ajax')))),
+      '<ul class="links inline"><li class="edit first"><a href="/node/1/edit?destination=admin/content">edit</a></li>
+<li class="delete last"><a href="/node/1/delete?destination=admin/content">delete</a></li>
+</ul>'
     ),
   );
 
@@ -389,31 +397,14 @@ function bpi_channels_form($form = array(), &$form_state, $form_data = array()) 
   $header = array(
     t('Name'),
     t('Nodes'),
-    t('Edit'),
-    t('Delete'),
-    t('Invite/Leave'),
-  );
-
-  $form['filter'] = array(
-    '#type' => 'textfield',
-    '#title' => 'Filter',
+    t('Subscbed users'),
+    t('Operations')
   );
 
   $form['grid'] = array(
     '#type' => 'tableselect',
     '#header' => $header,
     '#options' => $form_data['grid_rows'],
-  );
-
-  $form['action'] = array(
-    '#type' => 'select',
-    '#title' => 'With selected',
-    '#options' => array('Delete', 'Leave'),
-  );
-
-  $form['submit'] = array(
-    '#type' => 'submit',
-    '#value' => 'Update',
   );
 
   return $form;
