@@ -55,24 +55,6 @@ function bpi_init() {
 function bpi_menu() {
   $items = array();
 
-  // Main admin page
-  /*$items['admin/bpi'] = array(
-    'title' => 'BPI Administration',
-    'description' => 'BPI administration page',
-    'page callback' => 'bpi_updates',
-    'access arguments' => array('access administration pages'),
-    'type' => MENU_CALLBACK,
-  );*/
-
-  // Add content page
-  /*$items['admin/content/add_content'] = array(
-    'title' => 'Add content',
-    'description' => 'Add content',
-    'page callback' => 'bpi_add_content',
-    'access arguments' => array('access administration pages'),
-    'type' => MENU_LOCAL_ACTION,
-  );*/
-
   // Updates page
   $items['admin/content/updates'] = array(
     'title' => 'Updates',
