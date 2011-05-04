@@ -146,6 +146,27 @@ function bpi_menu() {
   return $items;
 }
 
+function bpi_form_alter(&$form, &$form_state, $form_id) {
+  if ($form_id == 'node_admin_content') {
+    // Cols and rows
+    $header = $form['admin']['nodes']['#header'];
+    $rows = $form['admin']['nodes']['#options'];
+
+    // Add a custom col
+    $header['custom'] = array(
+      'data' => 'Custom',
+      'field' => 'n.custom'
+    );
+
+    // Add a custom data to row
+    // Node ID required as array key
+    $rows['5']['custom'] = 'Custom data';
+
+    $form['admin']['nodes']['#header'] = $header;
+    $form['admin']['nodes']['#options'] = $rows;
+  }
+}
+
 /**
  * Implements hook_theme
  *
