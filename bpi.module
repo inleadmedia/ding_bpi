@@ -33,11 +33,11 @@ function bpi_init() {
         'link_title' => 'Find content',
         'weight' => -19,
       ),
-      array(
+     /* array(
         'link_path' => 'admin/bpi',
         'link_title' => 'BPI',
         'weight' => -18,
-      ),
+      ),*/
     );
     
     shortcut_set_save($shortcut_set);
@@ -56,16 +56,16 @@ function bpi_menu() {
   $items = array();
 
   // Main admin page
-  $items['admin/bpi'] = array(
+  /*$items['admin/bpi'] = array(
     'title' => 'BPI Administration',
     'description' => 'BPI administration page',
     'page callback' => 'bpi_updates',
     'access arguments' => array('access administration pages'),
     'type' => MENU_CALLBACK,
-  );
+  );*/
 
   // Add content page
-  /*$items['admin/bpi/add_content'] = array(
+  /*$items['admin/content/add_content'] = array(
     'title' => 'Add content',
     'description' => 'Add content',
     'page callback' => 'bpi_add_content',
@@ -73,58 +73,58 @@ function bpi_menu() {
     'type' => MENU_LOCAL_ACTION,
   );*/
 
-  // Syndicated nodes page
-  $items['admin/bpi/syndicated'] = array(
-    'title' => 'Syndicated',
-    'description' => 'Nodes which you syndicated',
-    'page callback' => 'bpi_syndicated_nodes',
-    'access arguments' => array('access administration pages'),
-    'type' => MENU_LOCAL_TASK,
-    'weight' => '1',
-  );
-
-  // Channels page
-  $items['admin/bpi/channels'] = array(
-    'title' => 'Channels',
-    'description' => 'Current available channels',
-    'page callback' => 'bpi_channels',
+  // Updates page
+  $items['admin/content/updates'] = array(
+    'title' => 'Updates',
+    'description' => 'Syndicated nodes which have been updated',
+    'page callback' => 'bpi_updates',
     'access arguments' => array('access administration pages'),
     'type' => MENU_LOCAL_TASK,
     'weight' => '2',
   );
 
-  // Favorites page
-  $items['admin/bpi/favorites'] = array(
-    'title' => 'Favorites',
-    'description' => 'Favorites (channels, authors, etc.)',
-    'page callback' => 'bpi_favorites',
+  // Syndicated nodes page
+  $items['admin/content/syndicated'] = array(
+    'title' => 'Syndicated',
+    'description' => 'Nodes which you syndicated',
+    'page callback' => 'bpi_syndicated_nodes',
     'access arguments' => array('access administration pages'),
     'type' => MENU_LOCAL_TASK,
     'weight' => '3',
   );
 
-  // Updates page
-  $items['admin/bpi/updates'] = array(
-    'title' => 'Updates',
-    'description' => 'Syndicated nodes which have been updated',
-    'page callback' => 'bpi_updates',
+  // Channels page
+  $items['admin/content/channels'] = array(
+    'title' => 'Channels',
+    'description' => 'Current available channels',
+    'page callback' => 'bpi_channels',
     'access arguments' => array('access administration pages'),
-    'type' => MENU_DEFAULT_LOCAL_TASK,
+    'type' => MENU_LOCAL_TASK,
     'weight' => '4',
   );
 
-  // Search page
-  $items['admin/bpi/search'] = array(
-    'title' => 'Search',
-    'description' => 'Search nodes from the well',
-    'page callback' => 'bpi_search',
+  // Favorites page
+  $items['admin/content/favorites'] = array(
+    'title' => 'Favorites',
+    'description' => 'Favorites (channels, authors, etc.)',
+    'page callback' => 'bpi_favorites',
     'access arguments' => array('access administration pages'),
     'type' => MENU_LOCAL_TASK,
     'weight' => '5',
   );
 
+  // Search page
+  $items['admin/content/search'] = array(
+    'title' => 'Search',
+    'description' => 'Search nodes from the well',
+    'page callback' => 'bpi_search',
+    'access arguments' => array('access administration pages'),
+    'type' => MENU_LOCAL_TASK,
+    'weight' => '6',
+  );
+
   // Edit node page
-  $items['admin/bpi/node/edit/%'] = array(
+  $items['admin/content/node/edit/%'] = array(
     'title' => 'Edit node',
     'description' => 'Edit page for your own node',
     'page callback' => 'bpi_node_edit',
@@ -134,7 +134,7 @@ function bpi_menu() {
   );
 
   //
-  $items['admin/bpi/ajax/node/%/invite'] = array(
+  $items['admin/content/ajax/node/%/invite'] = array(
     'title' => 'Channel invite',
     'description' => 'Invite other user to your channel',
     'page arguments' => array(2, 4),
@@ -371,14 +371,14 @@ function bpi_channels() {
       '10' . '<br />(view nodes)'/*l('(view nodes)', '#')*/,
       /*l('Edit', '#')*/'Edit',
       /*l('Delete', '#')*/'Delete',
-      l('Invite', 'admin/bpi/ajax/node/1/invite', array('attributes' => array('class' => array('use-ajax')))),
+      l('Invite', 'admin/content/ajax/node/1/invite', array('attributes' => array('class' => array('use-ajax')))),
     ),
     array(
       'Channel B',
       '14' . '<br />(view nodes)'/*l('(view nodes)', '#')*/,
       /*l('Edit', '#')*/'Edit',
       /*l('Delete', '#')*/'Delete',
-      l('Invite', 'admin/bpi/ajax/node/2/invite', array('attributes' => array('class' => array('use-ajax')))),
+      l('Invite', 'admin/content/ajax/node/2/invite', array('attributes' => array('class' => array('use-ajax')))),
     ),
   );
 
