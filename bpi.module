@@ -176,6 +176,11 @@ function bpi_form_alter(&$form, &$form_state, $form_id) {
 function bpi_theme($existing, $type, $theme, $path) {
   $hooks = array();
 
+  $hooks['add_content'] = array(
+    'variables' => array(),
+    'template' => 'templates/bpi_add_content',
+  );
+
   $hooks['bpi_syndicated_nodes_form'] = array(
     'render element' => 'form',
     'path' => BPI_PATH . '/templates',
@@ -250,26 +255,38 @@ function bpi_syndicated_nodes() {
 
   $data['grid_rows'] = array(
     array(
-      'Pa gensyn i Helsingor 2011',
-      'Birgitte Hansen',
-      'Gladsaxe Bibliotek',
+      '<a href="/node/1">Pa gensyn i Helsingor 2011</a> <span class="marker">updated</span>',
+      'Article',
+      '<a property="foaf:name" typeof="sioc:UserAccount" about="/user/1" xml:lang="" class="username" title="View user profile." href="/user/1">Birgitte Hansen</a>',
+      'published',
       '01/04/2011 - 17:51',
       '04/05/2011 - 16:56',
-      'NO'),
+      'Gladsaxe Bibliotek',
+      '<ul class="links inline"><li class="edit first"><a href="/node/1/edit?destination=admin/content">edit</a></li>
+<li class="delete last"><a href="/node/1/delete?destination=admin/content">delete</a></li>
+</ul>'),
     array(
-      'Easy Magazine 2010',
-      'Ulla Terkelsen',
-      'Frederiksebrg Bibliotekerne',
+      '<a href="/node/1">Easy Magazine 2010</a>',
+      'Article',
+      '<a property="foaf:name" typeof="sioc:UserAccount" about="/user/1" xml:lang="" class="username" title="View user profile." href="/user/1">Ulla Terkelsen</a>',
+      'published',
       '02/15/2011 - 04:12',
       '04/05/2011 - 16:58',
-      'NO'),
+      'Frederiksebrg Bibliotekerne',
+      '<ul class="links inline"><li class="edit first"><a href="/node/1/edit?destination=admin/content">edit</a></li>
+<li class="delete last"><a href="/node/1/delete?destination=admin/content">delete</a></li>
+</ul>'),
     array(
-      'Easy Screen pa Svendborg Bibliotek',
-      'Barack Obama',
-      'Washington Centralbibliotek',
+      '<a href="/node/1">Easy Screen pa Svendborg Bibliotek</a>',
+      'Article',
+      '<a property="foaf:name" typeof="sioc:UserAccount" about="/user/1" xml:lang="" class="username" title="View user profile." href="/user/1">Barack Obama</a>',
+      'draft',
       '03/08/2011 - 14:34',
       '04/05/2011 - 14:34',
-      '<strong>YES</strong>'),
+      'Washington Centralbibliotek',
+      '<ul class="links inline"><li class="edit first"><a href="/node/1/edit?destination=admin/content">edit</a></li>
+<li class="delete last"><a href="/node/1/delete?destination=admin/content">delete</a></li>
+</ul>'),
   );
 
   return drupal_get_form('bpi_syndicated_nodes_form', $data);
@@ -320,12 +337,14 @@ function bpi_syndicated_nodes_form($form = array(), &$form_state, $form_data = a
   );
   
   $header = array(
-    array('data' => t('TITLE'), 'field' => 'node_title'),
-    t('AUTHOR'),
-    t('LIBRARY'),
-    array('data' => t('CREATED'), 'field' => 'node_created', 'sort' => 'desc'),
-    array('data' => t('SYNDICATED'), 'field' => 'node_syndicated'),
-    t('CHANGES'),
+    array('data' => t('Title'), 'field' => 'node_title'),
+    array('data' => t('Type'), 'field' => 'node_type'),
+    t('Author'),
+    array('data' => t('Status'), 'field' => 'node_status'),
+    array('data' => t('Updated'), 'field' => 'node_updated', 'sort' => 'desc'),
+    array('data' => t('Syndicated'), 'field' => 'node_syndicated'),
+    array('data' => t('Library'), 'field' => 'node_library'),
+    t('Operations')
   );
 
   $form['grid'] = array(
