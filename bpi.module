@@ -36,11 +36,11 @@ function bpi_init() {
         'link_title' => 'Find content',
         'weight' => -19,
       ),
-      array(
+     /* array(
         'link_path' => 'admin/bpi',
         'link_title' => 'BPI',
         'weight' => -18,
-      ),
+      ),*/
     );
     
     shortcut_set_save($shortcut_set);
@@ -58,67 +58,58 @@ function bpi_init() {
 function bpi_menu() {
   $items = array();
 
-  // Main admin page
-  $items['admin/bpi'] = array(
-    'title' => 'BPI Administration',
-    'description' => 'BPI administration page',
+  // Updates page
+  $items['admin/content/updates'] = array(
+    'title' => 'Updates',
+    'description' => 'Syndicated nodes which have been updated',
     'page callback' => 'bpi_updates',
-    'access arguments' => array('access administration pages'),
-    'type' => MENU_CALLBACK,
-  );
-
-  // Syndicated nodes page
-  $items['admin/bpi/syndicated'] = array(
-    'title' => 'Syndicated',
-    'description' => 'Nodes which you syndicated',
-    'page callback' => 'bpi_syndicated_nodes',
-    'access arguments' => array('access administration pages'),
-    'type' => MENU_LOCAL_TASK,
-    'weight' => '1',
-  );
-
-  // Channels page
-  $items['admin/bpi/channels'] = array(
-    'title' => 'Channels',
-    'description' => 'Current available channels',
-    'page callback' => 'bpi_channels',
     'access arguments' => array('access administration pages'),
     'type' => MENU_LOCAL_TASK,
     'weight' => '2',
   );
 
-  // Favorites page
-  $items['admin/bpi/favorites'] = array(
-    'title' => 'Favorites',
-    'description' => 'Favorites (channels, authors, etc.)',
-    'page callback' => 'bpi_favorites',
+  // Syndicated nodes page
+  $items['admin/content/syndicated'] = array(
+    'title' => 'Syndicated',
+    'description' => 'Nodes which you syndicated',
+    'page callback' => 'bpi_syndicated_nodes',
     'access arguments' => array('access administration pages'),
     'type' => MENU_LOCAL_TASK,
     'weight' => '3',
   );
 
-  // Updates page
-  $items['admin/bpi/updates'] = array(
-    'title' => 'Updates',
-    'description' => 'Syndicated nodes which have been updated',
-    'page callback' => 'bpi_updates',
+  // Channels page
+  $items['admin/content/channels'] = array(
+    'title' => 'Channels',
+    'description' => 'Current available channels',
+    'page callback' => 'bpi_channels',
     'access arguments' => array('access administration pages'),
-    'type' => MENU_DEFAULT_LOCAL_TASK,
+    'type' => MENU_LOCAL_TASK,
     'weight' => '4',
   );
 
-  // Search page
-  $items['admin/bpi/search'] = array(
-    'title' => 'Search',
-    'description' => 'Search nodes from the well',
-    'page callback' => 'bpi_search',
+  // Favorites page
+  $items['admin/content/favorites'] = array(
+    'title' => 'Favorites',
+    'description' => 'Favorites (channels, authors, etc.)',
+    'page callback' => 'bpi_favorites',
     'access arguments' => array('access administration pages'),
     'type' => MENU_LOCAL_TASK,
     'weight' => '5',
   );
 
+  // Search page
+  $items['admin/content/search'] = array(
+    'title' => 'Search',
+    'description' => 'Search nodes from the well',
+    'page callback' => 'bpi_search',
+    'access arguments' => array('access administration pages'),
+    'type' => MENU_LOCAL_TASK,
+    'weight' => '6',
+  );
+
   // Edit node page
-  $items['admin/bpi/node/edit/%'] = array(
+  $items['admin/content/node/edit/%'] = array(
     'title' => 'Edit node',
     'description' => 'Edit page for your own node',
     'page callback' => 'bpi_node_edit',
@@ -128,13 +119,21 @@ function bpi_menu() {
   );
 
   //
-  $items['admin/bpi/ajax/node/%/invite'] = array(
+  $items['admin/content/ajax/node/%/invite'] = array(
     'title' => 'Channel invite',
     'description' => 'Invite other user to your channel',
     'page arguments' => array(2, 4),
     'access arguments' => array('access administration pages'),
     'type' => MENU_CALLBACK,
     'page callback' => 'bpi_ajax_channel_invite',
+  );
+  
+  $items['admin/bpi/ajax/node/%/subscribed_users'] = array(
+    'description' => 'List of subscribed users to this channel',
+    'page arguments' => array(2, 4),
+    'access arguments' => array('access administration pages'),
+    'type' => MENU_CALLBACK,
+    'page callback' => 'bpi_ajax_channel_subscribed_users',
   );
 
   return $items;
@@ -173,6 +172,11 @@ function bpi_theme($existing, $type, $theme, $path) {
     'variables' => array('vars' => NULL),
     'path' => BPI_PATH . '/templates',
     'template' => 'bpi_flag_dropdown',
+  );
+  
+  $hooks['subscribed_users'] = array(
+    'variables' => array(),
+    'template' => 'templates/bpi_subscribed_users',
   );
 
   $hooks['bpi_syndicated_nodes_form'] = array(
@@ -365,18 +369,26 @@ function bpi_channels() {
 
   $data['grid_rows'] = array(
     array(
-      'Channel A',
-      '10' . '<br />(view nodes)'/*l('(view nodes)', '#')*/,
-      /*l('Edit', '#')*/'Edit',
-      /*l('Delete', '#')*/'Delete',
-      l('Invite', 'admin/bpi/ajax/node/1/invite', array('attributes' => array('class' => array('use-ajax')))),
+      'My Channel A<br />' . l('Invite', 'admin/bpi/ajax/node/1/invite', array('attributes' => array('class' => array('use-ajax')))),
+      '10<br /><a href="/admin/content">view nodes</a>',
+      '0',
+      '<ul class="links inline"><li class="edit first"><a href="/node/1/edit?destination=admin/content">edit</a></li>
+<li class="delete last"><a href="/node/1/delete?destination=admin/content">delete</a></li>
+</ul>'
     ),
     array(
-      'Channel B',
-      '14' . '<br />(view nodes)'/*l('(view nodes)', '#')*/,
-      /*l('Edit', '#')*/'Edit',
-      /*l('Delete', '#')*/'Delete',
-      l('Invite', 'admin/bpi/ajax/node/2/invite', array('attributes' => array('class' => array('use-ajax')))),
+      'Syndicated channel',
+      '5<br /><a href="/admin/bpi/search">view nodes</a>',
+      '7<br />'.l('see users', 'admin/bpi/ajax/node/1/subscribed_users', array('attributes' => array('class' => array('use-ajax')))),
+      '<ul class="links inline"><li class="edit first"><a href="#" onclick="confirm(\'Are you sure?\');">unsubscribe</a></li></ul>'
+    ),
+    array(
+      'My Channel B<br />' . l('Invite', 'admin/bpi/ajax/node/1/invite', array('attributes' => array('class' => array('use-ajax')))),
+      '10<br /><a href="/admin/content">view nodes</a>',
+      '4<br />' . l('see users', 'admin/bpi/ajax/node/1/subscribed_users', array('attributes' => array('class' => array('use-ajax')))),
+      '<ul class="links inline"><li class="edit first"><a href="/node/1/edit?destination=admin/content">edit</a></li>
+<li class="delete last"><a href="/node/1/delete?destination=admin/content">delete</a></li>
+</ul>'
     ),
   );
 
@@ -387,31 +399,14 @@ function bpi_channels_form($form = array(), &$form_state, $form_data = array()) 
   $header = array(
     t('Name'),
     t('Nodes'),
-    t('Edit'),
-    t('Delete'),
-    t('Invite/Leave'),
-  );
-
-  $form['filter'] = array(
-    '#type' => 'textfield',
-    '#title' => 'Filter',
+    t('Subscbed users'),
+    t('Operations')
   );
 
   $form['grid'] = array(
     '#type' => 'tableselect',
     '#header' => $header,
     '#options' => $form_data['grid_rows'],
-  );
-
-  $form['action'] = array(
-    '#type' => 'select',
-    '#title' => 'With selected',
-    '#options' => array('Delete', 'Leave'),
-  );
-
-  $form['submit'] = array(
-    '#type' => 'submit',
-    '#value' => 'Update',
   );
 
   return $form;
@@ -426,17 +421,29 @@ function bpi_channels_invite_form($form = array(), &$form_state, $form_data = ar
 
   $form['invite'] = array(
     '#type' => 'button',
-    '#value' => 'Invite'
+    '#value' => 'Invite',
+    '#ajax' => array(
+      'callback' => 'bpi_ajax_channel_invite_close'
+    )
   );
 
   $form['close'] = array(
     '#type' => 'button',
-    '#value' => 'Close'
+    '#value' => 'Close',
+    '#ajax' => array(
+      'callback' => 'bpi_ajax_channel_invite_close'
+    )
   );
 
   return $form;
 }
 
+/**
+ * Ajax callback method, preparing commands for invite popup
+ * 
+ * @param string $type
+ * @param integer $channel_id
+ */
 function bpi_ajax_channel_invite($type = 'ajax', $channel_id = 0) {
   if ($type == 'ajax') {
     if ($channel_id != 0) {
@@ -450,6 +457,32 @@ function bpi_ajax_channel_invite($type = 'ajax', $channel_id = 0) {
       ajax_deliver(array('#type' => 'ajax', '#commands' => $commands));
     }
   }
+}
+
+/**
+ * Ajax callback method to close invite form
+ */
+function bpi_ajax_channel_invite_close() {
+		return array('#type' => 'ajax', '#commands' => array(ajax_command_ding_popup_close('invite_form')));
+}
+
+/**
+ * Ajax callback method, preparing commands for subscribed users popup
+ * 
+ * @param string $type
+ * @param integer $channel_id
+ */
+function bpi_ajax_channel_subscribed_users($type, $channel_id) {
+  if ($channel_id != 0) {
+      $commands = array();
+
+      $commands[] = ajax_command_ding_popup(
+        'invite_form',
+        'Subscribed users',
+        theme('subscribed_users'));
+
+      ajax_deliver(array('#type' => 'ajax', '#commands' => $commands));
+    }
 }
 
 /**
