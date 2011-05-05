@@ -108,17 +108,16 @@ function bpi_menu() {
     'weight' => '6',
   );
 
-  // Edit node page
-  $items['admin/content/node/edit/%'] = array(
-    'title' => 'Edit node',
-    'description' => 'Edit page for your own node',
-    'page callback' => 'bpi_node_edit',
+  $items['admin/content/subscriptions'] = array(
+    'title' => 'Subscriptions',
+    'description' => 'Subscribe to variuos vategories of nodes',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('bpi_subscribe_form'),
     'access arguments' => array('access administration pages'),
-    'page arguments' => array(4),
-    'type' => MENU_CALLBACK,
+    'type' => MENU_LOCAL_TASK,
+    'weight' => '7',
   );
-
-  //
+  
   $items['admin/content/ajax/node/%/invite'] = array(
     'title' => 'Channel invite',
     'description' => 'Invite other user to your channel',
@@ -856,5 +855,46 @@ function bpi_node_info($node_id = 0) {
 }
 
 function bpi_node_edit_form_submit($form = array(), &$form_state) {
-  var_dump($form);die();
+  
+}
+
+function bpi_subscribe_form($form = array(), &$form_state) {
+  
+
+  $form['subscribe_audience'] = array(
+    '#type' => 'checkboxes',
+    '#title' => 'Target audience:',
+    '#options' => array(
+      'Adults',
+      'Seniors',
+      'Children'
+    ),
+  );
+
+  $form['subscribe_author'] = array(
+    '#type' => 'checkboxes',
+    '#title' => 'Author:',
+    '#options' => array(
+      'Peter',
+      'Jan',
+      'Batman'
+    ),
+  );
+
+  $form['subscribe_library'] = array(
+    '#type' => 'checkboxes',
+    '#title' => 'Library:',
+    '#options' => array(
+      'Library A',
+      'Library B',
+      'Library C'
+    ),
+  );
+
+  $form['submit'] = array(
+    '#type' => 'submit',
+    '#value' => 'Submit',
+  );
+
+  return $form;
 }
