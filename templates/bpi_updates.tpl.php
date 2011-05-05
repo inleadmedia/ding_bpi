@@ -1,1 +1,5 @@
-<h1>Updates</h1>
+<?php
+
+drupal_render_children($form);
+
+?>

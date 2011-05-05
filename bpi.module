@@ -559,7 +559,70 @@ function bpi_favorites_form($form = array(), &$form_state, $form_data = array())
  *   Page structure
  */
 function bpi_updates() {
-  return theme('updates');
+  $data = array();
+
+  $data['grid_rows'] = array(
+    array(
+      '<a href="/node/1">Pa gensyn i Helsingor 2011</a> <span class="marker">updated</span>',
+      'Article',
+      '<a property="foaf:name" typeof="sioc:UserAccount" about="/user/1" xml:lang="" class="username" title="View user profile." href="/user/1">Birgitte Hansen</a>',
+      'published',
+      '01/04/2011 - 17:51',
+      '04/05/2011 - 16:56',
+      'Gladsaxe Bibliotek',
+      '<ul class="links inline"><li class="edit first"><a href="/node/1/edit?destination=admin/content">edit</a></li>
+<li class="delete last"><a href="/node/1/delete?destination=admin/content">delete</a></li>
+</ul>',
+      theme('bpi_flag_dropdown')),
+    array(
+      '<a href="/node/1">Easy Magazine 2010</a>',
+      'Article',
+      '<a property="foaf:name" typeof="sioc:UserAccount" about="/user/1" xml:lang="" class="username" title="View user profile." href="/user/1">Ulla Terkelsen</a>',
+      'published',
+      '02/15/2011 - 04:12',
+      '04/05/2011 - 16:58',
+      'Frederiksebrg Bibliotekerne',
+      '<ul class="links inline"><li class="edit first"><a href="/node/1/edit?destination=admin/content">edit</a></li>
+<li class="delete last"><a href="/node/1/delete?destination=admin/content">delete</a></li>
+</ul>',
+      theme('bpi_flag_dropdown')),
+    array(
+      '<a href="/node/1">Easy Screen pa Svendborg Bibliotek</a>',
+      'Article',
+      '<a property="foaf:name" typeof="sioc:UserAccount" about="/user/1" xml:lang="" class="username" title="View user profile." href="/user/1">Barack Obama</a>',
+      'draft',
+      '03/08/2011 - 14:34',
+      '04/05/2011 - 14:34',
+      'Washington Centralbibliotek',
+      '<ul class="links inline"><li class="edit first"><a href="/node/1/edit?destination=admin/content">edit</a></li>
+<li class="delete last"><a href="/node/1/delete?destination=admin/content">delete</a></li>
+</ul>',
+      theme('bpi_flag_dropdown')),
+  );
+
+  return drupal_get_form('bpi_updates_form', $data);
+}
+
+function bpi_updates_form($form = array(), &$form_state, $form_data = array()) {
+  $header = array(
+    array('data' => t('Title'), 'field' => 'node_title'),
+    array('data' => t('Type'), 'field' => 'node_type'),
+    t('Author'),
+    array('data' => t('Status'), 'field' => 'node_status'),
+    array('data' => t('Updated'), 'field' => 'node_updated', 'sort' => 'desc'),
+    array('data' => t('Syndicated'), 'field' => 'node_syndicated'),
+    array('data' => t('Library'), 'field' => 'node_library'),
+    t('Operations'),
+    'Add to Favorites'
+  );
+
+  $form['grid'] = array(
+    '#type' => 'tableselect',
+    '#header' => $header,
+    '#options' => $form_data['grid_rows'],
+  );
+
+  return $form;
 }
 
 /**
@@ -887,7 +950,7 @@ function bpi_subscribe_form($form = array(), &$form_state) {
     '#options' => array(
       'Library A',
       'Library B',
-      'Library C'
+      'Library Ci'
     ),
   );
 
