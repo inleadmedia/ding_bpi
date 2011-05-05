@@ -128,7 +128,7 @@ function bpi_menu() {
     'page callback' => 'bpi_ajax_channel_invite',
   );
   
-  $items['admin/bpi/ajax/node/%/subscribed_users'] = array(
+  $items['admin/content/ajax/node/%/subscribed_users'] = array(
     'description' => 'List of subscribed users to this channel',
     'page arguments' => array(2, 4),
     'access arguments' => array('access administration pages'),
@@ -346,7 +346,7 @@ function bpi_syndicated_nodes_form($form = array(), &$form_state, $form_data = a
     array('data' => t('Syndicated'), 'field' => 'node_syndicated'),
     array('data' => t('Library'), 'field' => 'node_library'),
     t('Operations'),
-    'Rating'
+    'Add to Favorites'
   );
 
   $form['grid'] = array(
@@ -369,7 +369,7 @@ function bpi_channels() {
 
   $data['grid_rows'] = array(
     array(
-      'My Channel A<br />' . l('Invite', 'admin/bpi/ajax/node/1/invite', array('attributes' => array('class' => array('use-ajax')))),
+      'My Channel A<br />' . l('Invite', 'admin/content/ajax/node/1/invite', array('attributes' => array('class' => array('use-ajax')))),
       '10<br /><a href="/admin/content">view nodes</a>',
       '0',
       '<ul class="links inline"><li class="edit first"><a href="/node/1/edit?destination=admin/content">edit</a></li>
@@ -383,7 +383,7 @@ function bpi_channels() {
       '<ul class="links inline"><li class="edit first"><a href="#" onclick="confirm(\'Are you sure?\');">unsubscribe</a></li></ul>'
     ),
     array(
-      'My Channel B<br />' . l('Invite', 'admin/bpi/ajax/node/1/invite', array('attributes' => array('class' => array('use-ajax')))),
+      'My Channel B<br />' . l('Invite', 'admin/content/ajax/node/1/invite', array('attributes' => array('class' => array('use-ajax')))),
       '10<br /><a href="/admin/content">view nodes</a>',
       '4<br />' . l('see users', 'admin/bpi/ajax/node/1/subscribed_users', array('attributes' => array('class' => array('use-ajax')))),
       '<ul class="links inline"><li class="edit first"><a href="/node/1/edit?destination=admin/content">edit</a></li>
@@ -497,21 +497,25 @@ function bpi_favorites() {
   $data['rows'] = array(
      array(
       '<img src="'.BPI_PATH.'/img/flag_green.jpg" width="16" height="16" alt="" />',
-      'Qwerty',
+      '<a href="/node/1">Pa gensyn i Helsingor 2011</a>',
       'Article',
-      'Admin',
+      '<a property="foaf:name" typeof="sioc:UserAccount" about="/user/1" xml:lang="" class="username" title="View user profile." href="/user/1">Birgitte Hansen</a>',
       'published',
       '04/09/2011 - 14:07',
-      'edit&nbsp;&nbsp;&nbsp;delete',
+      '<ul class="links inline"><li class="edit first"><a href="/node/1/edit?destination=admin/content">edit</a></li>
+<li class="delete last"><a href="/node/1/delete?destination=admin/content">delete</a></li>
+</ul>',
     ),
     array(
       '<img src="'.BPI_PATH.'/img/flag_yellow.jpg" width="16" height="16" alt="" />',
-      'Asdfg',
+      '<a href="/node/1">Easy Magazine 2010</a>',
       'Article',
-      'Admin',
+      '<a property="foaf:name" typeof="sioc:UserAccount" about="/user/1" xml:lang="" class="username" title="View user profile." href="/user/1">Ulla Terkelsen</a>',
       'published',
       '04/09/2011 - 14:23',
-      'edit&nbsp;&nbsp;&nbsp;delete',
+      '<ul class="links inline"><li class="edit first"><a href="/node/1/edit?destination=admin/content">edit</a></li>
+<li class="delete last"><a href="/node/1/delete?destination=admin/content">delete</a></li>
+</ul>',
     ),
   );
 
@@ -520,29 +524,13 @@ function bpi_favorites() {
 
 function bpi_favorites_form($form = array(), &$form_state, $form_data = array()) {
   $header = array(
-    array('data' => 'rating', 'field' => 'n.rating'),
+    array('data' => ''),
     array('data' => 'title', 'field' => 'n.title'),
     'type',
     array('data' => 'author', 'field' => 'n.author'),
     'status',
     array('data' => 'updated', 'field' => 'n.updated'),
     'operations',
-  );
-
-  $form['filter'] = array(
-    '#type' => 'radios',
-    '#title' => 'Filter by rating',
-    '#options' => array(
-      'All',
-      'High<img src="'.BPI_PATH.'/img/flag_green.jpg" width="16" height="16" alt="" />',
-      'Med <img src="'.BPI_PATH.'/img/flag_yellow.jpg" width="16" height="16" alt="" />',
-      'Low <img src="'.BPI_PATH.'/img/flag_red.jpg" width="16" height="16" alt="" />',
-     )
-  );
-
-  $form['filter_submit'] = array(
-    '#type' => 'submit',
-    '#value' => 'Filter',
   );
 
   $form['grid'] = array(
