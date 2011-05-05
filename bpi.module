@@ -563,7 +563,7 @@ function bpi_updates() {
 
   $data['grid_rows'] = array(
     array(
-      '<a href="/node/1">Pa gensyn i Helsingor 2011</a> <span class="marker">updated</span>',
+      '<a href="/node/1">Pa gensyn i Helsingor 2011</a> <span class="updated">updated</span>',
       'Article',
       '<a property="foaf:name" typeof="sioc:UserAccount" about="/user/1" xml:lang="" class="username" title="View user profile." href="/user/1">Birgitte Hansen</a>',
       'published',
@@ -575,7 +575,7 @@ function bpi_updates() {
 </ul>',
       theme('bpi_flag_dropdown')),
     array(
-      '<a href="/node/1">Easy Magazine 2010</a>',
+      '<a href="/node/1">Easy Magazine 2010</a> <span class="new">new</span>',
       'Article',
       '<a property="foaf:name" typeof="sioc:UserAccount" about="/user/1" xml:lang="" class="username" title="View user profile." href="/user/1">Ulla Terkelsen</a>',
       'published',
@@ -587,7 +587,7 @@ function bpi_updates() {
 </ul>',
       theme('bpi_flag_dropdown')),
     array(
-      '<a href="/node/1">Easy Screen pa Svendborg Bibliotek</a>',
+      '<a href="/node/1">Easy Screen pa Svendborg Bibliotek</a> <span class="new">new</span>',
       'Article',
       '<a property="foaf:name" typeof="sioc:UserAccount" about="/user/1" xml:lang="" class="username" title="View user profile." href="/user/1">Barack Obama</a>',
       'draft',

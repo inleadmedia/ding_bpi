@@ -111,3 +111,11 @@
 .dropdown .item_hover {
   background-color: #FFFFAA;
 }
+
+span.updated {
+  color: red;
+}
+
+span.new {
+  color: green;
+}
