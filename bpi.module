@@ -12,6 +12,9 @@ define('BPI_PATH', drupal_get_path('module', 'bpi'));
  * Implements hook_init
  */
 function bpi_init() {
+  drupal_add_js(BPI_PATH . '/js/dropdown/jquery.dd.js');
+  drupal_add_js(BPI_PATH . '/js/bpi-scripts.js');
+  drupal_add_css(BPI_PATH . '/css/dd.css');
   drupal_add_css(BPI_PATH . '/css/bpi-styles.css');
   drupal_add_library('system', 'drupal.ajax');
   drupal_add_library('system', 'jquery.form');
@@ -63,15 +66,6 @@ function bpi_menu() {
     'access arguments' => array('access administration pages'),
     'type' => MENU_CALLBACK,
   );
-
-  // Add content page
-  /*$items['admin/bpi/add_content'] = array(
-    'title' => 'Add content',
-    'description' => 'Add content',
-    'page callback' => 'bpi_add_content',
-    'access arguments' => array('access administration pages'),
-    'type' => MENU_LOCAL_ACTION,
-  );*/
 
   // Syndicated nodes page
   $items['admin/bpi/syndicated'] = array(
@@ -153,14 +147,13 @@ function bpi_form_alter(&$form, &$form_state, $form_id) {
     $rows = $form['admin']['nodes']['#options'];
 
     // Add a custom col
-    $header['custom'] = array(
-      'data' => 'Custom',
-      'field' => 'n.custom'
+    $header['rating'] = array(
+      'data' => 'Add to Favorites',
     );
 
     // Add a custom data to row
     // Node ID required as array key
-    $rows['5']['custom'] = 'Custom data';
+    $rows['5']['rating'] = theme('bpi_flag_dropdown');
 
     $form['admin']['nodes']['#header'] = $header;
     $form['admin']['nodes']['#options'] = $rows;
@@ -176,9 +169,10 @@ function bpi_form_alter(&$form, &$form_state, $form_id) {
 function bpi_theme($existing, $type, $theme, $path) {
   $hooks = array();
 
-  $hooks['add_content'] = array(
-    'variables' => array(),
-    'template' => 'templates/bpi_add_content',
+  $hooks['bpi_flag_dropdown'] = array(
+    'variables' => array('vars' => NULL),
+    'path' => BPI_PATH . '/templates',
+    'template' => 'bpi_flag_dropdown',
   );
 
   $hooks['bpi_syndicated_nodes_form'] = array(
@@ -264,7 +258,8 @@ function bpi_syndicated_nodes() {
       'Gladsaxe Bibliotek',
       '<ul class="links inline"><li class="edit first"><a href="/node/1/edit?destination=admin/content">edit</a></li>
 <li class="delete last"><a href="/node/1/delete?destination=admin/content">delete</a></li>
-</ul>'),
+</ul>',
+      theme('bpi_flag_dropdown')),
     array(
       '<a href="/node/1">Easy Magazine 2010</a>',
       'Article',
@@ -275,7 +270,8 @@ function bpi_syndicated_nodes() {
       'Frederiksebrg Bibliotekerne',
       '<ul class="links inline"><li class="edit first"><a href="/node/1/edit?destination=admin/content">edit</a></li>
 <li class="delete last"><a href="/node/1/delete?destination=admin/content">delete</a></li>
-</ul>'),
+</ul>',
+      theme('bpi_flag_dropdown')),
     array(
       '<a href="/node/1">Easy Screen pa Svendborg Bibliotek</a>',
       'Article',
@@ -286,7 +282,8 @@ function bpi_syndicated_nodes() {
       'Washington Centralbibliotek',
       '<ul class="links inline"><li class="edit first"><a href="/node/1/edit?destination=admin/content">edit</a></li>
 <li class="delete last"><a href="/node/1/delete?destination=admin/content">delete</a></li>
-</ul>'),
+</ul>',
+      theme('bpi_flag_dropdown')),
   );
 
   return drupal_get_form('bpi_syndicated_nodes_form', $data);
@@ -344,7 +341,8 @@ function bpi_syndicated_nodes_form($form = array(), &$form_state, $form_data = a
     array('data' => t('Updated'), 'field' => 'node_updated', 'sort' => 'desc'),
     array('data' => t('Syndicated'), 'field' => 'node_syndicated'),
     array('data' => t('Library'), 'field' => 'node_library'),
-    t('Operations')
+    t('Operations'),
+    'Rating'
   );
 
   $form['grid'] = array(

@@ -1,6 +1,8 @@
 <div class="well_node">
   <div class="node_col">
     <p class="node_title"><?=$title?><input type="checkbox" <?php if($read) : ?>checked="checked"<?php ;endif?> /></p>
+    <p><?=theme('bpi_flag_dropdown')?></p>
+    <div class="clear"></div>
     <p class="node_description"><?=$description?></p>
     <div class="node_controls">
       <div class="syndicate">Syndiker</div>

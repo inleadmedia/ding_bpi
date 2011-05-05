@@ -79,3 +79,35 @@
 .ui-dialog {
   width: auto !important;
 }
+
+.dropdown {
+  background-color: #FFF;
+  border: 1px solid #CCC;
+  cursor: pointer;
+  width: 40px !important;
+}
+
+.dropdown img {
+  margin-top: 2px;
+}
+
+.dropdown img.flag {
+  float: left;
+}
+
+.dropdown img.arrow {
+  float: right;
+}
+
+.dropdown .rate_items {
+  background-color: #FFF;
+  border-left: 1px solid #CCC;
+  border-right: 1px solid #CCC;
+  border-bottom: 1px solid #CCC;
+  margin-left: -1px;
+  position: absolute;
+}
+
+.dropdown .item_hover {
+  background-color: #FFFFAA;
+}
