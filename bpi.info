@@ -1,6 +1,7 @@
 name = BPI
-description = BPI skeleton.
+description = BPI skeleton
 version = 0.1
 core = 7.x
-configure = admin/bpi
+configure = admin/config
 files[] = bpi.module
+files[] = bpi.install

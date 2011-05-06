@@ -1,0 +1,29 @@
+<?php
+
+function bpi_schema() {
+
+}
+
+function bpi_install() {
+  $count = db_query("SELECT COUNT(*) AS CNT FROM {node} WHERE type = 'article'")->fetchField(0);
+
+  if ($count < 3) {
+    global $user;
+
+    for ($i = 0; $i < 10; $i++) {
+      $new_node = new stdClass();
+      $new_node->title = "Dummy node " . $i;
+      $new_node->body = "Dummy content created at " . time() . " with index " . $i;
+      $new_node->type = "article";
+      $new_node->status = 1;
+      $new_node->promote = 0;
+      $new_node->uid = $user->uid;
+
+      node_save($new_node);
+    }
+  }
+}
+
+function bpi_uninstall() {
+  
+}
