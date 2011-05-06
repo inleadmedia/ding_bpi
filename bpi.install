@@ -15,6 +15,7 @@ function bpi_install() {
       $new_node->title = "Dummy node " . $i;
       $new_node->body = "Dummy content created at " . time() . " with index " . $i;
       $new_node->type = "article";
+      $new_node->language = "und";
       $new_node->status = 1;
       $new_node->promote = 0;
       $new_node->uid = $user->uid;

@@ -14,12 +14,11 @@ define('BPI_PATH', drupal_get_path('module', 'bpi'));
 function bpi_init() {
   drupal_add_js(BPI_PATH . '/js/dropdown/jquery.dd.js');
   drupal_add_js(BPI_PATH . '/js/bpi-scripts.js');
-  drupal_add_css(BPI_PATH . '/css/dd.css');
   drupal_add_css(BPI_PATH . '/css/bpi-styles.css');
   drupal_add_library('system', 'drupal.ajax');
   drupal_add_library('system', 'jquery.form');
 
-  global $user;
+  /*global $user;
   $shortcut_set = shortcut_set_load('shortcut-set-2');
   
   if (!$shortcut_set) {
@@ -36,17 +35,17 @@ function bpi_init() {
         'link_title' => 'Find content',
         'weight' => -19,
       ),
-     /* array(
+      array(
         'link_path' => 'admin/bpi',
         'link_title' => 'BPI',
         'weight' => -18,
-      ),*/
+      ),
     );
     
     shortcut_set_save($shortcut_set);
   }
   
-  shortcut_set_assign_user($shortcut_set, $user);
+  shortcut_set_assign_user($shortcut_set, $user);*/
 }
 
 /**
@@ -119,16 +118,20 @@ function bpi_menu() {
   );
   
   $items['admin/content/ajax/node/%/invite'] = array(
-    'title' => 'Channel invite',
-    'description' => 'Invite other user to your channel',
     'page arguments' => array(2, 4),
     'access arguments' => array('access administration pages'),
     'type' => MENU_CALLBACK,
     'page callback' => 'bpi_ajax_channel_invite',
   );
+
+  $items['admin/content/ajax/node/%/syndicate'] = array(
+    'page arguments' => array(2, 4),
+    'access arguments' => array('access administration pages'),
+    'type' => MENU_CALLBACK,
+    'page callback' => 'bpi_ajax_node_syndicate',
+  );
   
   $items['admin/content/ajax/node/%/subscribed_users'] = array(
-    'description' => 'List of subscribed users to this channel',
     'page arguments' => array(2, 4),
     'access arguments' => array('access administration pages'),
     'type' => MENU_CALLBACK,
@@ -151,7 +154,9 @@ function bpi_form_alter(&$form, &$form_state, $form_id) {
 
     // Add a custom data to row
     // Node ID required as array key
-    $rows['5']['rating'] = theme('bpi_flag_dropdown');
+    foreach ($rows as $k => $v) {
+      $rows[$k]['rating'] = theme('bpi_flag_dropdown');
+    }
 
     $form['admin']['nodes']['#header'] = $header;
     $form['admin']['nodes']['#options'] = $rows;
@@ -357,6 +362,18 @@ function bpi_syndicated_nodes_form($form = array(), &$form_state, $form_data = a
   return $form;
 }
 
+function bpi_ajax_node_syndicate($type = 'ajax', $node_id = 0) {
+  if ($type == 'ajax') {
+    if ($node_id > 0) {
+      $commands = array();
+
+      $commands[] = ajax_command_alert('You successfuly syndicated this node.');
+
+      ajax_deliver(array('#type' => 'ajax', '#commands' => $commands));
+    }
+  }
+}
+
 /**
  * 'Channels' page callback
  *
@@ -532,6 +549,17 @@ function bpi_favorites_form($form = array(), &$form_state, $form_data = array())
     'operations',
   );
 
+  $form['filter'] = array(
+    '#type' => 'radios',
+    '#options' => array(
+      '<img src="'.BPI_PATH.'/img/flag_black.jpg" width="16" height="16" alt="16" /> (All)',
+      '<img src="'.BPI_PATH.'/img/flag_green.jpg" width="16" height="16" alt="16" />',
+      '<img src="'.BPI_PATH.'/img/flag_yellow.jpg" width="16" height="16" alt="16" />',
+      '<img src="'.BPI_PATH.'/img/flag_red.jpg" width="16" height="16" alt="16" />',
+    ),
+    '#title' => 'Show only',
+  );
+
   $form['grid'] = array(
     '#type' => 'tableselect',
     '#header' => $header,
@@ -614,6 +642,14 @@ function bpi_updates_form($form = array(), &$form_state, $form_data = array()) {
     array('data' => t('Library'), 'field' => 'node_library'),
     t('Operations'),
     'Add to Favorites'
+  );
+
+  $form['filter'] = array(
+    '#type' => 'select',
+    '#title' => 'Show only',
+    '#options' => array(
+      'All', 'New', 'Updated'
+    ),
   );
 
   $form['grid'] = array(
