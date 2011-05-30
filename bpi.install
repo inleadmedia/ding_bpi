@@ -1,9 +1,5 @@
 <?php
 
-function bpi_schema() {
-
-}
-
 function bpi_install() {
   $count = db_query("SELECT COUNT(*) AS CNT FROM {node} WHERE type = 'article'")->fetchField(0);
 
@@ -19,12 +15,63 @@ function bpi_install() {
       $new_node->status = 1;
       $new_node->promote = 0;
       $new_node->uid = $user->uid;
+      $new_node->custom = 'Custom data';
 
       node_save($new_node);
     }
   }
 }
 
-function bpi_uninstall() {
+function bpi_schema() {
+  $schema['bpi_node'] = array(
+    'description' => 'Custom data for BPI prototype',
+    'fields' => array(
+      'id' => array(
+        'description' => 'Record id',
+        'type' => 'serial'
+      ),
+      'nid' => array(
+        'description' => 'Node id which should contain custom data',
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'default' => 0,
+      ),
+      'syndicated' => array(
+        'description' => 'Whether node is syndicated',
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'default' => 0
+      ),
+      'library' => array(
+        'description' => 'Library code, owner of the node',
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'default' => 123456,
+      ),
+      'channel' => array(
+        'description' => 'Node\'s assigned channel',
+        'type' => 'varchar',
+        'length' => '1024',
+        'not null' => TRUE,
+        'default' => '0',
+      ),
+      'favorite' => array(
+        'description' => 'Whether the node is marked favorite',
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'default' => 0,
+      ),
+    ),
+    'primary key' => array('id'),
+  );
   
+  return $schema;
+}
+
+function bpi_uninstall() {
+  db_drop_table('bpi_node');
 }

@@ -17,35 +17,6 @@ function bpi_init() {
   drupal_add_css(BPI_PATH . '/css/bpi-styles.css');
   drupal_add_library('system', 'drupal.ajax');
   drupal_add_library('system', 'jquery.form');
-
-  /*global $user;
-  $shortcut_set = shortcut_set_load('shortcut-set-2');
-  
-  if (!$shortcut_set) {
-    $shortcut_set = new stdClass();
-    $shortcut_set->title = 'BPI';
-    $shortcut_set->links = array(
-      array(
-        'link_path' => 'node/add',
-        'link_title' => 'Add content',
-        'weight' => -20,
-      ),
-      array(
-        'link_path' => 'admin/content',
-        'link_title' => 'Find content',
-        'weight' => -19,
-      ),
-      array(
-        'link_path' => 'admin/bpi',
-        'link_title' => 'BPI',
-        'weight' => -18,
-      ),
-    );
-    
-    shortcut_set_save($shortcut_set);
-  }
-  
-  shortcut_set_assign_user($shortcut_set, $user);*/
 }
 
 /**
@@ -161,6 +132,10 @@ function bpi_form_alter(&$form, &$form_state, $form_id) {
     $form['admin']['nodes']['#header'] = $header;
     $form['admin']['nodes']['#options'] = $rows;
   }
+}
+
+function bpi_node_insert($node) {
+  
 }
 
 /**
@@ -958,8 +933,6 @@ function bpi_node_edit_form_submit($form = array(), &$form_state) {
 }
 
 function bpi_subscribe_form($form = array(), &$form_state) {
-  
-
   $form['subscribe_audience'] = array(
     '#type' => 'checkboxes',
     '#title' => 'Target audience:',
