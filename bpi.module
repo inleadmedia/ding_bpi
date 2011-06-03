@@ -57,6 +57,16 @@ function bpi_menu() {
     'type' => MENU_LOCAL_TASK,
     'weight' => '4',
   );
+  
+  // Channel view page
+  $items['admin/content/channels/view/%'] = array(
+    'title' => 'View channel',
+    'description' => 'Display the node assiged to this channel',
+    'page callback' => 'bpi_channels_view',
+    'page arguments' => array(4),
+    'access arguments' => array('access administration pages'),
+    'type' => MENU_CALLBACK
+  );
 
   // Favorites page
   $items['admin/content/favorites'] = array(
@@ -370,31 +380,32 @@ function bpi_ajax_node_syndicate($type = 'ajax', $node_id = 0) {
  */
 function bpi_channels() {
   $data = array();
-
-  $data['grid_rows'] = array(
-    array(
-      'My Channel A<br />' . l('Invite', 'admin/content/ajax/node/1/invite', array('attributes' => array('class' => array('use-ajax')))),
-      '10<br /><a href="/admin/content">view nodes</a>',
+  $data['grid_rows'] = array();
+  
+  $channels = db_select('bpi_node')
+    ->fields('bpi_node', array('channel'))
+    ->Distinct()
+    ->execute()
+    ->fetchAll();
+  
+  foreach($channels as $k=>$v) {
+    $count = db_select('bpi_node')
+      ->condition('channel', $v->channel)
+      ->countQuery()
+      ->execute()
+      ->fetchField(0);
+    
+    $data['grid_rows'][] = array(
+      $v->channel . '<br />' . 
+        l('Invite', 'admin/content/ajax/channel/1/invite', array('attributes' => array('class' => array('use-ajax')))),
+      $count . '<br /><a href="/admin/content/channels/view/1">view nodes</a>',
       '0',
-      '<ul class="links inline"><li class="edit first"><a href="/node/1/edit?destination=admin/content">edit</a></li>
-<li class="delete last"><a href="/node/1/delete?destination=admin/content">delete</a></li>
-</ul>'
-    ),
-    array(
-      'Syndicated channel',
-      '5<br /><a href="/admin/bpi/search">view nodes</a>',
-      '7<br />'.l('see users', 'admin/bpi/ajax/node/1/subscribed_users', array('attributes' => array('class' => array('use-ajax')))),
-      '<ul class="links inline"><li class="edit first"><a href="#" onclick="confirm(\'Are you sure?\');">unsubscribe</a></li></ul>'
-    ),
-    array(
-      'My Channel B<br />' . l('Invite', 'admin/content/ajax/node/1/invite', array('attributes' => array('class' => array('use-ajax')))),
-      '10<br /><a href="/admin/content">view nodes</a>',
-      '4<br />' . l('see users', 'admin/bpi/ajax/node/1/subscribed_users', array('attributes' => array('class' => array('use-ajax')))),
-      '<ul class="links inline"><li class="edit first"><a href="/node/1/edit?destination=admin/content">edit</a></li>
-<li class="delete last"><a href="/node/1/delete?destination=admin/content">delete</a></li>
-</ul>'
-    ),
-  );
+      '<ul class="links inline">
+         <li class="edit first"><a href="/node/1/edit?destination=admin/content">edit</a></li>
+         <li class="delete last"><a href="/node/1/delete?destination=admin/content">delete</a></li>
+      </ul>'
+    );
+  }
 
   return drupal_get_form('bpi_channels_form', $data);
 }
@@ -403,7 +414,7 @@ function bpi_channels_form($form = array(), &$form_state, $form_data = array()) 
   $header = array(
     t('Name'),
     t('Nodes'),
-    t('Subscbed users'),
+    t('Subscribed users'),
     t('Operations')
   );
 
@@ -414,6 +425,10 @@ function bpi_channels_form($form = array(), &$form_state, $form_data = array()) 
   );
 
   return $form;
+}
+
+function bpi_channels_view($channel_id) {
+  
 }
 
 function bpi_channels_invite_form($form = array(), &$form_state, $form_data = array()) {
