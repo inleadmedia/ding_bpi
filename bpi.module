@@ -578,27 +578,28 @@ function bpi_updates() {
   $data = array();
   $data['grid_rows'] = array();
   
+  // Fetch nodes
   $updated = db_select('node')
     ->fields('node', array('nid', 'type', 'title', 'uid', 'status', 'created', 'changed'))
     ->execute()
     ->fetchAll();
   
-  var_dump($updated);
-  
   foreach($updated as $k=>$v) {
-    
+    // Fetch node author
     $author = db_select('users')
       ->fields('users', array('name'))
       ->condition('uid', $v->uid)
       ->execute()
       ->fetchField(0);
     
+    // Fetch node library
     $library = db_select('bpi_node')
       ->fields('bpi_node', array('library'))
       ->condition('nid', $v->nid)
       ->execute()
       ->fetchField(0);
     
+    // Populate the data grid
     $data['grid_rows'][] = array(
       '<a href="/node/' . $v->nid . '">' . $v->title . '</a>'
         . (($v->created != $v->changed) ? ' <span class="updated">updated</span>' : ' <span class="new">new</span>'),
