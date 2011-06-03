@@ -1,6 +1,7 @@
 <?php
 
 function bpi_install() {
+  $channels = array('BBC', 'EuroNews');
   $count = db_query("SELECT COUNT(*) AS CNT FROM {node} WHERE type = 'article'")->fetchField(0);
 
   if ($count < 3) {
@@ -8,14 +9,17 @@ function bpi_install() {
 
     for ($i = 0; $i < 10; $i++) {
       $new_node = new stdClass();
-      $new_node->title = "Dummy node " . $i;
-      $new_node->body = "Dummy content created at " . time() . " with index " . $i;
-      $new_node->type = "article";
-      $new_node->language = "und";
+      $new_node->title = 'Dummy node ' . $i;
+      $new_node->body = 'Dummy content created at ' . time() . ' with index ' . $i;
+      $new_node->type = 'article';
+      $new_node->language = 'und';
       $new_node->status = 1;
       $new_node->promote = 0;
       $new_node->uid = $user->uid;
-      $new_node->custom = 'Custom data';
+      $new_node->syndicated = mt_rand(0, 1);
+      $new_node->library = mt_rand(10000, 90000);
+      $new_node->channel = $channels[mt_rand(0, 1)];
+      $new_node->favorite = mt_rand(0, 3);
 
       node_save($new_node);
     }

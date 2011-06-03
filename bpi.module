@@ -135,7 +135,15 @@ function bpi_form_alter(&$form, &$form_state, $form_id) {
 }
 
 function bpi_node_insert($node) {
-  
+  db_insert('bpi_node')
+  ->fields(array(
+    'nid' => $node->nid,
+    'syndicated' => $node->syndicated,
+    'library' => $node->library,
+    'channel' => $node->channel,
+    'favorite' => $node->favorite,
+  ))
+  ->execute();
 }
 
 /**
@@ -229,45 +237,50 @@ function bpi_theme($existing, $type, $theme, $path) {
  */
 function bpi_syndicated_nodes() {
   $data = array();
-
-  $data['grid_rows'] = array(
-    array(
-      '<a href="/node/1">Pa gensyn i Helsingor 2011</a> <span class="marker">updated</span>',
-      'Article',
-      '<a property="foaf:name" typeof="sioc:UserAccount" about="/user/1" xml:lang="" class="username" title="View user profile." href="/user/1">Birgitte Hansen</a>',
-      'published',
-      '01/04/2011 - 17:51',
-      '04/05/2011 - 16:56',
-      'Gladsaxe Bibliotek',
-      '<ul class="links inline"><li class="edit first"><a href="/node/1/edit?destination=admin/content">edit</a></li>
-<li class="delete last"><a href="/node/1/delete?destination=admin/content">delete</a></li>
-</ul>',
-      theme('bpi_flag_dropdown')),
-    array(
-      '<a href="/node/1">Easy Magazine 2010</a>',
-      'Article',
-      '<a property="foaf:name" typeof="sioc:UserAccount" about="/user/1" xml:lang="" class="username" title="View user profile." href="/user/1">Ulla Terkelsen</a>',
-      'published',
-      '02/15/2011 - 04:12',
-      '04/05/2011 - 16:58',
-      'Frederiksebrg Bibliotekerne',
-      '<ul class="links inline"><li class="edit first"><a href="/node/1/edit?destination=admin/content">edit</a></li>
-<li class="delete last"><a href="/node/1/delete?destination=admin/content">delete</a></li>
-</ul>',
-      theme('bpi_flag_dropdown')),
-    array(
-      '<a href="/node/1">Easy Screen pa Svendborg Bibliotek</a>',
-      'Article',
-      '<a property="foaf:name" typeof="sioc:UserAccount" about="/user/1" xml:lang="" class="username" title="View user profile." href="/user/1">Barack Obama</a>',
-      'draft',
-      '03/08/2011 - 14:34',
-      '04/05/2011 - 14:34',
-      'Washington Centralbibliotek',
-      '<ul class="links inline"><li class="edit first"><a href="/node/1/edit?destination=admin/content">edit</a></li>
-<li class="delete last"><a href="/node/1/delete?destination=admin/content">delete</a></li>
-</ul>',
-      theme('bpi_flag_dropdown')),
-  );
+  $data['grid_rows'] = array();
+  
+  // Get the syndicated nodes id's
+  $syndicated = db_select('bpi_node')
+    ->fields('bpi_node', array('nid', 'library'))
+    ->condition('syndicated', 1)
+    ->execute()
+    ->fetchAll();
+  
+  foreach($syndicated as $k=>$v) {
+    
+    // Fetch the node data
+    $node = db_select('node')
+      ->fields('node', array('type', 'title', 'uid', 'status', 'created', 'changed'))
+      ->condition('nid', $v->nid)
+      ->execute()
+      ->fetchAssoc();
+    
+    // Fetch the author
+    $author = db_select('users')
+      ->fields('users', array('name'))
+      ->condition('uid', $node['uid'])
+      ->execute()
+      ->fetchField(0);
+    
+    // Populate the data grid
+    $data['grid_rows'][] = array(
+      '<a href="/node/' . $v->nid . '">' . $node['title'] . '</a>' . 
+            (($node['created'] != $node['changed']) ? ' <span class="marker">updated</span>' : ''),
+      $node['type'],
+      '<a property="foaf:name" typeof="sioc:UserAccount" about="/user/' . $node['uid']
+        . '" xml:lang="" class="username" title="View user profile." href="/user/' . $node['uid'] 
+        . '">' .$author . '</a>',
+      ($node['status']) ? 'published' : 'unpublished',
+      date('d.m.Y H:i:s', $node['changed']),
+      date('d.m.Y H:i:s', $node['created']),
+      $v->library,
+      '<ul class="links inline">
+         <li class="edit first"><a href="/node/' . $v->nid . '/edit?destination=admin/content">edit</a></li>
+         <li class="delete last"><a href="/node/' . $v->nid . '/delete?destination=admin/content">delete</a></li>
+       </ul>',
+      theme('bpi_flag_dropdown'),
+    );
+  }
 
   return drupal_get_form('bpi_syndicated_nodes_form', $data);
 }
@@ -563,45 +576,47 @@ function bpi_favorites_form($form = array(), &$form_state, $form_data = array())
  */
 function bpi_updates() {
   $data = array();
-
-  $data['grid_rows'] = array(
-    array(
-      '<a href="/node/1">Pa gensyn i Helsingor 2011</a> <span class="updated">updated</span>',
-      'Article',
-      '<a property="foaf:name" typeof="sioc:UserAccount" about="/user/1" xml:lang="" class="username" title="View user profile." href="/user/1">Birgitte Hansen</a>',
-      'published',
-      '01/04/2011 - 17:51',
-      '04/05/2011 - 16:56',
-      'Gladsaxe Bibliotek',
-      '<ul class="links inline"><li class="edit first"><a href="/node/1/edit?destination=admin/content">edit</a></li>
-<li class="delete last"><a href="/node/1/delete?destination=admin/content">delete</a></li>
-</ul>',
-      theme('bpi_flag_dropdown')),
-    array(
-      '<a href="/node/1">Easy Magazine 2010</a> <span class="new">new</span>',
-      'Article',
-      '<a property="foaf:name" typeof="sioc:UserAccount" about="/user/1" xml:lang="" class="username" title="View user profile." href="/user/1">Ulla Terkelsen</a>',
-      'published',
-      '02/15/2011 - 04:12',
-      '04/05/2011 - 16:58',
-      'Frederiksebrg Bibliotekerne',
-      '<ul class="links inline"><li class="edit first"><a href="/node/1/edit?destination=admin/content">edit</a></li>
-<li class="delete last"><a href="/node/1/delete?destination=admin/content">delete</a></li>
-</ul>',
-      theme('bpi_flag_dropdown')),
-    array(
-      '<a href="/node/1">Easy Screen pa Svendborg Bibliotek</a> <span class="new">new</span>',
-      'Article',
-      '<a property="foaf:name" typeof="sioc:UserAccount" about="/user/1" xml:lang="" class="username" title="View user profile." href="/user/1">Barack Obama</a>',
-      'draft',
-      '03/08/2011 - 14:34',
-      '04/05/2011 - 14:34',
-      'Washington Centralbibliotek',
-      '<ul class="links inline"><li class="edit first"><a href="/node/1/edit?destination=admin/content">edit</a></li>
-<li class="delete last"><a href="/node/1/delete?destination=admin/content">delete</a></li>
-</ul>',
-      theme('bpi_flag_dropdown')),
-  );
+  $data['grid_rows'] = array();
+  
+  $updated = db_select('node')
+    ->fields('node', array('nid', 'type', 'title', 'uid', 'status', 'created', 'changed'))
+    ->execute()
+    ->fetchAll();
+  
+  var_dump($updated);
+  
+  foreach($updated as $k=>$v) {
+    
+    $author = db_select('users')
+      ->fields('users', array('name'))
+      ->condition('uid', $v->uid)
+      ->execute()
+      ->fetchField(0);
+    
+    $library = db_select('bpi_node')
+      ->fields('bpi_node', array('library'))
+      ->condition('nid', $v->nid)
+      ->execute()
+      ->fetchField(0);
+    
+    $data['grid_rows'][] = array(
+      '<a href="/node/' . $v->nid . '">' . $v->title . '</a>'
+        . (($v->created != $v->changed) ? ' <span class="updated">updated</span>' : ' <span class="new">new</span>'),
+      $v->type,
+      '<a property="foaf:name" typeof="sioc:UserAccount" about="/user/' . $v->uid 
+            . '" xml:lang="" class="username" title="View user profile." href="/user/' . $v->uid 
+            .'">' . $author . '</a>',
+      ($v->status) ? 'published' : 'unpublished',
+      date('d.m.Y H:i:s', $v->changed),
+      date('d.m.Y H:i:s', $v->created),
+      $library,
+      '<ul class="links inline">
+         <li class="edit first"><a href="/node/' . $v->nid . '/edit?destination=admin/content">edit</a></li>
+         <li class="delete last"><a href="/node/' . $v->nid . '/delete?destination=admin/content">delete</a></li>
+      </ul>',
+      theme('bpi_flag_dropdown'),
+    );
+  }
 
   return drupal_get_form('bpi_updates_form', $data);
 }
