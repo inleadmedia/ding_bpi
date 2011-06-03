@@ -65,7 +65,15 @@ function bpi_menu() {
     'page callback' => 'bpi_channels_view',
     'page arguments' => array(4),
     'access arguments' => array('access administration pages'),
-    'type' => MENU_CALLBACK
+    'type' => MENU_CALLBACK,
+  );
+  
+  // Add channel link
+  $items['admin/content/channels/add'] = array(
+    'title' => 'New channel',
+    'description' => 'Create channels and assign nodes',
+    'page callback' => 'bpi_channels_add',
+    'access arguments' => array('access administration pages'),
   );
 
   // Favorites page
@@ -120,6 +128,18 @@ function bpi_menu() {
   );
 
   return $items;
+}
+
+function bpi_menu_local_tasks_alter(&$data, $router_item, $root_path) {
+  if ($root_path == 'admin/content/channels') {
+    $item = menu_get_item('admin/content/channels/add');
+    if ($item['access']) {
+      $data['actions']['output'][] = array(
+        '#theme' => 'menu_local_action',
+        '#link' => $item,
+      );
+    }
+  }
 }
 
 function bpi_form_alter(&$form, &$form_state, $form_id) {
@@ -428,6 +448,10 @@ function bpi_channels_form($form = array(), &$form_state, $form_data = array()) 
 }
 
 function bpi_channels_view($channel_id) {
+  
+}
+
+function bpi_channels_add() {
   
 }
 
