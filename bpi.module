@@ -145,6 +145,11 @@ function bpi_menu() {
   return $items;
 }
 
+/**
+ * Implements menu_local_tasks_alter
+ * 
+ * Adds a new menu item to specific pages
+ */
 function bpi_menu_local_tasks_alter(&$data, $router_item, $root_path) {
   if ($root_path == 'admin/content/channels') {
     $item = menu_get_item('admin/content/channels/add');
@@ -157,6 +162,11 @@ function bpi_menu_local_tasks_alter(&$data, $router_item, $root_path) {
   }
 }
 
+/**
+ * Implement hook_form_alter
+ * 
+ * Alters the standart node form
+ */
 function bpi_form_alter(&$form, &$form_state, $form_id) {
   if ($form_id == 'node_admin_content') {
     // Cols and rows
@@ -179,6 +189,11 @@ function bpi_form_alter(&$form, &$form_state, $form_id) {
   }
 }
 
+/**
+ * Implements hook_node_insert
+ * 
+ * Saves custom node data
+ */
 function bpi_node_insert($node) {
   db_insert('bpi_node')
   ->fields(array(
@@ -311,7 +326,7 @@ function bpi_syndicated_nodes() {
     // Populate the data grid
     $data['grid_rows'][] = array(
       '<a href="/node/' . $v->nid . '">' . $node['title'] . '</a>' . 
-            (($node['created'] != $node['changed']) ? ' <span class="marker">updated</span>' : ''),
+        theme('mark', array('type' => node_mark($v->nid, $node['changed']))),
       $node['type'],
       '<a property="foaf:name" typeof="sioc:UserAccount" about="/user/' . $node['uid']
         . '" xml:lang="" class="username" title="View user profile." href="/user/' . $node['uid'] 
@@ -331,7 +346,17 @@ function bpi_syndicated_nodes() {
   return drupal_get_form('bpi_syndicated_nodes_form', $data);
 }
 
-function bpi_syndicated_nodes_form($form = array(), &$form_state, $form_data = array()) {
+/**
+ * Syndicated nodes form
+ * 
+ * @param $form
+ *   Form structure
+ * @param $form_state
+ *   Form state
+ * @param $form_data
+ *   Additional data passed to form
+ */
+function bpi_syndicated_nodes_form($form, &$form_state, $form_data = array()) {
   $form['sort_filter'] = array(
     '#type' => 'fieldset',
     '#title' => 'SHOW ONLY ITEMS WHERE',
@@ -396,6 +421,14 @@ function bpi_syndicated_nodes_form($form = array(), &$form_state, $form_data = a
   return $form;
 }
 
+/**
+ * AJAX responder for node syndication
+ * 
+ * @param $type
+ *   Query type
+ * @param $node_id
+ *   Node id 
+ */
 function bpi_ajax_node_syndicate($type = 'ajax', $node_id = 0) {
   if ($type == 'ajax') {
     if ($node_id > 0) {
@@ -431,14 +464,20 @@ function bpi_channels() {
       ->execute()
       ->fetchField(0);
     
+    $channel = db_select('bpi_channel')
+      ->fields('bpi_channel', array('name'))
+      ->condition('id', $v->channel)
+      ->execute()
+      ->fetchField(0);
+    
     $data['grid_rows'][] = array(
-      $v->channel . '<br />' . 
-        l('Invite', 'admin/content/ajax/channel/1/invite', array('attributes' => array('class' => array('use-ajax')))),
-      $count . '<br /><a href="/admin/content/channels/view/1">view nodes</a>',
+      $channel . '<br />' . 
+        l('Invite', 'admin/content/ajax/channel/' . $v->channel . '/invite', array('attributes' => array('class' => array('use-ajax')))),
+      $count . '<br /><a href="/admin/content">view nodes</a>',
       '0',
       '<ul class="links inline">
-         <li class="edit first"><a href="/admin/content/channel/1/edit">edit</a></li>
-         <li class="delete last"><a href="/admin/content/channel/1/delete">delete</a></li>
+         <li class="edit first"><a href="/admin/content">edit</a></li>
+         <li class="delete last"><a href="/admin/content">delete</a></li>
       </ul>'
     );
   }
@@ -446,7 +485,17 @@ function bpi_channels() {
   return drupal_get_form('bpi_channels_form', $data);
 }
 
-function bpi_channels_form($form = array(), &$form_state, $form_data = array()) {
+/**
+ * Channels page form
+ * 
+ * @param $form
+ *   Form structure
+ * @param $form_state
+ *   Form state
+ * @param $form_data
+ *   Additional data passed to form
+ */
+function bpi_channels_form($form, &$form_state, $form_data) {
   $header = array(
     t('Name'),
     t('Nodes'),
@@ -471,7 +520,17 @@ function bpi_channels_add() {
   
 }
 
-function bpi_channels_invite_form($form = array(), &$form_state, $form_data = array()) {
+/**
+ * Form for channel invitation
+ * 
+ * @param $form
+ *   Form structure
+ * @param $form_state
+ *   Form state
+ * @param $form_data
+ *   Additional data passed to form
+ */
+function bpi_channels_invite_form($form, &$form_state, $form_data) {
   $form['name'] = array(
     '#type' => 'textfield',
     '#name' => 'name',
@@ -500,8 +559,8 @@ function bpi_channels_invite_form($form = array(), &$form_state, $form_data = ar
 /**
  * Ajax callback method, preparing commands for invite popup
  * 
- * @param string $type
- * @param integer $channel_id
+ * @param $type
+ * @param $channel_id
  */
 function bpi_ajax_channel_invite($type = 'ajax', $channel_id = 0) {
   if ($type == 'ajax') {
@@ -522,7 +581,7 @@ function bpi_ajax_channel_invite($type = 'ajax', $channel_id = 0) {
  * Ajax callback method to close invite form
  */
 function bpi_ajax_channel_invite_close() {
-		return array('#type' => 'ajax', '#commands' => array(ajax_command_ding_popup_close('invite_form')));
+  return array('#type' => 'ajax', '#commands' => array(ajax_command_ding_popup_close('invite_form')));
 }
 
 /**
@@ -590,7 +649,17 @@ function bpi_favorites() {
   return drupal_get_form('bpi_favorites_form', $data);
 }
 
-function bpi_favorites_form($form = array(), &$form_state, $form_data = array()) {
+/**
+ * Favorites page form
+ * 
+ * @param $form
+ *   Form structure
+ * @param $form_state
+ *   Form state
+ * @param $form_data
+ *   Additional data passed to form
+ */
+function bpi_favorites_form($form, &$form_state, $form_data) {
   $header = array(
     array('data' => ''),
     array('data' => 'title', 'field' => 'n.title'),
@@ -600,17 +669,6 @@ function bpi_favorites_form($form = array(), &$form_state, $form_data = array())
     array('data' => 'updated', 'field' => 'n.updated'),
     'operations',
   );
-
-  /*$form['filter'] = array(
-    '#type' => 'radios',
-    '#options' => array(
-      '<img src="/'.BPI_PATH.'/img/flag_black.jpg" width="16" height="16" alt="16" /> (All)',
-      '<img src="/'.BPI_PATH.'/img/flag_green.jpg" width="16" height="16" alt="16" />',
-      '<img src="/'.BPI_PATH.'/img/flag_yellow.jpg" width="16" height="16" alt="16" />',
-      '<img src="/'.BPI_PATH.'/img/flag_red.jpg" width="16" height="16" alt="16" />',
-    ),
-    '#title' => 'Show only',
-  );*/
 
   $form['grid'] = array(
     '#type' => 'tableselect',
@@ -649,6 +707,10 @@ function bpi_updates() {
     ->fetchAll();
   
   foreach($updated as $k=>$v) {
+    if (node_mark($v->nid, $v->changed) == 0) {
+      continue;
+    }
+    
     // Fetch node author
     $author = db_select('users')
       ->fields('users', array('name'))
@@ -692,7 +754,17 @@ function bpi_updates() {
   return drupal_get_form('bpi_updates_form', $data);
 }
 
-function bpi_updates_form($form = array(), &$form_state, $form_data = array()) {
+/**
+ * Updates page form
+ * 
+ * @param $form
+ *   Form structure
+ * @param $form_state
+ *   Form state
+ * @param $form_data
+ *   Additional data passed to form
+ */
+function bpi_updates_form($form, &$form_state, $form_data) {
   $header = array(
     array('data' => t('Title'), 'field' => 'node_title'),
     array('data' => t('Type'), 'field' => 'node_type'),
@@ -734,7 +806,17 @@ function bpi_search() {
   return drupal_get_form('bpi_search_form', $data);
 }
 
-function bpi_search_form($form = array(), &$form_state, $form_data = array()) {
+/**
+ * Search page form
+ * 
+ * @param $form
+ *   Form structure
+ * @param $form_state
+ *   Form state
+ * @param $form_data
+ *   Additional data passed to form
+ */
+function bpi_search_form($form, &$form_state, $form_data) {
 
   $form['search'] = array(
     '#type' => 'textfield',
@@ -838,7 +920,6 @@ function bpi_well_nodes() {
   return $output;
 }
 
-
 function bpi_node_edit($node_id) {
   // @todo
   // Here should be placed node retrieval routine
@@ -878,7 +959,7 @@ function template_preprocess_bpi_node_edit_form(&$variables) {
   
 }
 
-function bpi_node_edit_form($form = array(), &$form_state, $form_data = array()) {
+function bpi_node_edit_form($form, &$form_state, $form_data) {
   $form['id'] = array(
     '#type' => 'hidden',
     '#value' => $form_data['id'],
@@ -1014,11 +1095,19 @@ function bpi_node_info($node_id = 0) {
   return $data;
 }
 
-function bpi_node_edit_form_submit($form = array(), &$form_state) {
+function bpi_node_edit_form_submit($form, &$form_state) {
   
 }
 
-function bpi_subscribe_form($form = array(), &$form_state) {
+/**
+ * Subscriptions page form
+ * 
+ * @param $form
+ *   Form structure
+ * @param $form_state
+ *   Form state
+ */
+function bpi_subscribe_form($form, &$form_state) {
   $form['subscribe_audience'] = array(
     '#type' => 'checkboxes',
     '#title' => 'Target audience:',
@@ -1045,7 +1134,7 @@ function bpi_subscribe_form($form = array(), &$form_state) {
     '#options' => array(
       'Library A',
       'Library B',
-      'Library Ci'
+      'Library C'
     ),
   );
 
