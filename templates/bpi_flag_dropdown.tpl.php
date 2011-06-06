@@ -8,7 +8,7 @@ $flags = array('flag_black', 'flag_green', 'flag_yellow', 'flag_red');
   <select name="favorites">
     <?php
     foreach($flags as $k=>$v) {
-      echo '<option value="' . ($k + 1) . '_'. mt_rand() .'" ' . ((($k + 1) == $selected) ? 'selected="selected"' : '') .'>' . $k . '</option>';
+      echo '<option title="/' . BPI_PATH . '/img/' . $v . '.jpg" value="' . ($k + 1) . '_'. mt_rand() .'" ' . (($k == $selected) ? 'selected="selected"' : '') .'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</option>';
     }
     ?>
   </select>

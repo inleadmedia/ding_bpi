@@ -538,8 +538,42 @@ function bpi_ajax_channel_subscribed_users($type, $channel_id) {
  */
 function bpi_favorites() {
   $data = array();
+  $data['grid_rows'] = array();
+  
+  $favorites = db_select('bpi_node')
+    ->fields('bpi_node', array('nid', 'favorite'))
+    ->condition('favorite', '0', '>')
+    ->execute()
+    ->fetchAll();
+  
+  foreach($favorites as $k=>$v) {
+    $node = db_select('node')
+      ->fields('node', array('title', 'type', 'uid', 'status', 'created', 'changed'))
+      ->condition('nid', $v->nid)
+      ->execute()
+      ->fetchAssoc();
+    
+    $author = db_select('users')
+      ->fields('users', array('name'))
+      ->condition('uid', $node['uid'])
+      ->execute()
+      ->fetchField(0);
+    
+    $data['grid_rows'][] = array(
+      theme('bpi_flag_dropdown', array('selected' => $v->favorite)),
+      '<a href="/node/' . $v->nid . '">' . $node['title'] . '</a>',
+      $node['type'],
+      '<a property="foaf:name" typeof="sioc:UserAccount" about="/user/' . $node['uid'] . '" xml:lang="" class="username" title="View user profile." href="/user/' . $node['uid'] . '">' . $author . '</a>',
+      ($node['status']) ? 'Published' : 'Unpublished',
+      date('d.m.Y H:i:s', $node['changed']),
+      '<ul class="links inline">
+         <li class="edit first"><a href="/node/' . $v->nid . '/edit?destination=admin/content">edit</a></li>
+        <li class="delete last"><a href="/node/' . $v->nid . '/delete?destination=admin/content">delete</a></li>
+      </ul>'
+    );
+  }
 
-  $data['rows'] = array(
+  /*$data['rows'] = array(
      array(
       '<img src="'.BPI_PATH.'/img/flag_green.jpg" width="16" height="16" alt="" />',
       '<a href="/node/1">Pa gensyn i Helsingor 2011</a>',
@@ -562,7 +596,7 @@ function bpi_favorites() {
 <li class="delete last"><a href="/node/1/delete?destination=admin/content">delete</a></li>
 </ul>',
     ),
-  );
+  );*/
 
   return drupal_get_form('bpi_favorites_form', $data);
 }
@@ -578,21 +612,21 @@ function bpi_favorites_form($form = array(), &$form_state, $form_data = array())
     'operations',
   );
 
-  $form['filter'] = array(
+  /*$form['filter'] = array(
     '#type' => 'radios',
     '#options' => array(
-      '<img src="'.BPI_PATH.'/img/flag_black.jpg" width="16" height="16" alt="16" /> (All)',
-      '<img src="'.BPI_PATH.'/img/flag_green.jpg" width="16" height="16" alt="16" />',
-      '<img src="'.BPI_PATH.'/img/flag_yellow.jpg" width="16" height="16" alt="16" />',
-      '<img src="'.BPI_PATH.'/img/flag_red.jpg" width="16" height="16" alt="16" />',
+      '<img src="/'.BPI_PATH.'/img/flag_black.jpg" width="16" height="16" alt="16" /> (All)',
+      '<img src="/'.BPI_PATH.'/img/flag_green.jpg" width="16" height="16" alt="16" />',
+      '<img src="/'.BPI_PATH.'/img/flag_yellow.jpg" width="16" height="16" alt="16" />',
+      '<img src="/'.BPI_PATH.'/img/flag_red.jpg" width="16" height="16" alt="16" />',
     ),
     '#title' => 'Show only',
-  );
+  );*/
 
   $form['grid'] = array(
     '#type' => 'tableselect',
     '#header' => $header,
-    '#options' => $form_data['rows'],
+    '#options' => $form_data['grid_rows'],
   );
 
   $form['operations'] = array(
@@ -633,12 +667,12 @@ function bpi_updates() {
       ->execute()
       ->fetchField(0);
     
-    // Fetch node library
-    $library = db_select('bpi_node')
-      ->fields('bpi_node', array('library'))
+    // Fetch bpi_node data
+    $bpi_node = db_select('bpi_node')
+      ->fields('bpi_node', array('library', 'favorite'))
       ->condition('nid', $v->nid)
       ->execute()
-      ->fetchField(0);
+      ->fetchAssoc();
     
     // Populate the data grid
     $data['grid_rows'][] = array(
@@ -651,12 +685,12 @@ function bpi_updates() {
       ($v->status) ? 'published' : 'unpublished',
       date('d.m.Y H:i:s', $v->changed),
       date('d.m.Y H:i:s', $v->created),
-      $library,
+      $bpi_node['library'],
       '<ul class="links inline">
          <li class="edit first"><a href="/node/' . $v->nid . '/edit?destination=admin/content">edit</a></li>
          <li class="delete last"><a href="/node/' . $v->nid . '/delete?destination=admin/content">delete</a></li>
       </ul>',
-      theme('bpi_flag_dropdown'),
+      theme('bpi_flag_dropdown', array('selected' => $bpi_node['favorite'])),
     );
   }
 

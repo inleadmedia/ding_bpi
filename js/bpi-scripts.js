@@ -1,3 +1,3 @@
 jQuery(document).ready(function(){
-  //jQuery('.dropdown select').msDropDown();
+  jQuery('.dropdown select').msDropDown();
 });
