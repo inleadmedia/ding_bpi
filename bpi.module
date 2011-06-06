@@ -672,8 +672,7 @@ function bpi_updates() {
     
     // Populate the data grid
     $data['grid_rows'][] = array(
-      '<a href="/node/' . $v->nid . '">' . $v->title . '</a>'
-        . (($v->created != $v->changed) ? ' <span class="updated">updated</span>' : ((!$is_new) ? '<span class="new">new</span>' : '')),
+      '<a href="/node/' . $v->nid . '">' . $v->title . '</a>' . theme('mark', array('type' => node_mark($v->nid, $v->changed))),
       $v->type,
       '<a property="foaf:name" typeof="sioc:UserAccount" about="/user/' . $v->uid 
             . '" xml:lang="" class="username" title="View user profile." href="/user/' . $v->uid 
