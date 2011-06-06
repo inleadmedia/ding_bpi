@@ -20,7 +20,8 @@ function bpi_install() {
     for ($i = 0; $i < 10; $i++) {
       $new_node = new stdClass();
       $new_node->title = 'Dummy node ' . $i;
-      $new_node->body = 'Dummy content created at ' . time() . ' with index ' . $i;
+      $new_node->body['und']['0']['format'] = 1;
+      $new_node->body['und']['0']['value'] = 'Dummy content created at ' . time() . ' with index ' . $i;
       $new_node->type = 'article';
       $new_node->language = 'und';
       $new_node->status = 1;
