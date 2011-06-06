@@ -663,10 +663,17 @@ function bpi_updates() {
       ->execute()
       ->fetchAssoc();
     
+    $is_new = db_select('history')
+      ->fields('history', array('uid'))
+      ->condition('nid', $v->nid)
+      ->condition('uid', $v->uid)
+      ->execute()
+      ->rowCount();
+    
     // Populate the data grid
     $data['grid_rows'][] = array(
       '<a href="/node/' . $v->nid . '">' . $v->title . '</a>'
-        . (($v->created != $v->changed) ? ' <span class="updated">updated</span>' : ' <span class="new">new</span>'),
+        . (($v->created != $v->changed) ? ' <span class="updated">updated</span>' : ((!$is_new) ? '<span class="new">new</span>' : '')),
       $v->type,
       '<a property="foaf:name" typeof="sioc:UserAccount" about="/user/' . $v->uid 
             . '" xml:lang="" class="username" title="View user profile." href="/user/' . $v->uid 
