@@ -573,31 +573,6 @@ function bpi_favorites() {
     );
   }
 
-  /*$data['rows'] = array(
-     array(
-      '<img src="'.BPI_PATH.'/img/flag_green.jpg" width="16" height="16" alt="" />',
-      '<a href="/node/1">Pa gensyn i Helsingor 2011</a>',
-      'Article',
-      '<a property="foaf:name" typeof="sioc:UserAccount" about="/user/1" xml:lang="" class="username" title="View user profile." href="/user/1">Birgitte Hansen</a>',
-      'published',
-      '04/09/2011 - 14:07',
-      '<ul class="links inline"><li class="edit first"><a href="/node/1/edit?destination=admin/content">edit</a></li>
-<li class="delete last"><a href="/node/1/delete?destination=admin/content">delete</a></li>
-</ul>',
-    ),
-    array(
-      '<img src="'.BPI_PATH.'/img/flag_yellow.jpg" width="16" height="16" alt="" />',
-      '<a href="/node/1">Easy Magazine 2010</a>',
-      'Article',
-      '<a property="foaf:name" typeof="sioc:UserAccount" about="/user/1" xml:lang="" class="username" title="View user profile." href="/user/1">Ulla Terkelsen</a>',
-      'published',
-      '04/09/2011 - 14:23',
-      '<ul class="links inline"><li class="edit first"><a href="/node/1/edit?destination=admin/content">edit</a></li>
-<li class="delete last"><a href="/node/1/delete?destination=admin/content">delete</a></li>
-</ul>',
-    ),
-  );*/
-
   return drupal_get_form('bpi_favorites_form', $data);
 }
 
