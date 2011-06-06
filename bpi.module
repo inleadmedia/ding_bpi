@@ -12,9 +12,9 @@ define('BPI_PATH', drupal_get_path('module', 'bpi'));
  * Implements hook_init
  */
 function bpi_init() {
-  drupal_add_js(BPI_PATH . '/js/jquery.dd.js');
-  drupal_add_js(BPI_PATH . '/js/bpi-scripts.js');
-  drupal_add_css(BPI_PATH . '/css/bpi-styles.css');
+  drupal_add_js(BPI_PATH . '/js/jquery_dd.js');
+  drupal_add_js(BPI_PATH . '/js/bpi_scripts.js');
+  drupal_add_css(BPI_PATH . '/css/bpi_styles.css');
   drupal_add_css(BPI_PATH . '/css/dd.css');
   drupal_add_library('system', 'drupal.ajax');
   drupal_add_library('system', 'jquery.form');
@@ -107,11 +107,25 @@ function bpi_menu() {
     'weight' => '7',
   );
   
-  $items['admin/content/ajax/node/%/invite'] = array(
+  $items['admin/content/ajax/channel/%/invite'] = array(
     'page arguments' => array(2, 4),
     'access arguments' => array('access administration pages'),
     'type' => MENU_CALLBACK,
     'page callback' => 'bpi_ajax_channel_invite',
+  );
+  
+  $items['admin/content/ajax/channel/%/edit'] = array(
+    'page arguments' => array(2, 4),
+    'access arguments' => array('access administration pages'),
+    'type' => MENU_CALLBACK,
+    'page callback' => 'bpi_ajax_channel_edit',
+  );
+  
+  $items['admin/content/ajax/channel/%/delete'] = array(
+    'page arguments' => array(2, 4),
+    'access arguments' => array('access administration pages'),
+    'type' => MENU_CALLBACK,
+    'page callback' => 'bpi_ajax_channel_delete',
   );
 
   $items['admin/content/ajax/node/%/syndicate'] = array(
@@ -423,8 +437,8 @@ function bpi_channels() {
       $count . '<br /><a href="/admin/content/channels/view/1">view nodes</a>',
       '0',
       '<ul class="links inline">
-         <li class="edit first"><a href="/node/1/edit?destination=admin/content">edit</a></li>
-         <li class="delete last"><a href="/node/1/delete?destination=admin/content">delete</a></li>
+         <li class="edit first"><a href="/admin/content/channel/1/edit">edit</a></li>
+         <li class="delete last"><a href="/admin/content/channel/1/delete">delete</a></li>
       </ul>'
     );
   }

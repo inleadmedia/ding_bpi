@@ -1,8 +1,18 @@
 <?php
 
 function bpi_install() {
-  $channels = array('BBC', 'EuroNews');
   $count = db_query("SELECT COUNT(*) AS CNT FROM {node} WHERE type = 'article'")->fetchField(0);
+  
+  db_insert('bpi_channel')
+    ->fields(array('name'))
+    ->values(array('name' => 'EURONEWS'))
+    ->values(array('name' => 'BBC'))
+    ->execute();
+  
+  $cid = db_select('bpi_channel')
+    ->fields('bpi_channel', array('id'))
+    ->execute()
+    ->fetchAll();
 
   if ($count < 3) {
     global $user;
@@ -18,7 +28,7 @@ function bpi_install() {
       $new_node->uid = $user->uid;
       $new_node->syndicated = mt_rand(0, 1);
       $new_node->library = mt_rand(10000, 90000);
-      $new_node->channel = $channels[mt_rand(0, 1)];
+      $new_node->channel = $cid[mt_rand(0, count($cid) - 1)]->id;
       $new_node->favorite = mt_rand(0, 3);
 
       node_save($new_node);
@@ -28,7 +38,7 @@ function bpi_install() {
 
 function bpi_schema() {
   $schema['bpi_node'] = array(
-    'description' => 'Custom data for BPI prototype',
+    'description' => 'Custom node data for BPI prototype',
     'fields' => array(
       'id' => array(
         'description' => 'Record id',
@@ -57,10 +67,8 @@ function bpi_schema() {
       ),
       'channel' => array(
         'description' => 'Node\'s assigned channel',
-        'type' => 'varchar',
-        'length' => '1024',
-        'not null' => TRUE,
-        'default' => '0',
+        'type' => 'int',
+        'unsigned' => TRUE,
       ),
       'favorite' => array(
         'description' => 'Whether the node is marked favorite',
@@ -73,9 +81,39 @@ function bpi_schema() {
     'primary key' => array('id'),
   );
   
+  $schema['bpi_channel'] = array(
+    'description' => 'Custom channel data for BPI prototype',
+    'fields' => array(
+      'id' => array(
+        'description' => 'Entry id',
+        'type' => 'serial',
+        'not null' => TRUE,
+      ),
+      'name' => array(
+        'description' => 'Channel name',
+        'type' => 'varchar',
+        'length' => 64,
+        'not null' => TRUE,
+      )
+    ),
+    'primary key' => array('id'),
+  );
+  
   return $schema;
 }
 
 function bpi_uninstall() {
+  $nodes = db_select('bpi_node')
+    ->fields('bpi_node', array('nid'))
+    ->execute()
+    ->fetchAll();
+  
+  foreach($nodes as $k=>$v) {
+    db_delete('node')
+      ->condition('nid', $v->nid)
+      ->execute();
+  }
+  
   db_drop_table('bpi_node');
+  db_drop_table('bpi_channel');
 }
