@@ -12,10 +12,7 @@ define('BPI_PATH', drupal_get_path('module', 'bpi'));
  * Implements hook_init
  */
 function bpi_init() {
-  drupal_add_js(BPI_PATH . '/js/jquery_dd.js');
-  drupal_add_js(BPI_PATH . '/js/bpi_scripts.js');
   drupal_add_css(BPI_PATH . '/css/bpi_styles.css');
-  drupal_add_css(BPI_PATH . '/css/dd.css');
   drupal_add_library('system', 'drupal.ajax');
   drupal_add_library('system', 'jquery.form');
 }
@@ -186,6 +183,20 @@ function bpi_form_alter(&$form, &$form_state, $form_id) {
 
     $form['admin']['nodes']['#header'] = $header;
     $form['admin']['nodes']['#options'] = $rows;
+    
+    // Add contextual menu to content grid
+    $form['admin']['options']['#suffix'] = theme('bpi_contextual_menu');
+  
+    $form['#attached']['js'] = array(
+      BPI_PATH . '/js/context_menu.js',
+      BPI_PATH . '/js/dropdown.js',
+      BPI_PATH . '/js/bpi_grid_scripts.js'
+    );
+
+    $form['#attached']['css'] = array(
+      BPI_PATH . '/css/dropdown.css',
+      BPI_PATH . '/css/context_menu.css'
+    );
   }
 }
 
@@ -286,6 +297,12 @@ function bpi_theme($existing, $type, $theme, $path) {
     'variables' => array('node_id' => NULL),
     'path' => BPI_PATH . '/templates',
     'template' => 'bpi_edit_node_info'
+  );
+  
+  $hooks['bpi_contextual_menu'] = array(
+    'variables' => array(),
+    'path' => BPI_PATH . '/templates',
+    'template' => 'bpi_contextual_menu'
   );
 
   return $hooks;
@@ -416,6 +433,18 @@ function bpi_syndicated_nodes_form($form, &$form_state, $form_data = array()) {
     '#type' => 'tableselect',
     '#header' => $header,
     '#options' => $form_data['grid_rows'],
+    '#suffix' => theme('bpi_contextual_menu'),
+  );
+  
+  $form['#attached']['js'] = array(
+    BPI_PATH . '/js/context_menu.js',
+    BPI_PATH . '/js/dropdown.js',
+    BPI_PATH . '/js/bpi_grid_scripts.js'
+  );
+
+  $form['#attached']['css'] = array(
+    BPI_PATH . '/css/dropdown.css',
+    BPI_PATH . '/css/context_menu.css'
   );
 
   return $form;
@@ -685,6 +714,18 @@ function bpi_favorites_form($form, &$form_state, $form_data) {
   $form['submit'] = array(
     '#type' => 'submit',
     '#value' => 'Submit',
+    '#suffix' => theme('bpi_contextual_menu'),
+  );
+  
+  $form['#attached']['js'] = array(
+    BPI_PATH . '/js/context_menu.js',
+    BPI_PATH . '/js/dropdown.js',
+    BPI_PATH . '/js/bpi_grid_scripts.js'
+  );
+
+  $form['#attached']['css'] = array(
+    BPI_PATH . '/css/dropdown.css',
+    BPI_PATH . '/css/context_menu.css'
   );
 
   return $form;
@@ -789,6 +830,18 @@ function bpi_updates_form($form, &$form_state, $form_data) {
     '#type' => 'tableselect',
     '#header' => $header,
     '#options' => $form_data['grid_rows'],
+    '#suffix' => theme('bpi_contextual_menu'),
+  );
+  
+  $form['#attached']['js'] = array(
+    BPI_PATH . '/js/context_menu.js',
+    BPI_PATH . '/js/dropdown.js',
+    BPI_PATH . '/js/bpi_grid_scripts.js'
+  );
+
+  $form['#attached']['css'] = array(
+    BPI_PATH . '/css/dropdown.css',
+    BPI_PATH . '/css/context_menu.css'
   );
 
   return $form;
@@ -870,7 +923,19 @@ function bpi_search_form($form, &$form_state, $form_data) {
 
   $form['group']['young'] = array(
     '#type' => 'checkbox',
-    '#title' => 'Young'
+    '#title' => 'Young',
+    '#suffix' => theme('bpi_contextual_menu'),
+  );
+  
+  $form['#attached']['js'] = array(
+    BPI_PATH . '/js/context_menu.js',
+    BPI_PATH . '/js/dropdown.js',
+    BPI_PATH . '/js/bpi_grid_scripts.js'
+  );
+
+  $form['#attached']['css'] = array(
+    BPI_PATH . '/css/dropdown.css',
+    BPI_PATH . '/css/context_menu.css'
   );
 
   return $form;
