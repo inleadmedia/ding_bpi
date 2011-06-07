@@ -924,7 +924,6 @@ function bpi_search_form($form, &$form_state, $form_data) {
   $form['group']['young'] = array(
     '#type' => 'checkbox',
     '#title' => 'Young',
-    '#suffix' => theme('bpi_contextual_menu'),
   );
   
   $form['#attached']['js'] = array(
@@ -934,8 +933,7 @@ function bpi_search_form($form, &$form_state, $form_data) {
   );
 
   $form['#attached']['css'] = array(
-    BPI_PATH . '/css/dropdown.css',
-    BPI_PATH . '/css/context_menu.css'
+    BPI_PATH . '/css/dropdown.css'
   );
 
   return $form;
