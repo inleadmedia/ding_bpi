@@ -735,6 +735,24 @@ function bpi_favorites_form($form, &$form_state, $form_data) {
     array('data' => 'updated', 'field' => 'n.updated'),
     'operations',
   );
+  
+  $form['show_green'] = array(
+    '#type' => 'checkbox',
+    '#default_value' => 1,
+    '#prefix' => '<img src="/' . BPI_PATH . '/img/flag_green.jpg" />',
+  );
+  
+  $form['show_yellow'] = array(
+    '#type' => 'checkbox',
+    '#default_value' => 1,
+    '#prefix' => '<img src="/' . BPI_PATH . '/img/flag_yellow.jpg" />',
+  );
+  
+  $form['show_red'] = array(
+    '#type' => 'checkbox',
+    '#default_value' => 1,
+    '#prefix' => '<img src="/' . BPI_PATH . '/img/flag_red.jpg" />',
+  );
 
   $form['grid'] = array(
     '#type' => 'tableselect',
@@ -744,7 +762,7 @@ function bpi_favorites_form($form, &$form_state, $form_data) {
 
   $form['operations'] = array(
     '#type' => 'select',
-    '#options' => array('Delete'),
+    '#options' => array('Remove from favorites'),
     '#title' => 'With selected: ',
   );
 

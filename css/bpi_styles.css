@@ -95,3 +95,7 @@ span.updated {
 span.new {
   color: green;
 }
+
+div.filters div.flag_filter {
+  float: left;
+}
