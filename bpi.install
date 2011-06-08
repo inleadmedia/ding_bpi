@@ -31,6 +31,8 @@ function bpi_install() {
       $new_node->library = mt_rand(10000, 90000);
       $new_node->channel = $cid[mt_rand(0, count($cid) - 1)]->id;
       $new_node->favorite = mt_rand(0, 3);
+      $new_node->publish_status = mt_rand(0, 5);
+      $new_node->in_well = mt_rand(0, 1);
 
       node_save($new_node);
     }
@@ -73,6 +75,20 @@ function bpi_schema() {
       ),
       'favorite' => array(
         'description' => 'Whether the node is marked favorite',
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'default' => 0,
+      ),
+      'publish_status' => array(
+        'description' => 'Whether node is syndicated by other libraries',
+        'type' => 'int',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+        'default' => 0,
+      ),
+      'in_well' => array(
+        'description' => 'Whether the node is in the well',
         'type' => 'int',
         'unsigned' => TRUE,
         'not null' => TRUE,

@@ -179,8 +179,25 @@ function bpi_form_alter(&$form, &$form_state, $form_id) {
     // Node ID required as array key
     foreach ($rows as $k => $v) {
       $rows[$k]['rating'] = theme('bpi_flag_dropdown');
+      
+      $node_status = db_select('bpi_node')
+        ->fields('bpi_node', array('publish_status', 'in_well'))
+        ->condition('nid', $k)
+        ->execute()
+        ->fetchAssoc();
+      
+      $rows[$k]['status'] = theme(
+        'bpi_node_publish_status',
+         array(
+           'syndicated' => $node_status['publish_status'],
+           'in_well' => $node_status['in_well']
+         )
+      );
     }
 
+    $header['status'] = array(
+      'data' => 'Publish status'
+    );
     $form['admin']['nodes']['#header'] = $header;
     $form['admin']['nodes']['#options'] = $rows;
     
@@ -213,6 +230,8 @@ function bpi_node_insert($node) {
     'library' => $node->library,
     'channel' => $node->channel,
     'favorite' => $node->favorite,
+    'publish_status' => $node->publish_status,
+    'in_well' => $node->in_well,
   ))
   ->execute();
 }
@@ -296,13 +315,19 @@ function bpi_theme($existing, $type, $theme, $path) {
   $hooks['node_info'] = array(
     'variables' => array('node_id' => NULL),
     'path' => BPI_PATH . '/templates',
-    'template' => 'bpi_edit_node_info'
+    'template' => 'bpi_edit_node_info',
   );
   
   $hooks['bpi_contextual_menu'] = array(
     'variables' => array(),
     'path' => BPI_PATH . '/templates',
-    'template' => 'bpi_contextual_menu'
+    'template' => 'bpi_contextual_menu',
+  );
+  
+  $hooks['bpi_node_publish_status'] = array(
+    'variables' => array('syndicated' => NULL, 'in_well' => NULL),
+    'path' => BPI_PATH . '/templates',
+    'template' => 'bpi_node_publish_status',
   );
 
   return $hooks;
@@ -320,7 +345,7 @@ function bpi_syndicated_nodes() {
   
   // Get the syndicated nodes id's
   $syndicated = db_select('bpi_node')
-    ->fields('bpi_node', array('nid', 'library', 'favorite'))
+    ->fields('bpi_node', array('nid', 'library', 'favorite', 'publish_status', 'in_well'))
     ->condition('syndicated', 1)
     ->execute()
     ->fetchAll();
@@ -328,7 +353,7 @@ function bpi_syndicated_nodes() {
   foreach($syndicated as $k=>$v) {
     // Fetch the node data
     $node = db_select('node')
-      ->fields('node', array('type', 'title', 'uid', 'status', 'created', 'changed'))
+      ->fields('node', array('type', 'title', 'uid', 'created', 'changed'))
       ->condition('nid', $v->nid)
       ->execute()
       ->fetchAssoc();
@@ -348,7 +373,13 @@ function bpi_syndicated_nodes() {
       '<a property="foaf:name" typeof="sioc:UserAccount" about="/user/' . $node['uid']
         . '" xml:lang="" class="username" title="View user profile." href="/user/' . $node['uid'] 
         . '">' .$author . '</a>',
-      ($node['status']) ? 'published' : 'unpublished',
+      theme(
+        'bpi_node_publish_status',
+         array(
+           'syndicated' => $v->publish_status,
+           'in_well' => $v->in_well
+         )
+      ),
       date('d.m.Y H:i:s', $node['changed']),
       date('d.m.Y H:i:s', $node['created']),
       $v->library,
@@ -421,7 +452,7 @@ function bpi_syndicated_nodes_form($form, &$form_state, $form_data = array()) {
     array('data' => t('Title'), 'field' => 'node_title'),
     array('data' => t('Type'), 'field' => 'node_type'),
     t('Author'),
-    array('data' => t('Status'), 'field' => 'node_status'),
+    array('data' => t('Publish Status'), 'field' => 'node_status'),
     array('data' => t('Updated'), 'field' => 'node_updated', 'sort' => 'desc'),
     array('data' => t('Syndicated'), 'field' => 'node_syndicated'),
     array('data' => t('Library'), 'field' => 'node_library'),
@@ -643,7 +674,7 @@ function bpi_favorites() {
   $data['grid_rows'] = array();
   
   $favorites = db_select('bpi_node')
-    ->fields('bpi_node', array('nid', 'favorite'))
+    ->fields('bpi_node', array('nid', 'favorite', 'publish_status', 'in_well'))
     ->condition('favorite', '0', '>')
     ->execute()
     ->fetchAll();
@@ -666,7 +697,13 @@ function bpi_favorites() {
       '<a href="/node/' . $v->nid . '">' . $node['title'] . '</a>',
       $node['type'],
       '<a property="foaf:name" typeof="sioc:UserAccount" about="/user/' . $node['uid'] . '" xml:lang="" class="username" title="View user profile." href="/user/' . $node['uid'] . '">' . $author . '</a>',
-      ($node['status']) ? 'Published' : 'Unpublished',
+      theme(
+        'bpi_node_publish_status',
+         array(
+           'syndicated' => $v->publish_status,
+           'in_well' => $v->in_well
+         )
+      ),
       date('d.m.Y H:i:s', $node['changed']),
       '<ul class="links inline">
          <li class="edit first"><a href="/node/' . $v->nid . '/edit?destination=admin/content">edit</a></li>
@@ -694,7 +731,7 @@ function bpi_favorites_form($form, &$form_state, $form_data) {
     array('data' => 'title', 'field' => 'n.title'),
     'type',
     array('data' => 'author', 'field' => 'n.author'),
-    'status',
+    'publish status',
     array('data' => 'updated', 'field' => 'n.updated'),
     'operations',
   );
@@ -761,7 +798,7 @@ function bpi_updates() {
     
     // Fetch bpi_node data
     $bpi_node = db_select('bpi_node')
-      ->fields('bpi_node', array('library', 'favorite'))
+      ->fields('bpi_node', array('library', 'favorite', 'publish_status', 'in_well'))
       ->condition('nid', $v->nid)
       ->execute()
       ->fetchAssoc();
@@ -780,7 +817,13 @@ function bpi_updates() {
       '<a property="foaf:name" typeof="sioc:UserAccount" about="/user/' . $v->uid 
             . '" xml:lang="" class="username" title="View user profile." href="/user/' . $v->uid 
             .'">' . $author . '</a>',
-      ($v->status) ? 'published' : 'unpublished',
+      theme(
+        'bpi_node_publish_status',
+         array(
+           'syndicated' => $bpi_node['publish_status'],
+           'in_well' => $bpi_node['in_well']
+         )
+      ),
       date('d.m.Y H:i:s', $v->changed),
       date('d.m.Y H:i:s', $v->created),
       $bpi_node['library'],
@@ -810,7 +853,7 @@ function bpi_updates_form($form, &$form_state, $form_data) {
     array('data' => t('Title'), 'field' => 'node_title'),
     array('data' => t('Type'), 'field' => 'node_type'),
     t('Author'),
-    array('data' => t('Status'), 'field' => 'node_status'),
+    array('data' => t('Publish Status'), 'field' => 'node_status'),
     array('data' => t('Updated'), 'field' => 'node_updated', 'sort' => 'desc'),
     array('data' => t('Syndicated'), 'field' => 'node_syndicated'),
     array('data' => t('Library'), 'field' => 'node_library'),
