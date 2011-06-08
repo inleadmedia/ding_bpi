@@ -11,6 +11,7 @@
       <div><?=l('Preview', 'node/1')?></div>
       <div>Kommentar</div>
     </div>
+    <div class="clear"></div>
     <div class="rating">
       <img src="<?=BPI_PATH . '/img/star-off.png'?>" width="12" height="12" alt="" />
       <img src="<?=BPI_PATH . '/img/star-off.png'?>" width="12" height="12" alt="" />

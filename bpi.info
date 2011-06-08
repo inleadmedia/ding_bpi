@@ -1,7 +1,8 @@
 name = BPI
-description = BPI skeleton
+description = BPI module
 version = 0.1
 core = 7.x
 configure = admin/config
+dependencies[] = ding_popup
 files[] = bpi.module
 files[] = bpi.install

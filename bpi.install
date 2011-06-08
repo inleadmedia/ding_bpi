@@ -19,9 +19,6 @@ function bpi_install() {
 
     for ($i = 0; $i < 10; $i++) {
       $new_node = new stdClass();
-      $new_node->title = 'Dummy node ' . $i;
-      $new_node->body['und']['0']['format'] = 1;
-      $new_node->body['und']['0']['value'] = 'Dummy content created at ' . time() . ' with index ' . $i;
       $new_node->type = 'article';
       $new_node->language = 'und';
       $new_node->status = 1;
@@ -33,6 +30,10 @@ function bpi_install() {
       $new_node->favorite = mt_rand(0, 3);
       $new_node->publish_status = mt_rand(0, 5);
       $new_node->in_well = mt_rand(0, 1);
+      $new_node->body['und']['0']['format'] = 1;
+      $new_node->body['und']['0']['value'] = 'Dummy content created at ' . date('Y-m-d H:i:s', time()) . ' with index ' . $i . '. ' 
+        . ($new_node->syndicated ? " This node is syndicated." : "This node is local.");
+      $new_node->title = 'Dummy ' . ($new_node->syndicated ? "syndicated " : "") . 'node ' . $i;
 
       node_save($new_node);
     }
