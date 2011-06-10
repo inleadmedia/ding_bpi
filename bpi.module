@@ -350,7 +350,7 @@ function bpi_syndicated_nodes() {
     ->execute()
     ->fetchAll();
 
-  foreach($syndicated as $k=>$v) {
+  foreach($syndicated as $k => $v) {
     // Fetch the node data
     $node = db_select('node')
       ->fields('node', array('type', 'title', 'uid', 'created', 'changed'))
@@ -372,7 +372,7 @@ function bpi_syndicated_nodes() {
       $node['type'],
       '<a property="foaf:name" typeof="sioc:UserAccount" about="/user/' . $node['uid']
         . '" xml:lang="" class="username" title="View user profile." href="/user/' . $node['uid']
-        . '">' .$author . '</a>',
+        . '">' . $author . '</a>',
       theme(
         'bpi_node_publish_status',
         array(
@@ -517,7 +517,7 @@ function bpi_channels() {
     ->execute()
     ->fetchAll();
 
-  foreach($channels as $k=>$v) {
+  foreach($channels as $k => $v) {
     $count = db_select('bpi_node')
       ->condition('channel', $v->channel)
       ->countQuery()
@@ -679,7 +679,7 @@ function bpi_favorites() {
     ->execute()
     ->fetchAll();
 
-  foreach($favorites as $k=>$v) {
+  foreach($favorites as $k => $v) {
     $node = db_select('node')
       ->fields('node', array('title', 'type', 'uid', 'status', 'created', 'changed'))
       ->condition('nid', $v->nid)
@@ -802,7 +802,7 @@ function bpi_updates() {
     ->execute()
     ->fetchAll();
 
-  foreach($updated as $k=>$v) {
+  foreach($updated as $k => $v) {
     if (node_mark($v->nid, $v->changed) == 0) {
       continue;
     }
@@ -834,7 +834,7 @@ function bpi_updates() {
       $v->type,
       '<a property="foaf:name" typeof="sioc:UserAccount" about="/user/' . $v->uid
             . '" xml:lang="" class="username" title="View user profile." href="/user/' . $v->uid
-            .'">' . $author . '</a>',
+            . '">' . $author . '</a>',
       theme(
         'bpi_node_publish_status',
         array(
