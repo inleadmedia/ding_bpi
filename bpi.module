@@ -1,9 +1,9 @@
 <?php
 /**
  * @file
- * 
+ *
  * Main BPI module file
- * 
+ *
  */
 
 define('BPI_PATH', drupal_get_path('module', 'bpi'));
@@ -55,7 +55,7 @@ function bpi_menu() {
     'type' => MENU_LOCAL_TASK,
     'weight' => '4',
   );
-  
+
   // Channel view page
   $items['admin/content/channels/view/%'] = array(
     'title' => 'View channel',
@@ -65,7 +65,7 @@ function bpi_menu() {
     'access arguments' => array('access administration pages'),
     'type' => MENU_CALLBACK,
   );
-  
+
   // Add channel link
   $items['admin/content/channels/add'] = array(
     'title' => 'New channel',
@@ -103,21 +103,21 @@ function bpi_menu() {
     'type' => MENU_LOCAL_TASK,
     'weight' => '7',
   );
-  
+
   $items['admin/content/ajax/channel/%/invite'] = array(
     'page arguments' => array(2, 4),
     'access arguments' => array('access administration pages'),
     'type' => MENU_CALLBACK,
     'page callback' => 'bpi_ajax_channel_invite',
   );
-  
+
   $items['admin/content/ajax/channel/%/edit'] = array(
     'page arguments' => array(2, 4),
     'access arguments' => array('access administration pages'),
     'type' => MENU_CALLBACK,
     'page callback' => 'bpi_ajax_channel_edit',
   );
-  
+
   $items['admin/content/ajax/channel/%/delete'] = array(
     'page arguments' => array(2, 4),
     'access arguments' => array('access administration pages'),
@@ -131,7 +131,7 @@ function bpi_menu() {
     'type' => MENU_CALLBACK,
     'page callback' => 'bpi_ajax_node_syndicate',
   );
-  
+
   $items['admin/content/ajax/node/%/subscribed_users'] = array(
     'page arguments' => array(2, 4),
     'access arguments' => array('access administration pages'),
@@ -144,7 +144,7 @@ function bpi_menu() {
 
 /**
  * Implements menu_local_tasks_alter
- * 
+ *
  * Adds a new menu item to specific pages
  */
 function bpi_menu_local_tasks_alter(&$data, $router_item, $root_path) {
@@ -161,7 +161,7 @@ function bpi_menu_local_tasks_alter(&$data, $router_item, $root_path) {
 
 /**
  * Implement hook_form_alter
- * 
+ *
  * Alters the standart node form
  */
 function bpi_form_alter(&$form, &$form_state, $form_id) {
@@ -179,13 +179,13 @@ function bpi_form_alter(&$form, &$form_state, $form_id) {
     // Node ID required as array key
     foreach ($rows as $k => $v) {
       $rows[$k]['rating'] = theme('bpi_flag_dropdown');
-      
+
       $node_status = db_select('bpi_node')
         ->fields('bpi_node', array('publish_status', 'in_well'))
         ->condition('nid', $k)
         ->execute()
         ->fetchAssoc();
-      
+
       $rows[$k]['status'] = theme(
         'bpi_node_publish_status',
          array(
@@ -200,10 +200,10 @@ function bpi_form_alter(&$form, &$form_state, $form_id) {
     );
     $form['admin']['nodes']['#header'] = $header;
     $form['admin']['nodes']['#options'] = $rows;
-    
+
     // Add contextual menu to content grid
     $form['admin']['options']['#suffix'] = theme('bpi_contextual_menu');
-  
+
     $form['#attached']['js'] = array(
       BPI_PATH . '/js/context_menu.js',
       BPI_PATH . '/js/dropdown.js',
@@ -219,7 +219,7 @@ function bpi_form_alter(&$form, &$form_state, $form_id) {
 
 /**
  * Implements hook_node_insert
- * 
+ *
  * Saves custom node data
  */
 function bpi_node_insert($node) {
@@ -252,7 +252,7 @@ function bpi_theme($existing, $type, $theme, $path) {
     'path' => BPI_PATH . '/templates',
     'template' => 'bpi_flag_dropdown',
   );
-  
+
   $hooks['subscribed_users'] = array(
     'variables' => array(),
     'template' => 'templates/bpi_subscribed_users',
@@ -317,13 +317,13 @@ function bpi_theme($existing, $type, $theme, $path) {
     'path' => BPI_PATH . '/templates',
     'template' => 'bpi_edit_node_info',
   );
-  
+
   $hooks['bpi_contextual_menu'] = array(
     'variables' => array(),
     'path' => BPI_PATH . '/templates',
     'template' => 'bpi_contextual_menu',
   );
-  
+
   $hooks['bpi_node_publish_status'] = array(
     'variables' => array('syndicated' => NULL, 'in_well' => NULL),
     'path' => BPI_PATH . '/templates',
@@ -342,14 +342,14 @@ function bpi_theme($existing, $type, $theme, $path) {
 function bpi_syndicated_nodes() {
   $data = array();
   $data['grid_rows'] = array();
-  
+
   // Get the syndicated nodes id's
   $syndicated = db_select('bpi_node')
     ->fields('bpi_node', array('nid', 'library', 'favorite', 'publish_status', 'in_well'))
     ->condition('syndicated', 1)
     ->execute()
     ->fetchAll();
-  
+
   foreach($syndicated as $k=>$v) {
     // Fetch the node data
     $node = db_select('node')
@@ -357,21 +357,21 @@ function bpi_syndicated_nodes() {
       ->condition('nid', $v->nid)
       ->execute()
       ->fetchAssoc();
-    
+
     // Fetch the author
     $author = db_select('users')
       ->fields('users', array('name'))
       ->condition('uid', $node['uid'])
       ->execute()
       ->fetchField(0);
-    
+
     // Populate the data grid
     $data['grid_rows'][] = array(
-      '<a href="/node/' . $v->nid . '">' . $node['title'] . '</a>' . 
+      '<a href="/node/' . $v->nid . '">' . $node['title'] . '</a>' .
         theme('mark', array('type' => node_mark($v->nid, $node['changed']))),
       $node['type'],
       '<a property="foaf:name" typeof="sioc:UserAccount" about="/user/' . $node['uid']
-        . '" xml:lang="" class="username" title="View user profile." href="/user/' . $node['uid'] 
+        . '" xml:lang="" class="username" title="View user profile." href="/user/' . $node['uid']
         . '">' .$author . '</a>',
       theme(
         'bpi_node_publish_status',
@@ -396,7 +396,7 @@ function bpi_syndicated_nodes() {
 
 /**
  * Syndicated nodes form
- * 
+ *
  * @param $form
  *   Form structure
  * @param $form_state
@@ -447,7 +447,7 @@ function bpi_syndicated_nodes_form($form, &$form_state, $form_data = array()) {
     '#type' => 'submit',
     '#value' => 'Update'
   );
-  
+
   $header = array(
     array('data' => t('Title'), 'field' => 'node_title'),
     array('data' => t('Type'), 'field' => 'node_type'),
@@ -466,7 +466,7 @@ function bpi_syndicated_nodes_form($form, &$form_state, $form_data = array()) {
     '#options' => $form_data['grid_rows'],
     '#suffix' => theme('bpi_contextual_menu'),
   );
-  
+
   $form['#attached']['js'] = array(
     BPI_PATH . '/js/context_menu.js',
     BPI_PATH . '/js/dropdown.js',
@@ -483,11 +483,11 @@ function bpi_syndicated_nodes_form($form, &$form_state, $form_data = array()) {
 
 /**
  * AJAX responder for node syndication
- * 
+ *
  * @param $type
  *   Query type
  * @param $node_id
- *   Node id 
+ *   Node id
  */
 function bpi_ajax_node_syndicate($type = 'ajax', $node_id = 0) {
   if ($type == 'ajax') {
@@ -510,28 +510,28 @@ function bpi_ajax_node_syndicate($type = 'ajax', $node_id = 0) {
 function bpi_channels() {
   $data = array();
   $data['grid_rows'] = array();
-  
+
   $channels = db_select('bpi_node')
     ->fields('bpi_node', array('channel'))
     ->Distinct()
     ->execute()
     ->fetchAll();
-  
+
   foreach($channels as $k=>$v) {
     $count = db_select('bpi_node')
       ->condition('channel', $v->channel)
       ->countQuery()
       ->execute()
       ->fetchField(0);
-    
+
     $channel = db_select('bpi_channel')
       ->fields('bpi_channel', array('name'))
       ->condition('id', $v->channel)
       ->execute()
       ->fetchField(0);
-    
+
     $data['grid_rows'][] = array(
-      $channel . '<br />' . 
+      $channel . '<br />' .
         l('Invite', 'admin/content/ajax/channel/' . $v->channel . '/invite', array('attributes' => array('class' => array('use-ajax')))),
       $count . '<br /><a href="/admin/content">view nodes</a>',
       '0',
@@ -547,7 +547,7 @@ function bpi_channels() {
 
 /**
  * Channels page form
- * 
+ *
  * @param $form
  *   Form structure
  * @param $form_state
@@ -573,16 +573,16 @@ function bpi_channels_form($form, &$form_state, $form_data) {
 }
 
 function bpi_channels_view($channel_id) {
-  
+
 }
 
 function bpi_channels_add() {
-  
+
 }
 
 /**
  * Form for channel invitation
- * 
+ *
  * @param $form
  *   Form structure
  * @param $form_state
@@ -618,7 +618,7 @@ function bpi_channels_invite_form($form, &$form_state, $form_data) {
 
 /**
  * Ajax callback method, preparing commands for invite popup
- * 
+ *
  * @param $type
  * @param $channel_id
  */
@@ -646,7 +646,7 @@ function bpi_ajax_channel_invite_close() {
 
 /**
  * Ajax callback method, preparing commands for subscribed users popup
- * 
+ *
  * @param string $type
  * @param integer $channel_id
  */
@@ -672,26 +672,26 @@ function bpi_ajax_channel_subscribed_users($type, $channel_id) {
 function bpi_favorites() {
   $data = array();
   $data['grid_rows'] = array();
-  
+
   $favorites = db_select('bpi_node')
     ->fields('bpi_node', array('nid', 'favorite', 'publish_status', 'in_well'))
     ->condition('favorite', '0', '>')
     ->execute()
     ->fetchAll();
-  
+
   foreach($favorites as $k=>$v) {
     $node = db_select('node')
       ->fields('node', array('title', 'type', 'uid', 'status', 'created', 'changed'))
       ->condition('nid', $v->nid)
       ->execute()
       ->fetchAssoc();
-    
+
     $author = db_select('users')
       ->fields('users', array('name'))
       ->condition('uid', $node['uid'])
       ->execute()
       ->fetchField(0);
-    
+
     $data['grid_rows'][] = array(
       theme('bpi_flag_dropdown', array('selected' => $v->favorite)),
       '<a href="/node/' . $v->nid . '">' . $node['title'] . '</a>',
@@ -717,7 +717,7 @@ function bpi_favorites() {
 
 /**
  * Favorites page form
- * 
+ *
  * @param $form
  *   Form structure
  * @param $form_state
@@ -735,19 +735,19 @@ function bpi_favorites_form($form, &$form_state, $form_data) {
     array('data' => 'updated', 'field' => 'n.updated'),
     'operations',
   );
-  
+
   $form['show_green'] = array(
     '#type' => 'checkbox',
     '#default_value' => 1,
     '#prefix' => '<img src="/' . BPI_PATH . '/img/flag_green.jpg" />',
   );
-  
+
   $form['show_yellow'] = array(
     '#type' => 'checkbox',
     '#default_value' => 1,
     '#prefix' => '<img src="/' . BPI_PATH . '/img/flag_yellow.jpg" />',
   );
-  
+
   $form['show_red'] = array(
     '#type' => 'checkbox',
     '#default_value' => 1,
@@ -771,7 +771,7 @@ function bpi_favorites_form($form, &$form_state, $form_data) {
     '#value' => 'Submit',
     '#suffix' => theme('bpi_contextual_menu'),
   );
-  
+
   $form['#attached']['js'] = array(
     BPI_PATH . '/js/context_menu.js',
     BPI_PATH . '/js/dropdown.js',
@@ -795,45 +795,45 @@ function bpi_favorites_form($form, &$form_state, $form_data) {
 function bpi_updates() {
   $data = array();
   $data['grid_rows'] = array();
-  
+
   // Fetch nodes
   $updated = db_select('node')
     ->fields('node', array('nid', 'type', 'title', 'uid', 'status', 'created', 'changed'))
     ->execute()
     ->fetchAll();
-  
+
   foreach($updated as $k=>$v) {
     if (node_mark($v->nid, $v->changed) == 0) {
       continue;
     }
-    
+
     // Fetch node author
     $author = db_select('users')
       ->fields('users', array('name'))
       ->condition('uid', $v->uid)
       ->execute()
       ->fetchField(0);
-    
+
     // Fetch bpi_node data
     $bpi_node = db_select('bpi_node')
       ->fields('bpi_node', array('library', 'favorite', 'publish_status', 'in_well'))
       ->condition('nid', $v->nid)
       ->execute()
       ->fetchAssoc();
-    
+
     $is_new = db_select('history')
       ->fields('history', array('uid'))
       ->condition('nid', $v->nid)
       ->condition('uid', $v->uid)
       ->execute()
       ->rowCount();
-    
+
     // Populate the data grid
     $data['grid_rows'][] = array(
       '<a href="/node/' . $v->nid . '">' . $v->title . '</a>' . theme('mark', array('type' => node_mark($v->nid, $v->changed))),
       $v->type,
-      '<a property="foaf:name" typeof="sioc:UserAccount" about="/user/' . $v->uid 
-            . '" xml:lang="" class="username" title="View user profile." href="/user/' . $v->uid 
+      '<a property="foaf:name" typeof="sioc:UserAccount" about="/user/' . $v->uid
+            . '" xml:lang="" class="username" title="View user profile." href="/user/' . $v->uid
             .'">' . $author . '</a>',
       theme(
         'bpi_node_publish_status',
@@ -858,7 +858,7 @@ function bpi_updates() {
 
 /**
  * Updates page form
- * 
+ *
  * @param $form
  *   Form structure
  * @param $form_state
@@ -893,7 +893,7 @@ function bpi_updates_form($form, &$form_state, $form_data) {
     '#options' => $form_data['grid_rows'],
     '#suffix' => theme('bpi_contextual_menu'),
   );
-  
+
   $form['#attached']['js'] = array(
     BPI_PATH . '/js/context_menu.js',
     BPI_PATH . '/js/dropdown.js',
@@ -922,7 +922,7 @@ function bpi_search() {
 
 /**
  * Search page form
- * 
+ *
  * @param $form
  *   Form structure
  * @param $form_state
@@ -986,7 +986,7 @@ function bpi_search_form($form, &$form_state, $form_data) {
     '#type' => 'checkbox',
     '#title' => 'Young',
   );
-  
+
   $form['#attached']['js'] = array(
     BPI_PATH . '/js/context_menu.js',
     BPI_PATH . '/js/dropdown.js',
@@ -1080,7 +1080,7 @@ function bpi_node_edit($node_id) {
 }
 
 function template_preprocess_bpi_node_edit_form(&$variables) {
-  
+
 }
 
 function bpi_node_edit_form($form, &$form_state, $form_data) {
@@ -1220,12 +1220,12 @@ function bpi_node_info($node_id = 0) {
 }
 
 function bpi_node_edit_form_submit($form, &$form_state) {
-  
+
 }
 
 /**
  * Subscriptions page form
- * 
+ *
  * @param $form
  *   Form structure
  * @param $form_state

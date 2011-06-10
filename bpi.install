@@ -2,13 +2,13 @@
 
 function bpi_install() {
   $count = db_query("SELECT COUNT(*) AS CNT FROM {node} WHERE type = 'article'")->fetchField(0);
-  
+
   db_insert('bpi_channel')
     ->fields(array('name'))
     ->values(array('name' => 'EURONEWS'))
     ->values(array('name' => 'BBC'))
     ->execute();
-  
+
   $cid = db_select('bpi_channel')
     ->fields('bpi_channel', array('id'))
     ->execute()
@@ -31,7 +31,7 @@ function bpi_install() {
       $new_node->publish_status = mt_rand(0, 5);
       $new_node->in_well = mt_rand(0, 1);
       $new_node->body['und']['0']['format'] = 1;
-      $new_node->body['und']['0']['value'] = 'Dummy content created at ' . date('Y-m-d H:i:s', time()) . ' with index ' . $i . '. ' 
+      $new_node->body['und']['0']['value'] = 'Dummy content created at ' . date('Y-m-d H:i:s', time()) . ' with index ' . $i . '. '
         . ($new_node->syndicated ? " This node is syndicated." : "This node is local.");
       $new_node->title = 'Dummy ' . ($new_node->syndicated ? "syndicated " : "") . 'node ' . $i;
 
@@ -98,7 +98,7 @@ function bpi_schema() {
     ),
     'primary key' => array('id'),
   );
-  
+
   $schema['bpi_channel'] = array(
     'description' => 'Custom channel data for BPI prototype',
     'fields' => array(
@@ -116,7 +116,7 @@ function bpi_schema() {
     ),
     'primary key' => array('id'),
   );
-  
+
   return $schema;
 }
 
@@ -125,13 +125,13 @@ function bpi_uninstall() {
     ->fields('bpi_node', array('nid'))
     ->execute()
     ->fetchAll();
-  
+
   foreach($nodes as $k=>$v) {
     db_delete('node')
       ->condition('nid', $v->nid)
       ->execute();
   }
-  
+
   db_drop_table('bpi_node');
   db_drop_table('bpi_channel');
 }
