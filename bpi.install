@@ -126,7 +126,7 @@ function bpi_uninstall() {
     ->execute()
     ->fetchAll();
 
-  foreach($nodes as $k=>$v) {
+  foreach($nodes as $k => $v) {
     db_delete('node')
       ->condition('nid', $v->nid)
       ->execute();
