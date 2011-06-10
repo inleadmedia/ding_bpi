@@ -1,3 +1,10 @@
+<?
+/**
+ * @file
+ *
+ */
+?>
+
 <div id="bpi_edit_node">
   <?=drupal_render($form['title'])?>
   <div class="l_col l_col_node_body">

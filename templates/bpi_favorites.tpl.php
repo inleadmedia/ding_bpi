@@ -1,3 +1,10 @@
+<?
+/**
+ * @file
+ *
+ */
+?>
+
 <div class="filters">
   <h3>Show only</h3>
   <div class="flag_filter">

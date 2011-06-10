@@ -1,3 +1,10 @@
+<?
+/**
+ * @file
+ *
+ */
+?>
+
 <div class="well_node">
   <div class="node_col">
     <h1 class="node_title" style="float: left"><?=$title?></h1>

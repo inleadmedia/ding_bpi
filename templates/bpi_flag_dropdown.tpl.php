@@ -1,4 +1,8 @@
 <?php
+/**
+ * @file
+ *
+ */
 
 $flags = array('flag_black', 'flag_green', 'flag_yellow', 'flag_red');
 

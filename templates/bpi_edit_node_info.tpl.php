@@ -1,4 +1,8 @@
 <?php
+/**
+ * @file
+ *
+ */
 
 $node_data = bpi_node_info($variables['node_id']);
 

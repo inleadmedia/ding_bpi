@@ -1,3 +1,10 @@
+<?
+/**
+ * @file
+ *
+ */
+?>
+
 <span><?php
 
 if($in_well) {

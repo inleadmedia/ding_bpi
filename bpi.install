@@ -1,4 +1,8 @@
 <?php
+/**
+ * @file
+ *
+ */
 
 function bpi_install() {
   $count = db_query("SELECT COUNT(*) AS CNT FROM {node} WHERE type = 'article'")->fetchField(0);

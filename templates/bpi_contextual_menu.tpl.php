@@ -1,3 +1,10 @@
+<?
+/**
+ * @file
+ *
+ */
+?>
+
 <ul id="myMenu" class="contextMenu">
   <li><a href="#publish">Publish node</a></li>
   <li class="separator"><a href="#flag">Flag node</a></li>
