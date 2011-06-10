@@ -188,10 +188,10 @@ function bpi_form_alter(&$form, &$form_state, $form_id) {
 
       $rows[$k]['status'] = theme(
         'bpi_node_publish_status',
-         array(
-           'syndicated' => $node_status['publish_status'],
-           'in_well' => $node_status['in_well']
-         )
+        array(
+          'syndicated' => $node_status['publish_status'],
+          'in_well' => $node_status['in_well']
+        )
       );
     }
 
@@ -248,7 +248,7 @@ function bpi_theme($existing, $type, $theme, $path) {
   $hooks['bpi_flag_dropdown'] = array(
     'variables' => array(
       'selected' => NULL
-     ),
+    ),
     'path' => BPI_PATH . '/templates',
     'template' => 'bpi_flag_dropdown',
   );
@@ -375,10 +375,10 @@ function bpi_syndicated_nodes() {
         . '">' .$author . '</a>',
       theme(
         'bpi_node_publish_status',
-         array(
-           'syndicated' => $v->publish_status,
-           'in_well' => $v->in_well
-         )
+        array(
+          'syndicated' => $v->publish_status,
+          'in_well' => $v->in_well
+        )
       ),
       date('d.m.Y H:i:s', $node['changed']),
       date('d.m.Y H:i:s', $node['created']),
@@ -699,10 +699,10 @@ function bpi_favorites() {
       '<a property="foaf:name" typeof="sioc:UserAccount" about="/user/' . $node['uid'] . '" xml:lang="" class="username" title="View user profile." href="/user/' . $node['uid'] . '">' . $author . '</a>',
       theme(
         'bpi_node_publish_status',
-         array(
-           'syndicated' => $v->publish_status,
-           'in_well' => $v->in_well
-         )
+        array(
+          'syndicated' => $v->publish_status,
+          'in_well' => $v->in_well
+        )
       ),
       date('d.m.Y H:i:s', $node['changed']),
       '<ul class="links inline">
@@ -837,10 +837,10 @@ function bpi_updates() {
             .'">' . $author . '</a>',
       theme(
         'bpi_node_publish_status',
-         array(
-           'syndicated' => $bpi_node['publish_status'],
-           'in_well' => $bpi_node['in_well']
-         )
+        array(
+          'syndicated' => $bpi_node['publish_status'],
+          'in_well' => $bpi_node['in_well']
+        )
       ),
       date('d.m.Y H:i:s', $v->changed),
       date('d.m.Y H:i:s', $v->created),
