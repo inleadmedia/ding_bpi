@@ -9,7 +9,7 @@
 define('BPI_PATH', drupal_get_path('module', 'bpi'));
 
 /**
- * Implements hook_init
+ * Implements hook_init().
  */
 function bpi_init() {
   drupal_add_css(BPI_PATH . '/css/bpi_styles.css');
@@ -18,7 +18,7 @@ function bpi_init() {
 }
 
 /**
- * Implements hook_menu
+ * Implements hook_menu().
  *
  * @return array
  *   An array with query responders
@@ -160,7 +160,7 @@ function bpi_menu_local_tasks_alter(&$data, $router_item, $root_path) {
 }
 
 /**
- * Implement hook_form_alter
+ * Implement hook_form_alter().
  *
  * Alters the standart node form
  */
@@ -218,7 +218,7 @@ function bpi_form_alter(&$form, &$form_state, $form_id) {
 }
 
 /**
- * Implements hook_node_insert
+ * Implements hook_node_insert().
  *
  * Saves custom node data
  */
@@ -237,7 +237,7 @@ function bpi_node_insert($node) {
 }
 
 /**
- * Implements hook_theme
+ * Implements hook_theme().
  *
  * @return array
  *   Array of available themes
