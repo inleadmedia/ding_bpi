@@ -207,12 +207,11 @@ function bpi_form_alter(&$form, &$form_state, $form_id) {
     $form['#attached']['js'] = array(
       BPI_PATH . '/js/context_menu.js',
       BPI_PATH . '/js/dropdown.js',
-      BPI_PATH . '/js/bpi_grid_scripts.js'
+      BPI_PATH . '/js/bpi_grid_scripts.js',
     );
 
     $form['#attached']['css'] = array(
-      BPI_PATH . '/css/dropdown.css',
-      BPI_PATH . '/css/context_menu.css'
+      BPI_PATH . '/css/context_menu.css',
     );
   }
 }
@@ -470,12 +469,11 @@ function bpi_syndicated_nodes_form($form, &$form_state, $form_data = array()) {
   $form['#attached']['js'] = array(
     BPI_PATH . '/js/context_menu.js',
     BPI_PATH . '/js/dropdown.js',
-    BPI_PATH . '/js/bpi_grid_scripts.js'
+    BPI_PATH . '/js/bpi_grid_scripts.js',
   );
 
   $form['#attached']['css'] = array(
-    BPI_PATH . '/css/dropdown.css',
-    BPI_PATH . '/css/context_menu.css'
+    BPI_PATH . '/css/context_menu.css',
   );
 
   return $form;
@@ -737,7 +735,7 @@ function bpi_favorites() {
  */
 function bpi_favorites_form($form, &$form_state, $form_data) {
   $header = array(
-    array('data' => ''),
+    array('data' => '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'),
     array('data' => 'title', 'field' => 'n.title'),
     'type',
     array('data' => 'author', 'field' => 'n.author'),
@@ -785,12 +783,11 @@ function bpi_favorites_form($form, &$form_state, $form_data) {
   $form['#attached']['js'] = array(
     BPI_PATH . '/js/context_menu.js',
     BPI_PATH . '/js/dropdown.js',
-    BPI_PATH . '/js/bpi_grid_scripts.js'
+    BPI_PATH . '/js/bpi_grid_scripts.js',
   );
 
   $form['#attached']['css'] = array(
-    BPI_PATH . '/css/dropdown.css',
-    BPI_PATH . '/css/context_menu.css'
+    BPI_PATH . '/css/context_menu.css',
   );
 
   return $form;
@@ -907,12 +904,11 @@ function bpi_updates_form($form, &$form_state, $form_data) {
   $form['#attached']['js'] = array(
     BPI_PATH . '/js/context_menu.js',
     BPI_PATH . '/js/dropdown.js',
-    BPI_PATH . '/js/bpi_grid_scripts.js'
+    BPI_PATH . '/js/bpi_grid_scripts.js',
   );
 
   $form['#attached']['css'] = array(
-    BPI_PATH . '/css/dropdown.css',
-    BPI_PATH . '/css/context_menu.css'
+    BPI_PATH . '/css/context_menu.css',
   );
 
   return $form;
@@ -1000,11 +996,11 @@ function bpi_search_form($form, &$form_state, $form_data) {
   $form['#attached']['js'] = array(
     BPI_PATH . '/js/context_menu.js',
     BPI_PATH . '/js/dropdown.js',
-    BPI_PATH . '/js/bpi_grid_scripts.js'
+    BPI_PATH . '/js/bpi_grid_scripts.js',
   );
 
   $form['#attached']['css'] = array(
-    BPI_PATH . '/css/dropdown.css'
+    BPI_PATH . '/css/dropdown.css',
   );
 
   return $form;

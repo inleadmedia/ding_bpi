@@ -99,3 +99,36 @@ span.new {
 div.filters div.flag_filter {
   float: left;
 }
+
+.dropdown {
+  position: relative;
+}
+
+.dropdown .flags_container {
+  background-color: #FFFFAA;
+  border: 1px solid black;
+  bottom: 0;
+  height: 16px;
+  overflow: hidden;
+  padding: 1px;
+  position: absolute;
+  top: -10px;
+  width: 58px;
+}
+
+.flags_container .flags, .flags_container .indicator, .flags_container .flags .flag img {
+  float: left;
+}
+
+.flags_container .indicator {
+  margin-left: 10px;
+  height: 16px;
+  width: 16px;
+  
+  background-image: url('../img/dd_arrow.gif');
+}
+
+.flags_container .active {
+  background-image: url('../img/dd_arrow.gif');
+  background-position: 0 16px;
+}
