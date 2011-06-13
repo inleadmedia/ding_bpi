@@ -562,6 +562,16 @@ function bpi_channels_form($form, &$form_state, $form_data) {
     t('Subscribed users'),
     t('Operations')
   );
+  
+  $form['filter'] = array(
+    '#type' => 'select',
+    '#options' => array(
+      'All channels',
+      'My channels',
+      'Subscribed',
+    ),
+    '#title' => 'Show only:'
+  );
 
   $form['grid'] = array(
     '#type' => 'tableselect',
