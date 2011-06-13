@@ -26,7 +26,7 @@ var DropDown = {
     ele.addClass('active');
         
         ele.parent().animate({
-          'height': '78'
+          'height': '102'
         }, 100);
   },
   
