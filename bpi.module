@@ -206,7 +206,6 @@ function bpi_form_alter(&$form, &$form_state, $form_id) {
 
     $form['#attached']['js'] = array(
       BPI_PATH . '/js/context_menu.js',
-      BPI_PATH . '/js/dropdown.js',
       BPI_PATH . '/js/bpi_grid_scripts.js',
     );
 
@@ -228,7 +227,7 @@ function bpi_node_insert($node) {
     'syndicated' => $node->syndicated,
     'library' => $node->library,
     'channel' => $node->channel,
-    'favorite' => $node->favorite,
+    'favorites' => $node->favorites,
     'publish_status' => $node->publish_status,
     'in_well' => $node->in_well,
   ))
@@ -344,7 +343,7 @@ function bpi_syndicated_nodes() {
 
   // Get the syndicated nodes id's
   $syndicated = db_select('bpi_node')
-    ->fields('bpi_node', array('nid', 'library', 'favorite', 'publish_status', 'in_well'))
+    ->fields('bpi_node', array('nid', 'library', 'favorites', 'publish_status', 'in_well'))
     ->condition('syndicated', 1)
     ->execute()
     ->fetchAll();
@@ -386,7 +385,7 @@ function bpi_syndicated_nodes() {
          <li class="edit first"><a href="/node/' . $v->nid . '/edit?destination=admin/content">edit</a></li>
          <li class="delete last"><a href="/node/' . $v->nid . '/delete?destination=admin/content">delete</a></li>
        </ul>',
-      theme('bpi_flag_dropdown', array('selected' => $v->favorite)),
+      theme('bpi_flag_dropdown', array('selected' => $v->favorites)),
     );
   }
 
@@ -468,7 +467,6 @@ function bpi_syndicated_nodes_form($form, &$form_state, $form_data = array()) {
 
   $form['#attached']['js'] = array(
     BPI_PATH . '/js/context_menu.js',
-    BPI_PATH . '/js/dropdown.js',
     BPI_PATH . '/js/bpi_grid_scripts.js',
   );
 
@@ -682,8 +680,8 @@ function bpi_favorites() {
   $data['grid_rows'] = array();
 
   $favorites = db_select('bpi_node')
-    ->fields('bpi_node', array('nid', 'favorite', 'publish_status', 'in_well'))
-    ->condition('favorite', '0', '>')
+    ->fields('bpi_node', array('nid', 'favorites', 'publish_status', 'in_well'))
+    ->condition('favorites', serialize(array(0, 0, 0, 0)), '!=')
     ->execute()
     ->fetchAll();
 
@@ -701,7 +699,7 @@ function bpi_favorites() {
       ->fetchField(0);
 
     $data['grid_rows'][] = array(
-      theme('bpi_flag_dropdown', array('selected' => $v->favorite)),
+      theme('bpi_flag_dropdown', array('selected' => $v->favorites)),
       '<a href="/node/' . $v->nid . '">' . $node['title'] . '</a>',
       $node['type'],
       '<a property="foaf:name" typeof="sioc:UserAccount" about="/user/' . $node['uid'] . '" xml:lang="" class="username" title="View user profile." href="/user/' . $node['uid'] . '">' . $author . '</a>',
@@ -782,7 +780,6 @@ function bpi_favorites_form($form, &$form_state, $form_data) {
 
   $form['#attached']['js'] = array(
     BPI_PATH . '/js/context_menu.js',
-    BPI_PATH . '/js/dropdown.js',
     BPI_PATH . '/js/bpi_grid_scripts.js',
   );
 
@@ -823,7 +820,7 @@ function bpi_updates() {
 
     // Fetch bpi_node data
     $bpi_node = db_select('bpi_node')
-      ->fields('bpi_node', array('library', 'favorite', 'publish_status', 'in_well'))
+      ->fields('bpi_node', array('library', 'favorites', 'publish_status', 'in_well'))
       ->condition('nid', $v->nid)
       ->execute()
       ->fetchAssoc();
@@ -856,7 +853,7 @@ function bpi_updates() {
          <li class="edit first"><a href="/node/' . $v->nid . '/edit?destination=admin/content">edit</a></li>
          <li class="delete last"><a href="/node/' . $v->nid . '/delete?destination=admin/content">delete</a></li>
       </ul>',
-      theme('bpi_flag_dropdown', array('selected' => $bpi_node['favorite'])),
+      theme('bpi_flag_dropdown', array('selected' => $bpi_node['favorites'])),
     );
   }
 
@@ -903,7 +900,6 @@ function bpi_updates_form($form, &$form_state, $form_data) {
 
   $form['#attached']['js'] = array(
     BPI_PATH . '/js/context_menu.js',
-    BPI_PATH . '/js/dropdown.js',
     BPI_PATH . '/js/bpi_grid_scripts.js',
   );
 
@@ -995,7 +991,6 @@ function bpi_search_form($form, &$form_state, $form_data) {
 
   $form['#attached']['js'] = array(
     BPI_PATH . '/js/context_menu.js',
-    BPI_PATH . '/js/dropdown.js',
     BPI_PATH . '/js/bpi_grid_scripts.js',
   );
 
