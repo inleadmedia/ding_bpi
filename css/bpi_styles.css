@@ -136,3 +136,7 @@ div.filters div.flag_filter {
 .flags_container br {
   line-height: 20px;
 }
+
+.sticky-header {
+  z-index: 600;
+}

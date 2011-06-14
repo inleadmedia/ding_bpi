@@ -178,7 +178,7 @@ function bpi_form_alter(&$form, &$form_state, $form_id) {
     // Add a custom data to row
     // Node ID required as array key
     foreach ($rows as $k => $v) {
-      $rows[$k]['rating'] = theme('bpi_flag_dropdown');
+      $rows[$k]['rating'] = theme('bpi_flag_dropdown', array('selected' => NULL, 'nid' => $k));
 
       $node_status = db_select('bpi_node')
         ->fields('bpi_node', array('publish_status', 'in_well'))
@@ -245,7 +245,8 @@ function bpi_theme($existing, $type, $theme, $path) {
 
   $hooks['bpi_flag_dropdown'] = array(
     'variables' => array(
-      'selected' => NULL
+      'selected' => NULL,
+      'nid' => NULL
     ),
     'path' => BPI_PATH . '/templates',
     'template' => 'bpi_flag_dropdown',
@@ -385,7 +386,7 @@ function bpi_syndicated_nodes() {
          <li class="edit first"><a href="/node/' . $v->nid . '/edit?destination=admin/content">edit</a></li>
          <li class="delete last"><a href="/node/' . $v->nid . '/delete?destination=admin/content">delete</a></li>
        </ul>',
-      theme('bpi_flag_dropdown', array('selected' => $v->favorites)),
+      theme('bpi_flag_dropdown', array('selected' => $v->favorites, 'nid' => $v->nid)),
     );
   }
 
@@ -579,11 +580,11 @@ function bpi_channels_form($form, &$form_state, $form_data) {
 }
 
 function bpi_channels_view($channel_id) {
-
+  
 }
 
 function bpi_channels_add() {
-
+  
 }
 
 /**
@@ -699,7 +700,7 @@ function bpi_favorites() {
       ->fetchField(0);
 
     $data['grid_rows'][] = array(
-      theme('bpi_flag_dropdown', array('selected' => $v->favorites)),
+      theme('bpi_flag_dropdown', array('selected' => $v->favorites, 'nid' => $v->nid)),
       '<a href="/node/' . $v->nid . '">' . $node['title'] . '</a>',
       $node['type'],
       '<a property="foaf:name" typeof="sioc:UserAccount" about="/user/' . $node['uid'] . '" xml:lang="" class="username" title="View user profile." href="/user/' . $node['uid'] . '">' . $author . '</a>',
@@ -853,7 +854,7 @@ function bpi_updates() {
          <li class="edit first"><a href="/node/' . $v->nid . '/edit?destination=admin/content">edit</a></li>
          <li class="delete last"><a href="/node/' . $v->nid . '/delete?destination=admin/content">delete</a></li>
       </ul>',
-      theme('bpi_flag_dropdown', array('selected' => $bpi_node['favorites'])),
+      theme('bpi_flag_dropdown', array('selected' => $bpi_node['favorites'], 'nid' => $v->nid)),
     );
   }
 

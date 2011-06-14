@@ -54,7 +54,7 @@ jQuery(document).ready(function() {
   });
   
   jQuery('.dropdown').each(function(i, e) {
-    DropDown.Init(jQuery(this).css({'z-index': 1000 - i}));
+    DropDown.Init(jQuery(this).css({'z-index': 500 - i}));
   });
   
 });

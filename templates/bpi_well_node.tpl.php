@@ -10,7 +10,7 @@
     <h1 class="node_title" style="float: left"><?=$title?></h1>
     <p style="float: right;"><input type="checkbox" <?php if($read) : ?>checked="checked"<?php ;endif?> /></p>
     <div class="clear"></div>
-    <?=theme('bpi_flag_dropdown')?>
+    <?=theme('bpi_flag_dropdown', array('selected' => NULL, 'nid' => mt_rand(0, 100)))?>
     <div class="clear"></div>
     <p class="node_description"><?=$description?></p>
     <div class="node_controls">
