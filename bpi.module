@@ -559,7 +559,7 @@ function bpi_channels_form($form, &$form_state, $form_data) {
     t('Subscribed users'),
     t('Operations')
   );
-  
+
   $form['filter'] = array(
     '#type' => 'select',
     '#options' => array(
@@ -580,11 +580,11 @@ function bpi_channels_form($form, &$form_state, $form_data) {
 }
 
 function bpi_channels_view($channel_id) {
-  
+
 }
 
 function bpi_channels_add() {
-  
+
 }
 
 /**

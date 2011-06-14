@@ -66,7 +66,7 @@ function bpi_install() {
 
 /**
  * Implements hook_schema().
- * 
+ *
  * @return
  *   Array of table definitions
  */
@@ -152,7 +152,7 @@ function bpi_schema() {
 
 /**
  * Implements hook_uninstall().
- * 
+ *
  * Deletes also the nodes created with install.
  */
 function bpi_uninstall() {
