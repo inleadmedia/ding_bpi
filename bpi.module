@@ -57,15 +57,6 @@ function bpi_menu() {
     'weight' => '4',
   );
 
-  // Channel view page
-  /*$items['admin/content/channels'] = array(
-    'title' => 'View channel nodes',
-    'page callback' => 'bpi_channels_view',
-    'page arguments' => array(),
-    'access arguments' => array('access administration pages'),
-    'type' => MENU_LOCAL_TASK
-  );*/
-
   // Add channel link
   $items['admin/content/channels/add'] = array(
     'title' => 'New channel',
@@ -545,6 +536,14 @@ function bpi_channels() {
       ->condition('channel', $channel_id)
       ->execute()
       ->fetchAll();
+    
+    $channel = db_select('bpi_channel')
+      ->fields('bpi_channel', array('name'))
+      ->condition('id', $channel_id)
+      ->execute()
+      ->fetchField(0);
+    
+    $data['channel'] = $channel;
 
     foreach ($nodes as $k => $v) {
       $node = db_select('node')
@@ -699,7 +698,21 @@ function bpi_channels_view_form($form, &$form_state, $form_data) {
     '#type' => 'tableselect',
     '#header' => $header,
     '#options' => $form_data['grid_rows'],
+    '#prefix' => '<h2>View nodes for channel ' . $form_data['channel'] . '</h2>',
     '#suffix' => theme('bpi_contextual_menu'),
+  );
+  
+  $form['actions'] = array(
+    '#type' => 'select',
+    '#title' => 'With selected:',
+    '#options' => array(
+      'Delete from channel'
+    ),
+  );
+  
+  $form['submit'] = array(
+    '#type' => 'submit',
+    '#value' => 'Update',
   );
   
   $form['#attached']['js'] = array(
