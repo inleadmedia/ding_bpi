@@ -684,6 +684,18 @@ function bpi_ajax_channel_invite($type = 'ajax', $channel_id = 0) {
   }
 }
 
+/**
+ * Grid for displaying nodes attached to a specific channel
+ * 
+ * @param $form
+ *   Form structure
+ * @param $form_state
+ *   Form state
+ * @param $form_data
+ *   Additional form data
+ * @return
+ *   Form structure
+ */
 function bpi_channels_view_form($form, &$form_state, $form_data) {
   $header = array(
     t('title'),
