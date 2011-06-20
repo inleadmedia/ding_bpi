@@ -505,6 +505,16 @@ function bpi_ajax_node_syndicate($type = 'ajax', $node_id = 0) {
  *   Page structure
  */
 function bpi_channels() {
+  
+  // Disables the New channel link
+  $inline = 'jQuery(document).ready(function() {
+      jQuery(".action-links li a").css({"color":"gray"}); 
+      jQuery(".action-links a").click(function() {
+        return false;
+      });
+    });';
+  drupal_add_js($inline, 'inline');
+  
   $data = array();
   $data['grid_rows'] = array();
 
