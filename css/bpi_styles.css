@@ -105,15 +105,17 @@ div.filters div.flag_filter {
 }
 
 .dropdown .flags_container {
-  background-color: #FFFFAA;
-  border: 1px solid black;
+  background: none repeat scroll 0 0 #FFFFFF;
+  border-color: #999999 #CCCCCC #CCCCCC;
+  border-right: 1px solid #CCCCCC;
+  border-style: solid;
+  border-width: 1px;
   bottom: 0;
   height: 16px;
   overflow: hidden;
-  padding: 1px;
+  padding: 2px;
   position: absolute;
   top: -10px;
-  width: 72px;
 }
 
 .flags_container .flags, .flags_container .indicator, .flags_container .flags .flag label {
