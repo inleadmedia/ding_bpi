@@ -855,7 +855,7 @@ function bpi_favorites_form($form, &$form_state, $form_data) {
     array('data' => 'author', 'field' => 'n.author'),
     'library',
     'category',
-    'audience'
+    'audience',
     'publish status',
     array('data' => 'updated', 'field' => 'n.updated'),
     'operations',
