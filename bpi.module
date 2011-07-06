@@ -829,7 +829,6 @@ function bpi_favorites() {
       ->fetchField(0);
 
     $data['grid_rows'][] = array(
-      theme('bpi_flag_dropdown', array('selected' => $v->favorites, 'nid' => $v->nid)),
       '<a href="/node/' . $v->nid . '">' . $node['title'] . '</a>',
       $node['type'],
       '<a property="foaf:name" typeof="sioc:UserAccount" about="/user/' . $node['uid'] . '" xml:lang="" class="username" title="View user profile." href="/user/' . $node['uid'] . '">' . $author . '</a>',
@@ -847,7 +846,8 @@ function bpi_favorites() {
       '<ul class="links inline">
          <li class="edit first"><a href="/node/' . $v->nid . '/edit?destination=admin/content">edit</a></li>
         <li class="delete last"><a href="/node/' . $v->nid . '/delete?destination=admin/content">delete</a></li>
-      </ul>'
+      </ul>',
+      theme('bpi_flag_dropdown', array('selected' => $v->favorites, 'nid' => $v->nid))
     );
   }
 
@@ -866,7 +866,6 @@ function bpi_favorites() {
  */
 function bpi_favorites_form($form, &$form_state, $form_data) {
   $header = array(
-    array('data' => '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'),
     array('data' => 'title', 'field' => 'n.title'),
     'type',
     array('data' => 'author', 'field' => 'n.author'),
@@ -876,6 +875,7 @@ function bpi_favorites_form($form, &$form_state, $form_data) {
     'publish status',
     array('data' => 'updated', 'field' => 'n.updated'),
     'operations',
+    'favoritize'
   );
 
   $form['show_green'] = array(
