@@ -159,11 +159,24 @@ function bpi_form_alter(&$form, &$form_state, $form_id) {
     $header['rating'] = array(
       'data' => 'Add to Favorites',
     );
+    $header['library'] = array(
+      'data' => 'Library',
+    );
+    $header['cateogry'] = array(
+      'data' => 'Category',
+    );
+    $header['audience'] = array(
+      'data' => 'Audience',
+    );
 
     // Add a custom data to row
     // Node ID required as array key
     foreach ($rows as $k => $v) {
       $rows[$k]['rating'] = theme('bpi_flag_dropdown', array('selected' => NULL, 'nid' => $k));
+
+      $rows[$k]['library'] = 'Testbibliotek';
+      $rows[$k]['category'] = 'Musik';
+      $rows[$k]['audience'] = 'Voksne';
 
       $node_status = db_select('bpi_node')
         ->fields('bpi_node', array('publish_status', 'in_well'))
