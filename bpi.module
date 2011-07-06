@@ -162,7 +162,7 @@ function bpi_form_alter(&$form, &$form_state, $form_id) {
     $header['library'] = array(
       'data' => 'Library',
     );
-    $header['cateogry'] = array(
+    $header['category'] = array(
       'data' => 'Category',
     );
     $header['audience'] = array(
