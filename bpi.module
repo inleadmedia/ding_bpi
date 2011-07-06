@@ -211,6 +211,8 @@ function bpi_node_insert($node) {
     'nid' => $node->nid,
     'syndicated' => $node->syndicated,
     'library' => $node->library,
+    'category' => $node->category,
+    'audience' => $node->audience,
     'channel' => $node->channel,
     'favorites' => $node->favorites,
     'publish_status' => $node->publish_status,
@@ -282,6 +284,7 @@ function bpi_theme($existing, $type, $theme, $path) {
       'date' => NULL,
       'author' => NULL,
       'category' => NULL,
+      'audience' => NULL,
       'syndicated' => NULL,
       'lix' => NULL, // @todo - how's that beeing translated ?!
       'library' => NULL,
@@ -329,7 +332,7 @@ function bpi_syndicated_nodes() {
 
   // Get the syndicated nodes id's
   $syndicated = db_select('bpi_node')
-    ->fields('bpi_node', array('nid', 'library', 'favorites', 'publish_status', 'in_well'))
+    ->fields('bpi_node', array('nid', 'library', 'category', 'audience', 'favorites', 'publish_status', 'in_well'))
     ->condition('syndicated', 1)
     ->execute()
     ->fetchAll();
@@ -357,6 +360,9 @@ function bpi_syndicated_nodes() {
       '<a property="foaf:name" typeof="sioc:UserAccount" about="/user/' . $node['uid']
         . '" xml:lang="" class="username" title="View user profile." href="/user/' . $node['uid']
         . '">' . $author . '</a>',
+      $v->library,
+      $v->category,
+      $v->audience,
       theme(
         'bpi_node_publish_status',
         array(
@@ -366,7 +372,6 @@ function bpi_syndicated_nodes() {
       ),
       date('d.m.Y H:i:s', $node['changed']),
       date('d.m.Y H:i:s', $node['created']),
-      $v->library,
       '<ul class="links inline">
          <li class="edit first"><a href="/node/' . $v->nid . '/edit?destination=admin/content">edit</a></li>
          <li class="delete last"><a href="/node/' . $v->nid . '/delete?destination=admin/content">delete</a></li>
@@ -436,10 +441,12 @@ function bpi_syndicated_nodes_form($form, &$form_state, $form_data = array()) {
     array('data' => t('Title'), 'field' => 'node_title'),
     array('data' => t('Type'), 'field' => 'node_type'),
     t('Author'),
+    array('data' => t('Library'), 'field' => 'node_library'),
+    'Category',
+    'Audience',
     array('data' => t('Publish Status'), 'field' => 'node_status'),
     array('data' => t('Updated'), 'field' => 'node_updated', 'sort' => 'desc'),
     array('data' => t('Syndicated'), 'field' => 'node_syndicated'),
-    array('data' => t('Library'), 'field' => 'node_library'),
     t('Operations'),
     'Add to Favorites'
   );
@@ -712,6 +719,9 @@ function bpi_channels_view_form($form, &$form_state, $form_data) {
     t('title'),
     t('type'),
     t('author'),
+    t('library'),
+    t('category'),
+    t('audience'),
     t('publish status'),
     t('operations'),
     t('add to favorites'),
@@ -844,6 +854,9 @@ function bpi_favorites_form($form, &$form_state, $form_data) {
     array('data' => 'title', 'field' => 'n.title'),
     'type',
     array('data' => 'author', 'field' => 'n.author'),
+    'library',
+    'category',
+    'audience',
     'publish status',
     array('data' => 'updated', 'field' => 'n.updated'),
     'operations',
@@ -933,7 +946,7 @@ function bpi_updates() {
 
     // Fetch bpi_node data
     $bpi_node = db_select('bpi_node')
-      ->fields('bpi_node', array('library', 'favorites', 'publish_status', 'in_well'))
+      ->fields('bpi_node', array('library', 'category', 'audience', 'favorites', 'publish_status', 'in_well'))
       ->condition('nid', $v->nid)
       ->execute()
       ->fetchAssoc();
@@ -952,6 +965,9 @@ function bpi_updates() {
       '<a property="foaf:name" typeof="sioc:UserAccount" about="/user/' . $v->uid
             . '" xml:lang="" class="username" title="View user profile." href="/user/' . $v->uid
             . '">' . $author . '</a>',
+      $bpi_node['library'],
+      $bpi_node['category'],
+      $bpi_node['audience'],
       theme(
         'bpi_node_publish_status',
         array(
@@ -961,7 +977,6 @@ function bpi_updates() {
       ),
       date('d.m.Y H:i:s', $v->changed),
       date('d.m.Y H:i:s', $v->created),
-      $bpi_node['library'],
       '<ul class="links inline">
          <li class="edit first"><a href="/node/' . $v->nid . '/edit?destination=admin/content">edit</a></li>
          <li class="delete last"><a href="/node/' . $v->nid . '/delete?destination=admin/content">delete</a></li>
@@ -988,10 +1003,12 @@ function bpi_updates_form($form, &$form_state, $form_data) {
     array('data' => t('Title'), 'field' => 'node_title'),
     array('data' => t('Type'), 'field' => 'node_type'),
     t('Author'),
+    array('data' => t('Library'), 'field' => 'node_library'),
+    array('data' => t('Category'), 'field' => 'node_category'),
+    array('data' => t('Audience'), 'field' => 'node_audience'),
     array('data' => t('Publish Status'), 'field' => 'node_status'),
     array('data' => t('Updated'), 'field' => 'node_updated', 'sort' => 'desc'),
     array('data' => t('Syndicated'), 'field' => 'node_syndicated'),
-    array('data' => t('Library'), 'field' => 'node_library'),
     t('Operations'),
     'Add to Favorites'
   );
