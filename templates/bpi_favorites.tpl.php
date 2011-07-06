@@ -8,6 +8,9 @@
 <div class="filters">
   <h3>Show only</h3>
   <div class="flag_filter">
+    <?php echo drupal_render($form['show_black']); ?>
+  </div>
+  <div class="flag_filter">
     <?php echo drupal_render($form['show_red']); ?>
   </div>
   <div class="flag_filter">
