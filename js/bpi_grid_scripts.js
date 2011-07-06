@@ -24,17 +24,16 @@ var DropDown = {
   
   Open : function(ele) {
     ele.addClass('active');
-        ele.parent().animate({
-          'height': '102'
-        }, 100);
+    ele.parent().animate({
+      'height': '102'
+    }, 100);
   },
   
   Close : function(ele) {
     ele.removeClass('active');
-        
-        ele.parent().animate({
-          'height': '16'
-        }, 100);
+    ele.parent().animate({
+      'height': '16'
+    }, 100);
   }
 }
 
@@ -55,5 +54,4 @@ jQuery(document).ready(function() {
   jQuery('.dropdown').each(function(i, e) {
     DropDown.Init(jQuery(this).css({'z-index': 500 - i}));
   });
-  
 });
