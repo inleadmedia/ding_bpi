@@ -88,8 +88,9 @@ function bpi_menu() {
   $items['admin/content/subscriptions'] = array(
     'title' => 'Subscriptions',
     'description' => 'Subscribe to variuos vategories of nodes',
-    'page callback' => 'drupal_get_form',
-    'page arguments' => array('bpi_subscribe_form'),
+    'page callback' => 'bpi_temp_subscriptions',
+    //'page callback' => 'drupal_get_form',
+    //'page arguments' => array('bpi_subscribe_form'),
     'access arguments' => array('access administration pages'),
     'type' => MENU_LOCAL_TASK,
     'weight' => '7',
@@ -879,6 +880,12 @@ function bpi_favorites_form($form, &$form_state, $form_data) {
     '#prefix' => '<img src="/' . BPI_PATH . '/img/flag_red.jpg" />',
   );
 
+  $form['show_black'] = array(
+    '#type' => 'checkbox',
+    '#default_value' => 1,
+    '#prefix' => '<img src="/' . BPI_PATH . '/img/flag_black.jpg" />',
+  );
+
   $form['grid'] = array(
     '#type' => 'tableselect',
     '#header' => $header,
@@ -1102,14 +1109,14 @@ function bpi_search_form($form, &$form_state, $form_data) {
     '#title' => 'Adults'
   );
 
-  $form['group']['born'] = array(
+  $form['group']['teenagers'] = array(
     '#type' => 'checkbox',
-    '#title' => 'Born' // @todo - translate 'Born'
+    '#title' => 'Teenagers'
   );
 
-  $form['group']['young'] = array(
+  $form['group']['children'] = array(
     '#type' => 'checkbox',
-    '#title' => 'Young',
+    '#title' => 'Children',
   );
 
   $form['#attached']['js'] = array(
