@@ -126,15 +126,11 @@ function bpi_schema() {
         'description' => 'Category',
         'type' => 'int',
         'unsigned' => TRUE,
-        'not null' => TRUE,
-        'default' => 0,
       ),
       'audience' => array(
         'description' => 'Target audience',
         'type' => 'int',
         'unsigned' => TRUE,
-        'not null' => TRUE,
-        'default' => 0,
       ),
       'channel' => array(
         'description' => 'Node\'s assigned channel',
