@@ -8,6 +8,29 @@
  * Implements hook_install().
  */
 function bpi_install() {
+  // Check for article content type and install if needed
+  $is_article_type = db_query("SELECT COUNT(*) FROM {node_type} WHERE name='Article'")->fetchField(0);
+  
+  if ($is_article_type == 0) {
+    $types = array(
+      array(
+        'type' => 'article',
+        'name' => st('Article'),
+        'base' => 'node_content',
+        'description' => st('Use <em>articles</em> for time-sensitive content like news, press releases or blog posts.'),
+        'custom' => 1,
+        'modified' => 1,
+        'locked' => 0,
+      ),
+    );
+
+    foreach ($types as $type) {
+      $type = node_type_set_defaults($type);
+      node_type_save($type);
+      node_add_body_field($type);
+    }
+  }
+  
   $count = db_query("SELECT COUNT(*) AS CNT FROM {node} WHERE type = 'article'")->fetchField(0);
 
   // Create the channels

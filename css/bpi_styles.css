@@ -113,7 +113,7 @@ div.filters div.flag_filter {
   padding: 1px;
   position: absolute;
   top: -10px;
-  width: 58px;
+  width: 72px;
 }
 
 .flags_container .flags, .flags_container .indicator, .flags_container .flags .flag label {
@@ -124,7 +124,6 @@ div.filters div.flag_filter {
   margin-left: 10px;
   height: 16px;
   width: 16px;
-  
   background-image: url('../img/dd_arrow.gif');
 }
 

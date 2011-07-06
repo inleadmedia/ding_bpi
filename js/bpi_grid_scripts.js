@@ -24,7 +24,6 @@ var DropDown = {
   
   Open : function(ele) {
     ele.addClass('active');
-        
         ele.parent().animate({
           'height': '102'
         }, 100);

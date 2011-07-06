@@ -12,9 +12,9 @@ define('BPI_PATH', drupal_get_path('module', 'bpi'));
  * Implements hook_init().
  */
 function bpi_init() {
-  drupal_add_css(BPI_PATH . '/css/bpi_styles.css');
   drupal_add_library('system', 'drupal.ajax');
   drupal_add_library('system', 'jquery.form');
+  drupal_add_css(BPI_PATH . '/css/bpi_styles.css');
 }
 
 /**
