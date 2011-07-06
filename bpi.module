@@ -157,7 +157,7 @@ function bpi_form_alter(&$form, &$form_state, $form_id) {
 
     // Add a custom col
     $header['rating'] = array(
-      'data' => 'Add to Favorites',
+      'data' => 'Favoritize',
     );
     $header['library'] = array(
       'data' => 'Library',
@@ -461,7 +461,7 @@ function bpi_syndicated_nodes_form($form, &$form_state, $form_data = array()) {
     array('data' => t('Updated'), 'field' => 'node_updated', 'sort' => 'desc'),
     array('data' => t('Syndicated'), 'field' => 'node_syndicated'),
     t('Operations'),
-    'Add to Favorites'
+    'Favoritize'
   );
 
   $form['grid'] = array(
@@ -737,7 +737,7 @@ function bpi_channels_view_form($form, &$form_state, $form_data) {
     t('audience'),
     t('publish status'),
     t('operations'),
-    t('add to favorites'),
+    t('favoritize'),
   );
 
   $form['grid'] = array(
@@ -1026,7 +1026,7 @@ function bpi_updates_form($form, &$form_state, $form_data) {
     array('data' => t('Updated'), 'field' => 'node_updated', 'sort' => 'desc'),
     array('data' => t('Syndicated'), 'field' => 'node_syndicated'),
     t('Operations'),
-    'Add to Favorites'
+    'Favoritize'
   );
 
   $form['filter'] = array(
