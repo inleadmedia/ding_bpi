@@ -88,7 +88,7 @@ function bpi_menu() {
   $items['admin/content/subscriptions'] = array(
     'title' => 'Subscriptions',
     'description' => 'Subscribe to variuos vategories of nodes',
-    'page callback' => 'bpi_temp_subscriptions',
+    'page callback' => 'bpi_subscription',
     //'page callback' => 'drupal_get_form',
     //'page arguments' => array('bpi_subscribe_form'),
     'access arguments' => array('access administration pages'),
@@ -285,6 +285,12 @@ function bpi_theme($existing, $type, $theme, $path) {
     'render element' => 'form',
     'path' => BPI_PATH . '/templates',
     'template' => 'bpi_search',
+  );
+  
+  $hooks['bpi_subscriptions'] = array(
+    'render element' => 'form',
+    'path' => BPI_PATH . '/templates',
+    'template' => 'bpi_subscriptions',
   );
 
   $hooks['well_node'] = array(
@@ -1370,6 +1376,16 @@ function bpi_node_edit_form_submit($form, &$form_state) {
 
 }
 
+
+function bpi_subscription() {
+  $data = array();
+
+return theme('bpi_subscriptions');
+//  return drupal_get_form('bpi_subscribe_form', $data);
+}
+
+
+
 /**
  * Subscriptions page form
  *
@@ -1387,6 +1403,7 @@ function bpi_subscribe_form($form, &$form_state) {
       'Seniors',
       'Children'
     ),
+   '#suffix' => 'aaaa'
   );
 
   $form['subscribe_author'] = array(

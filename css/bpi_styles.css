@@ -141,3 +141,8 @@ div.filters div.flag_filter {
 .sticky-header {
   z-index: 600;
 }
+
+.bpi_left {
+  float: left;
+	width: 100px;
+}
