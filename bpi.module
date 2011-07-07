@@ -375,7 +375,7 @@ function bpi_syndicated_nodes() {
   foreach($syndicated as $k => $v) {
     // Fetch the node data
     $node = db_select('node')
-      ->fields('node', array('type', 'title', 'uid', 'created', 'changed'))
+      ->fields('node', array('type', 'title', 'uid', 'status', 'created', 'changed'))
       ->condition('nid', $v->nid)
       ->execute()
       ->fetchAssoc();
@@ -398,6 +398,7 @@ function bpi_syndicated_nodes() {
       $v->library,
       $v->category,
       $v->audience,
+      $node['status'],
       theme(
         'bpi_node_publish_status',
         array(
@@ -477,8 +478,9 @@ function bpi_syndicated_nodes_form($form, &$form_state, $form_data = array()) {
     array('data' => t('Type'), 'field' => 'node_type'),
     t('Author'),
     array('data' => t('Library'), 'field' => 'node_library'),
-    'Category',
-    'Audience',
+    array('data' => t('Category'), 'field' => 'node_category'),
+    array('data' => t('Audience'), 'field' => 'node_audience'),
+    array('data' => t('Status'), 'field' => 'status'),
     array('data' => t('Well Status'), 'field' => 'node_status'),
     array('data' => t('Updated'), 'field' => 'node_updated', 'sort' => 'desc'),
     array('data' => t('Syndicated'), 'field' => 'node_syndicated'),
@@ -912,10 +914,11 @@ function bpi_favorites_form($form, &$form_state, $form_data) {
     array('data' => 'title', 'field' => 'n.title'),
     'type',
     array('data' => 'author', 'field' => 'n.author'),
-    'library',
-    'category',
-    'audience',
-    'well status',
+    array('data' => 'library', 'field' => 'library'),
+    array('data' => 'category', 'field' => 'category'),
+    array('data' => 'audience', 'field' => 'audience'),
+    array('data' => 'status', 'field' => 'n.status'),
+    array('data' => 'well status', 'field' => 'publish_status'),
     array('data' => 'updated', 'field' => 'n.updated'),
     'operations',
     'favoritize'
@@ -1027,6 +1030,7 @@ function bpi_updates() {
       $bpi_node['library'],
       $bpi_node['category'],
       $bpi_node['audience'],
+      $v->status,
       theme(
         'bpi_node_publish_status',
         array(
@@ -1065,6 +1069,7 @@ function bpi_updates_form($form, &$form_state, $form_data) {
     array('data' => t('Library'), 'field' => 'node_library'),
     array('data' => t('Category'), 'field' => 'node_category'),
     array('data' => t('Audience'), 'field' => 'node_audience'),
+    array('data' => t('Status'), 'field' => 'status'),
     array('data' => t('Well Status'), 'field' => 'node_status'),
     array('data' => t('Updated'), 'field' => 'node_updated', 'sort' => 'desc'),
     array('data' => t('Syndicated'), 'field' => 'node_syndicated'),
