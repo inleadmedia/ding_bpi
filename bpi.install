@@ -38,6 +38,8 @@ function bpi_install() {
     ->fields(array('name'))
     ->values(array('name' => 'EURONEWS'))
     ->values(array('name' => 'BBC'))
+    ->values(array('name' => 'DR'))
+    ->values(array('name' => 'Berlingske'))
     ->execute();
 
   // Fetch the channels

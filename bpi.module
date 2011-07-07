@@ -159,6 +159,10 @@ function bpi_form_alter(&$form, &$form_state, $form_id) {
     $rows = $form['admin']['nodes']['#options'];
 
     // Add a custom col
+    $header['well_status'] = array(
+      'data' => 'Well status'
+    );
+
     $header['rating'] = array(
       'data' => 'Favoritize',
     );
@@ -187,7 +191,7 @@ function bpi_form_alter(&$form, &$form_state, $form_id) {
         ->execute()
         ->fetchAssoc();
 
-      $rows[$k]['status'] = theme(
+      $rows[$k]['well_status'] = theme(
         'bpi_node_publish_status',
         array(
           'syndicated' => $node_status['publish_status'],
@@ -196,9 +200,9 @@ function bpi_form_alter(&$form, &$form_state, $form_id) {
       );
     }
 
-    $header['status'] = array(
+    /*$header['status'] = array(
       'data' => 'Publish status'
-    );
+    );*/
     $form['admin']['nodes']['#header'] = $header;
     $form['admin']['nodes']['#options'] = $rows;
 
@@ -253,6 +257,15 @@ function bpi_theme($existing, $type, $theme, $path) {
     ),
     'path' => BPI_PATH . '/templates',
     'template' => 'bpi_flag_dropdown',
+  );
+
+  $hooks['bpi_flag_show'] = array(
+    'variables' => array(
+      'selected' => NULL,
+      'nid' => NULL
+    ),
+    'path' => BPI_PATH . '/templates',
+    'template' => 'bpi_flag_show',
   );
 
   $hooks['subscribed_users'] = array(
@@ -466,7 +479,7 @@ function bpi_syndicated_nodes_form($form, &$form_state, $form_data = array()) {
     array('data' => t('Library'), 'field' => 'node_library'),
     'Category',
     'Audience',
-    array('data' => t('Publish Status'), 'field' => 'node_status'),
+    array('data' => t('Well Status'), 'field' => 'node_status'),
     array('data' => t('Updated'), 'field' => 'node_updated', 'sort' => 'desc'),
     array('data' => t('Syndicated'), 'field' => 'node_syndicated'),
     t('Operations'),
@@ -563,8 +576,8 @@ function bpi_channels() {
           '0',
           '<ul class="links inline">
              <li class="first">' . l('invite', 'admin/content/ajax/channel/' . $v->channel . '/invite', array('attributes' => array('class' => array('use-ajax')))) . '</li>
-             <li class=""><a href="/admin/content">edit</a></li>
-             <li class=""><a href="/admin/content">delete</a></li>
+             <li class=""><a>edit</a></li>
+             <li class=""><a>delete</a></li>
           </ul>'
         );
       } else {
@@ -575,7 +588,7 @@ function bpi_channels() {
           $count ,
           '0',
           '<ul class="links inline">
-             <li class="last"><a href="/admin/content">subscribe</a></li>
+             <li class="last"><a>subscribe</a></li>
           </ul>'
         );
       }
@@ -759,12 +772,12 @@ function bpi_channels_view_form($form, &$form_state, $form_data) {
     t('title'),
     t('type'),
     t('author'),
+    t('well status'),
+    t('operations'),
+    t('favoritize'),
     t('library'),
     t('category'),
     t('audience'),
-    t('publish status'),
-    t('operations'),
-    t('favoritize'),
   );
 
   $form['grid'] = array(
@@ -856,6 +869,7 @@ function bpi_favorites() {
       ->fetchField(0);
 
     $data['grid_rows'][] = array(
+      theme('bpi_flag_show', array('selected' => $v->favorites, 'nid' => $v->nid)),
       '<a href="/node/' . $v->nid . '">' . $node['title'] . '</a>',
       $node['type'],
       '<a property="foaf:name" typeof="sioc:UserAccount" about="/user/' . $node['uid'] . '" xml:lang="" class="username" title="View user profile." href="/user/' . $node['uid'] . '">' . $author . '</a>',
@@ -893,13 +907,14 @@ function bpi_favorites() {
  */
 function bpi_favorites_form($form, &$form_state, $form_data) {
   $header = array(
+    'favorites',
     array('data' => 'title', 'field' => 'n.title'),
     'type',
     array('data' => 'author', 'field' => 'n.author'),
     'library',
     'category',
     'audience',
-    'publish status',
+    'well status',
     array('data' => 'updated', 'field' => 'n.updated'),
     'operations',
     'favoritize'
@@ -1049,7 +1064,7 @@ function bpi_updates_form($form, &$form_state, $form_data) {
     array('data' => t('Library'), 'field' => 'node_library'),
     array('data' => t('Category'), 'field' => 'node_category'),
     array('data' => t('Audience'), 'field' => 'node_audience'),
-    array('data' => t('Publish Status'), 'field' => 'node_status'),
+    array('data' => t('Well Status'), 'field' => 'node_status'),
     array('data' => t('Updated'), 'field' => 'node_updated', 'sort' => 'desc'),
     array('data' => t('Syndicated'), 'field' => 'node_syndicated'),
     t('Operations'),
@@ -1117,6 +1132,18 @@ function bpi_search_form($form, &$form_state, $form_data) {
   $form['submit'] = array(
     '#type' => 'submit',
     '#value' => 'Search',
+  );
+
+  $form['sort'] = array(
+    '#type' => 'select',
+    '#title' => 'Sort by: ',
+    '#options' => array(
+     '-',
+     'Date',
+     'Syndicated to',
+     'Library'
+    ),
+    '#required' => FALSE,
     '#suffix' => '</div>'
   );
 
@@ -1144,7 +1171,6 @@ function bpi_search_form($form, &$form_state, $form_data) {
   $form['group'] = array(
     '#type' => 'fieldset',
     '#title' => 'TARGET GROUP',
-    '#suffix' => '</div>'
   );
 
   $form['group']['adults'] = array(
@@ -1161,6 +1187,74 @@ function bpi_search_form($form, &$form_state, $form_data) {
     '#type' => 'checkbox',
     '#title' => 'Children',
   );
+
+  $form['category'] = array(
+    '#type' => 'fieldset',
+    '#title' => 'Category',
+
+  );
+
+  $form['category']['books'] = array(
+    '#type' => 'checkbox',
+    '#title' => 'Books'
+  );
+
+  $form['category']['music'] = array(
+    '#type' => 'checkbox',
+    '#title' => 'Music'
+  );
+
+  $form['category']['games'] = array(
+    '#type' => 'checkbox',
+    '#title' => 'Games'
+  );
+
+  $form['library'] = array(
+    '#type' => 'fieldset',
+    '#title' => 'LIBRARY',
+  );
+
+  $form['library']['a'] = array(
+    '#type' => 'checkbox',
+    '#title' => 'Library A'
+  );
+
+  $form['library']['b'] = array(
+    '#type' => 'checkbox',
+    '#title' => 'Library B'
+  );
+
+  $form['library']['c'] = array(
+    '#type' => 'checkbox',
+    '#title' => 'Library C'
+  );
+
+  $form['channel'] = array(
+    '#type' => 'fieldset',
+    '#title' => 'CHANNEL',
+  );
+
+  $form['channel']['EURONEWS'] = array(
+    '#type' => 'checkbox',
+    '#title' => '	EURONEWS'
+  );
+
+  $form['state'] = array(
+    '#type' => 'fieldset',
+    '#title' => 'STATE',
+    '#suffix' => '</div>'
+  );
+
+  $form['state']['draft'] = array(
+    '#type' => 'checkbox',
+    '#title' => '	Draft'
+  );
+
+  $form['state']['published'] = array(
+    '#type' => 'checkbox',
+    '#title' => 'Published'
+  );
+
 
   $form['#attached']['js'] = array(
     BPI_PATH . '/js/context_menu.js',
