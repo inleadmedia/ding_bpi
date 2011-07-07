@@ -88,9 +88,8 @@ function bpi_menu() {
   $items['admin/content/subscriptions'] = array(
     'title' => 'Subscriptions',
     'description' => 'Subscribe to variuos vategories of nodes',
-    'page callback' => 'bpi_temp_subscriptions',
-    //'page callback' => 'drupal_get_form',
-    //'page arguments' => array('bpi_subscribe_form'),
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('bpi_subscribe_form'),
     'access arguments' => array('access administration pages'),
     'type' => MENU_LOCAL_TASK,
     'weight' => '7',
@@ -531,6 +530,7 @@ function bpi_channels() {
       ->execute()
       ->fetchAll();
 
+    $i = 0;
     foreach($channels as $k => $v) {
       $count = db_select('bpi_node')
         ->condition('channel', $v->channel)
@@ -544,16 +544,31 @@ function bpi_channels() {
         ->execute()
         ->fetchField(0);
 
-      $data['grid_rows'][] = array(
-        $channel . '<br />' .
-          l('Invite', 'admin/content/ajax/channel/' . $v->channel . '/invite', array('attributes' => array('class' => array('use-ajax')))),
-        $count . '<br />' . l('view nodes', 'admin/content/channels/' . $v->channel . '/view'),
-        '0',
-        '<ul class="links inline">
-           <li class="edit first"><a href="/admin/content">edit</a></li>
-           <li class="delete last"><a href="/admin/content">delete</a></li>
-        </ul>'
-      );
+      if($i++%2) {
+        $data['grid_rows'][] = array(
+          l($channel, 'admin/content/channels/' . $v->channel . '/view'),
+          '<a>Peter</a>',
+          'News',
+          $count ,
+          '0',
+          '<ul class="links inline">
+             <li class="first">' . l('invite', 'admin/content/ajax/channel/' . $v->channel . '/invite', array('attributes' => array('class' => array('use-ajax')))) . '</li>
+             <li class=""><a href="/admin/content">edit</a></li>
+             <li class=""><a href="/admin/content">delete</a></li>
+          </ul>'
+        );
+      } else {
+        $data['grid_rows'][] = array(
+          l($channel, 'admin/content/channels/' . $v->channel . '/view'),
+          '<a>Hanne</a>',
+          'News',
+          $count ,
+          '0',
+          '<ul class="links inline">
+             <li class="last"><a href="/admin/content">subscribe</a></li>
+          </ul>'
+        );
+      }
     }
 
     return drupal_get_form('bpi_channels_form', $data);
@@ -634,6 +649,8 @@ function bpi_channels() {
 function bpi_channels_form($form, &$form_state, $form_data) {
   $header = array(
     t('Name'),
+    t('Author'),
+    t('Category'),
     t('Nodes'),
     t('Subscribed users'),
     t('Operations')
