@@ -158,22 +158,25 @@ function bpi_form_alter(&$form, &$form_state, $form_id) {
     $header = $form['admin']['nodes']['#header'];
     $rows = $form['admin']['nodes']['#options'];
 
-    // Add a custom col
-    $header['well_status'] = array(
+    // Add custom cols
+    $new_headers = array();
+    $new_headers['well_status'] = array(
       'data' => 'Well status'
     );
+    $new_headers['library'] = array(
+      'data' => 'Library',
+    );
+    $new_headers['category'] = array(
+      'data' => 'Category',
+    );
+    $new_headers['audience'] = array(
+      'data' => 'Audience',
+    );
+    // TODO: use propper calculation of position...
+    $header = array_merge(array_slice($header, 0, 4), $new_headers, array_slice($header, 4));
 
     $header['rating'] = array(
       'data' => 'Favoritize',
-    );
-    $header['library'] = array(
-      'data' => 'Library',
-    );
-    $header['category'] = array(
-      'data' => 'Category',
-    );
-    $header['audience'] = array(
-      'data' => 'Audience',
     );
 
     // Add a custom data to row
@@ -395,10 +398,7 @@ function bpi_syndicated_nodes() {
       '<a property="foaf:name" typeof="sioc:UserAccount" about="/user/' . $node['uid']
         . '" xml:lang="" class="username" title="View user profile." href="/user/' . $node['uid']
         . '">' . $author . '</a>',
-      $v->library,
-      $v->category,
-      $v->audience,
-      $node['status'],
+      ($node['status'] ? 'published' : ''),
       theme(
         'bpi_node_publish_status',
         array(
@@ -406,6 +406,9 @@ function bpi_syndicated_nodes() {
           'in_well' => $v->in_well
         )
       ),
+      $v->library,
+      $v->category,
+      $v->audience,
       date('d.m.Y H:i:s', $node['changed']),
       date('d.m.Y H:i:s', $node['created']),
       '<ul class="links inline">
@@ -477,11 +480,11 @@ function bpi_syndicated_nodes_form($form, &$form_state, $form_data = array()) {
     array('data' => t('Title'), 'field' => 'node_title'),
     array('data' => t('Type'), 'field' => 'node_type'),
     t('Author'),
+    array('data' => t('Status'), 'field' => 'status'),
+    array('data' => t('Well Status'), 'field' => 'node_status'),
     array('data' => t('Library'), 'field' => 'node_library'),
     array('data' => t('Category'), 'field' => 'node_category'),
     array('data' => t('Audience'), 'field' => 'node_audience'),
-    array('data' => t('Status'), 'field' => 'status'),
-    array('data' => t('Well Status'), 'field' => 'node_status'),
     array('data' => t('Updated'), 'field' => 'node_updated', 'sort' => 'desc'),
     array('data' => t('Syndicated'), 'field' => 'node_syndicated'),
     t('Operations'),
@@ -875,10 +878,7 @@ function bpi_favorites() {
       '<a href="/node/' . $v->nid . '">' . $node['title'] . '</a>',
       $node['type'],
       '<a property="foaf:name" typeof="sioc:UserAccount" about="/user/' . $node['uid'] . '" xml:lang="" class="username" title="View user profile." href="/user/' . $node['uid'] . '">' . $author . '</a>',
-      $v->library,
-      $v->category,
-      $v->audience,
-      $node['status'],
+      ($node['status'] ? 'published' : ''),
       theme(
         'bpi_node_publish_status',
         array(
@@ -886,6 +886,9 @@ function bpi_favorites() {
           'in_well' => $v->in_well
         )
       ),
+      $v->library,
+      $v->category,
+      $v->audience,
       date('d.m.Y H:i:s', $node['changed']),
       '<ul class="links inline">
          <li class="edit first"><a href="/node/' . $v->nid . '/edit?destination=admin/content">edit</a></li>
@@ -914,11 +917,11 @@ function bpi_favorites_form($form, &$form_state, $form_data) {
     array('data' => 'title', 'field' => 'n.title'),
     'type',
     array('data' => 'author', 'field' => 'n.author'),
+    array('data' => 'status', 'field' => 'n.status'),
+    array('data' => 'well status', 'field' => 'publish_status'),
     array('data' => 'library', 'field' => 'library'),
     array('data' => 'category', 'field' => 'category'),
     array('data' => 'audience', 'field' => 'audience'),
-    array('data' => 'status', 'field' => 'n.status'),
-    array('data' => 'well status', 'field' => 'publish_status'),
     array('data' => 'updated', 'field' => 'n.updated'),
     'operations',
     'favoritize'
@@ -1027,10 +1030,7 @@ function bpi_updates() {
       '<a property="foaf:name" typeof="sioc:UserAccount" about="/user/' . $v->uid
             . '" xml:lang="" class="username" title="View user profile." href="/user/' . $v->uid
             . '">' . $author . '</a>',
-      $bpi_node['library'],
-      $bpi_node['category'],
-      $bpi_node['audience'],
-      $v->status,
+      ($v->status ? 'published' :''),
       theme(
         'bpi_node_publish_status',
         array(
@@ -1038,6 +1038,9 @@ function bpi_updates() {
           'in_well' => $bpi_node['in_well']
         )
       ),
+      $bpi_node['library'],
+      $bpi_node['category'],
+      $bpi_node['audience'],
       date('d.m.Y H:i:s', $v->changed),
       date('d.m.Y H:i:s', $v->created),
       '<ul class="links inline">
@@ -1066,11 +1069,11 @@ function bpi_updates_form($form, &$form_state, $form_data) {
     array('data' => t('Title'), 'field' => 'node_title'),
     array('data' => t('Type'), 'field' => 'node_type'),
     t('Author'),
+    array('data' => t('Status'), 'field' => 'status'),
+    array('data' => t('Well Status'), 'field' => 'node_status'),
     array('data' => t('Library'), 'field' => 'node_library'),
     array('data' => t('Category'), 'field' => 'node_category'),
     array('data' => t('Audience'), 'field' => 'node_audience'),
-    array('data' => t('Status'), 'field' => 'status'),
-    array('data' => t('Well Status'), 'field' => 'node_status'),
     array('data' => t('Updated'), 'field' => 'node_updated', 'sort' => 'desc'),
     array('data' => t('Syndicated'), 'field' => 'node_syndicated'),
     t('Operations'),
