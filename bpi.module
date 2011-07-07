@@ -876,6 +876,7 @@ function bpi_favorites() {
       $v->library,
       $v->category,
       $v->audience,
+      $node['status'],
       theme(
         'bpi_node_publish_status',
         array(
