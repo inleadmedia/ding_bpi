@@ -406,9 +406,9 @@ function bpi_syndicated_nodes() {
           'in_well' => $v->in_well
         )
       ),
-      $v->library,
-      $v->category,
-      $v->audience,
+      'Testbibliotek',
+      'Musik',
+      'Voksne',
       date('d.m.Y H:i:s', $node['changed']),
       date('d.m.Y H:i:s', $node['created']),
       '<ul class="links inline">
@@ -646,6 +646,9 @@ function bpi_channels() {
             'in_well' => $v->in_well
           )
         ),
+        'Testbibliotek',
+        'Musik',
+        'Voksne',
         '<ul class="links inline">
            <li class="edit first"><a href="/node/' . $v->nid . '/edit?destination=admin/content">edit</a></li>
            <li class="delete last"><a href="/node/' . $v->nid . '/delete?destination=admin/content">delete</a></li>
@@ -778,11 +781,11 @@ function bpi_channels_view_form($form, &$form_state, $form_data) {
     t('type'),
     t('author'),
     t('well status'),
-    t('operations'),
-    t('favoritize'),
     t('library'),
     t('category'),
     t('audience'),
+    t('operations'),
+    t('favoritize'),
   );
 
   $form['grid'] = array(
@@ -886,9 +889,9 @@ function bpi_favorites() {
           'in_well' => $v->in_well
         )
       ),
-      $v->library,
-      $v->category,
-      $v->audience,
+      'Testbibliotek',
+      'Musik',
+      'Voksne',
       date('d.m.Y H:i:s', $node['changed']),
       '<ul class="links inline">
          <li class="edit first"><a href="/node/' . $v->nid . '/edit?destination=admin/content">edit</a></li>
@@ -1038,9 +1041,9 @@ function bpi_updates() {
           'in_well' => $bpi_node['in_well']
         )
       ),
-      $bpi_node['library'],
-      $bpi_node['category'],
-      $bpi_node['audience'],
+      'Testbibliotek',
+      'Musik',
+      'Voksne',
       date('d.m.Y H:i:s', $v->changed),
       date('d.m.Y H:i:s', $v->created),
       '<ul class="links inline">

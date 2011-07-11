@@ -8,7 +8,7 @@
 <span><?php
 
 if($in_well) {
-  echo 'Published';
+  echo 'published';
   
   if ($syndicated > 0) {
     echo ' (' . $syndicated . ')';
